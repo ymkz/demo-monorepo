@@ -1,8 +1,8 @@
 [versions]
-springboot-bom = "3.5.4" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
-junit-bom = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
+spring-boot = "3.5.5" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+jackson = "2.19.2" # https://mvnrepository.com/artifact/com.fasterxml.jackson/jackson-bom
+junit = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
 
-springboot-plugin = "3.5.4" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-gradle-plugin
 springdoc-plugin = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.openapi-gradle-plugin/org.springdoc.openapi-gradle-plugin.gradle.plugin
 
 lombok = "1.18.38" # https://mvnrepository.com/artifact/org.projectlombok/lombok
@@ -12,50 +12,45 @@ micrometer = "1.15.2" # https://mvnrepository.com/artifact/io.micrometer/microme
 springdoc-webmvc-ui = "2.8.9" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
 mockito = "5.18.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
 rest-assured = "5.5.5" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
-jackson = "2.19.2" # https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-csv
 
 [libraries]
-springboot-bom = { group = "org.springframework.boot", name = "spring-boot-dependencies", version.ref = "springboot-bom" }
-junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit-bom" }
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 
-lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
-spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" } # managed by springboot-bom
-spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" } # managed by springboot-bom
-spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" } # managed by springboot-bom
-spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" } # managed by springboot-bom
-spring-boot-devtools = { group = "org.springframework.boot", name = "spring-boot-devtools" } # managed by springboot-bom
-mybatis-spring-boot-starter = { group = "org.mybatis.spring.boot", name = "mybatis-spring-boot-starter", version.ref = "mybatis" }
-mysql-connector-j = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql" }
-micrometer-registry-prometheus = { group = "io.micrometer", name = "micrometer-registry-prometheus", version.ref = "micrometer" }
-springdoc-openapi-starter-webmvc-ui = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-webmvc-ui" }
-jackson-dataformat-csv = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-csv", version.ref = "jackson" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" } # managed by spring-boot-bom
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" } # managed by spring-boot-bom
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" } # managed by spring-boot-bom
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" } # managed by spring-boot-bom
+jackson-dataformat-csv = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-csv" } # managed by jackson-bom
+mybatis-spring-boot-starter = { module = "org.mybatis.spring.boot:mybatis-spring-boot-starter", version.ref = "mybatis" }
+mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometer" }
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc-webmvc-ui" }
 
-spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" } # managed by springboot-bom
-junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" } # managed by junit-bom
-mockito-junit-jupiter = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
-rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "rest-assured" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" } # managed by junit-bom
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" } # managed by spring-boot-bom
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 
 [bundles]
-base = [
-  "spring-boot-starter-web",
-  "spring-boot-starter-validation",
-  "spring-boot-configuration-processor",
-]
 test = [
   "spring-boot-starter-test",
   "mockito-junit-jupiter",
   "rest-assured",
-  "junit-platform-launcher",
 ]
 api = [
+  "spring-boot-starter-validation",
   "spring-boot-starter-actuator",
+  "micrometer-registry-prometheus",
+  "spring-boot-starter-web",
   "mybatis-spring-boot-starter",
   "mysql-connector-j",
-  "micrometer-registry-prometheus",
   "springdoc-openapi-starter-webmvc-ui",
   "jackson-dataformat-csv",
 ]
 
 [plugins]
-spring-boot = { id = "org.springframework.boot", version.ref = "springboot-plugin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 springdoc-openapi = { id = "org.springdoc.openapi-gradle-plugin", version.ref = "springdoc-plugin" }

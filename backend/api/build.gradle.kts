@@ -5,16 +5,17 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(libs.springboot.bom))
-    implementation(platform(libs.junit.bom))
+    implementation(platform(libs.spring.boot.bom))
+    annotationProcessor(platform(libs.spring.boot.bom))
+    implementation(platform(libs.jackson.bom))
+    testImplementation(platform(libs.junit.bom))
 
+    annotationProcessor(libs.spring.boot.configuration.processor)
     annotationProcessor(libs.lombok)
-    compileOnly(libs.lombok)
-    runtimeOnly(libs.spring.boot.devtools)
 
-    implementation(libs.bundles.base)
     implementation(libs.bundles.api)
 
+    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.bundles.test)
 
     implementation(project(":backend:core"))

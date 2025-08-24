@@ -1,6 +1,8 @@
 .gradle/
+.kotlin/
 .next/
 .wireit/
+bin/
 build/
 coverage/
 dist/
