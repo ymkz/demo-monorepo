@@ -1,8 +1,8 @@
 [versions]
-springboot-bom = "3.5.4" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+springboot-bom = "3.5.5" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
 junit-bom = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
 
-springboot-plugin = "3.5.4" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-gradle-plugin
+springboot-plugin = "3.5.5" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-gradle-plugin
 springdoc-plugin = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.openapi-gradle-plugin/org.springdoc.openapi-gradle-plugin.gradle.plugin
 
 lombok = "1.18.38" # https://mvnrepository.com/artifact/org.projectlombok/lombok
