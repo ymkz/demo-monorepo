@@ -8,10 +8,10 @@ springdoc-plugin = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.op
 lombok = "1.18.38" # https://mvnrepository.com/artifact/org.projectlombok/lombok
 mybatis = "3.0.5" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
 mysql = "9.4.0" # https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-micrometer = "1.15.2" # https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
-springdoc-webmvc-ui = "2.8.9" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
-mockito = "5.18.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
-rest-assured = "5.5.5" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+micrometer = "1.15.3" # https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+springdoc-webmvc-ui = "2.8.10" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+mockito = "5.19.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+rest-assured = "5.5.6" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
 jackson = "2.19.2" # https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-csv
 
 [libraries]
