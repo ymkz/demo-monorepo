@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["frontend/**", "!frontend/**/generated"]
+    "includes": ["apps/web-form/**", "apps/web-tool/**", "!**/generated/**"]
   },
   "formatter": {
     "lineWidth": 120

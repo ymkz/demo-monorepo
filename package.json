@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "engines": {
     "node": ">=24",
     "pnpm": ">=10"
@@ -24,27 +24,32 @@
   "wireit": {
     "dev": {
       "dependencies": [
-        "./frontend/web-form:dev"
+        "./apps/web-form:dev",
+        "./apps/web-tool:dev"
       ]
     },
     "build": {
       "dependencies": [
-        "./frontend/web-form:build"
+        "./apps/web-form:build",
+        "./apps/web-tool:build"
       ]
     },
     "typecheck": {
       "dependencies": [
-        "./frontend/web-form:typecheck"
+        "./apps/web-form:typecheck",
+        "./apps/web-tool:typecheck"
       ]
     },
     "test": {
       "dependencies": [
-        "./frontend/web-form:test"
+        "./apps/web-form:test",
+        "./apps/web-tool:test"
       ]
     },
     "coverage": {
       "dependencies": [
-        "./frontend/web-form:coverage"
+        "./apps/web-form:coverage",
+        "./apps/web-tool:coverage"
       ]
     },
     "check": {

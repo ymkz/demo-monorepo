@@ -1,2 +1,4 @@
 [env]
 _.file = ".env"
+SPRING_PROFILES_ACTIVE = "local"
+DEPLOY_ENV = "local"

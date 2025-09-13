@@ -5,6 +5,6 @@ includeBuild(
 )
 
 include(
-    ":backend:core",
-    ":backend:api",
+    ":apps:core",
+    ":apps:api",
 )

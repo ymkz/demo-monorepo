@@ -1,5 +1,6 @@
 packages:
-  - frontend/*
+  - apps/web-form
+  - apps/web-tool
 
 catalog:
   "@biomejs/biome": 2.1.4

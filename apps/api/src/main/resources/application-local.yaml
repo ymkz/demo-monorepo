@@ -1,0 +1,12 @@
+spring:
+  web:
+    resources:
+      add-mappings: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo_db
+    username: demo_user
+    password: ${DEMODB_DEMOUSER_PASSWORD}
+logging:
+  structured:
+    format: 
+      console: # localは構造化ログを無効化

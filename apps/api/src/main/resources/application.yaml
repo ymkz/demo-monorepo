@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: demo-api
+  profiles:
+    active: local
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  main:
+    banner-mode: "off"
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    contentnegotiation:
+      media-types:
+        csv: text/csv
+server:
+  port: 8080
+  shutdown: graceful
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  structured:
+    format:
+      console: logstash
+    json:
+      add:
+        app: demo-api
+      exclude:
+        - "@version"
+        - thread_name
+        - logger_name
+        - level_value
+      rename:
+        "[@timestamp]": time
+        message: msg
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - metrics
+          - prometheus
+  metrics:
+    distribution:
+      percentiles:
+        "[http.server.requests]":
+          - 0.99
+          - 0.999
+      slo:
+        "[http.server.requests]":
+          - 100ms
+          - 1s
+          - 10s
+          - 30s
+  server:
+    port: 8081
+springdoc:
+  api-docs:
+    path: /openapi/openapi.json
+  swagger-ui:
+    enabled: false
