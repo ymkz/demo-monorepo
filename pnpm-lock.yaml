@@ -17,11 +17,11 @@ catalogs:
       specifier: 24.2.1
       version: 24.2.1
     '@types/react':
+      specifier: 19.1.12
+      version: 19.1.12
+    '@types/react-dom':
       specifier: 19.1.9
       version: 19.1.9
-    '@types/react-dom':
-      specifier: 19.1.7
-      version: 19.1.7
     httpxy:
       specifier: 0.1.7
       version: 0.1.7
@@ -96,10 +96,10 @@ importers:
         version: 0.83.1(typescript@5.9.2)
       '@types/react':
         specifier: 'catalog:'
-        version: 19.1.9
+        version: 19.1.12
       '@types/react-dom':
         specifier: 'catalog:'
-        version: 19.1.7(@types/react@19.1.9)
+        version: 19.1.9(@types/react@19.1.12)
 
   apps/web-tool:
     dependencies:
@@ -124,10 +124,10 @@ importers:
         version: 0.83.1(typescript@5.9.2)
       '@types/react':
         specifier: 'catalog:'
-        version: 19.1.9
+        version: 19.1.12
       '@types/react-dom':
         specifier: 'catalog:'
-        version: 19.1.7(@types/react@19.1.9)
+        version: 19.1.9(@types/react@19.1.12)
 
 packages:
 
@@ -781,13 +781,13 @@ packages:
   '@types/node@24.2.1':
     resolution: {integrity: sha512-DRh5K+ka5eJic8CjH7td8QpYEV6Zo10gfRkjHCO3weqZHWDtAaSTFtl4+VMqOJ4N5jcuhZ9/l+yy8rVgw7BQeQ==}
 
-  '@types/react-dom@19.1.7':
-    resolution: {integrity: sha512-i5ZzwYpqjmrKenzkoLM2Ibzt6mAsM7pxB6BCIouEVVmgiqaMj1TjaK7hnA36hbW5aZv20kx7Lw6hWzPWg0Rurw==}
+  '@types/react-dom@19.1.9':
+    resolution: {integrity: sha512-qXRuZaOsAdXKFyOhRBg6Lqqc0yay13vN7KrIg4L7N4aaHN68ma9OK3NE1BoDFgFOTfM7zg+3/8+2n8rLUH3OKQ==}
     peerDependencies:
       '@types/react': ^19.0.0
 
-  '@types/react@19.1.9':
-    resolution: {integrity: sha512-WmdoynAX8Stew/36uTSVMcLJJ1KRh6L3IZRx1PZ7qJtBqT3dYTgyDTx8H1qoRghErydW7xw9mSJ3wS//tCRpFA==}
+  '@types/react@19.1.12':
+    resolution: {integrity: sha512-cMoR+FoAf/Jyq6+Df2/Z41jISvGZZ2eTlnsaJRptmZ76Caldwy1odD4xTr/gNV9VLj0AWgg/nmkevIyUfIIq5w==}
 
   '@vitest/expect@3.2.4':
     resolution: {integrity: sha512-Io0yyORnB6sikFlt8QW5K7slY4OjqNX9jmJQ02QDda8lyM6B5oNgVWoSoKPac8/kgnCUzuHQKrSLtu/uOqqrig==}
@@ -1949,11 +1949,11 @@ snapshots:
     dependencies:
       undici-types: 7.10.0
 
-  '@types/react-dom@19.1.7(@types/react@19.1.9)':
+  '@types/react-dom@19.1.9(@types/react@19.1.12)':
     dependencies:
-      '@types/react': 19.1.9
+      '@types/react': 19.1.12
 
-  '@types/react@19.1.9':
+  '@types/react@19.1.12':
     dependencies:
       csstype: 3.1.3
 
