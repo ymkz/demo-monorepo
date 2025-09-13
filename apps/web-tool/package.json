@@ -38,6 +38,7 @@
     "nuqs": "catalog:"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:"
   }

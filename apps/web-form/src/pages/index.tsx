@@ -1,7 +1,6 @@
 import { stringify } from "node:querystring";
 import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { createLoader, parseAsInteger, parseAsIsoDateTime, parseAsString, parseAsStringLiteral } from "nuqs/server";
-import { FindBooksOrder } from "../generated/openapi/schema";
+import { createLoader, parseAsInteger, parseAsIsoDateTime, parseAsString } from "nuqs/server";
 
 const booksSearchParams = {
 	isbn: parseAsString,
@@ -11,7 +10,7 @@ const booksSearchParams = {
 	priceTo: parseAsInteger,
 	publishedAtStart: parseAsIsoDateTime,
 	publishedAtEnd: parseAsIsoDateTime,
-	order: parseAsStringLiteral(Object.keys(FindBooksOrder)).withDefault(FindBooksOrder["-published_at"]),
+	// order: parseAsStringLiteral(Object.keys(FindBooksOrder)).withDefault(FindBooksOrder["-published_at"]),
 	offset: parseAsInteger.withDefault(0),
 	limit: parseAsInteger.withDefault(20),
 };

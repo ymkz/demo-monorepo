@@ -14,7 +14,7 @@
   },
   "wireit": {
     "generate:openapi": {
-      "command": "orval generate"
+      "command": "openapi-ts"
     },
     "dev": {
       "command": "next dev --turbopack -p 3000",
@@ -55,6 +55,7 @@
     "nuqs": "catalog:"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:"
   }

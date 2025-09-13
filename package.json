@@ -64,7 +64,6 @@
     "@biomejs/biome": "catalog:",
     "@types/node": "catalog:",
     "knip": "catalog:",
-    "orval": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "wireit": "catalog:"
