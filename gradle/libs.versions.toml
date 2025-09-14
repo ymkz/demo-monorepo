@@ -5,13 +5,13 @@ junit = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
 
 springdoc-openapi = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.openapi-gradle-plugin/org.springdoc.openapi-gradle-plugin.gradle.plugin
 
-lombok = "1.18.38" # https://mvnrepository.com/artifact/org.projectlombok/lombok
+lombok = "1.18.40" # https://mvnrepository.com/artifact/org.projectlombok/lombok
 mybatis = "3.0.5" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
 mysql = "9.4.0" # https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
 micrometer = "1.15.2" # https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
-springdoc-webmvc = "2.8.9" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api
+springdoc-webmvc = "2.8.12" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api
 mockito = "5.18.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
-rest-assured = "5.5.5" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+rest-assured = "5.5.6" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
 
 [libraries]
 spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
