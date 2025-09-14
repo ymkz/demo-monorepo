@@ -8,7 +8,7 @@ public enum AppEvent {
 
     DATABASE_ACCESS_FAILED("de1001", "データベースへのアクセスに失敗しました"),
     DATABASE_MYBATIS_ERROR("de2001", "MyBatisでエラーが発生しました"),
-    
+
     UNEXPECTED_ERROR("de1000", "予期せぬエラーが発生しました");
 
     private final String code;
