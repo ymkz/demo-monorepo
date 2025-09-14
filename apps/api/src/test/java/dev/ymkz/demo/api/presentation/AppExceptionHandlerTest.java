@@ -51,7 +51,7 @@ class AppExceptionHandlerTest {
         assertThat(response.getBody()).isNotNull();
 
         ErrorResponse body = response.getBody();
-        assertThat(body.code()).isEqualTo(AppEvent.DATABASE_ACCESS_FAILED.code());
-        assertThat(body.message()).isEqualTo(AppEvent.DATABASE_ACCESS_FAILED.message());
+        assertThat(body.code()).isEqualTo(AppEvent.UNEXPECTED_ERROR.code());
+        assertThat(body.message()).isEqualTo(AppEvent.UNEXPECTED_ERROR.message());
     }
 }
