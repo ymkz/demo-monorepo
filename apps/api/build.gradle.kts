@@ -9,6 +9,7 @@ dependencies {
     implementation(platform(libs.spring.boot.bom))
     implementation(platform(libs.jackson.bom))
     testImplementation(platform(libs.junit.bom))
+    intTestImplementation(platform(libs.testcontainers.bom))
 
     annotationProcessor(libs.spring.boot.configuration.processor)
     annotationProcessor(libs.lombok)
@@ -17,6 +18,7 @@ dependencies {
 
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.bundles.unit.test)
+    intTestImplementation(libs.bundles.integration.test)
 
     implementation(project(":apps:core"))
 }

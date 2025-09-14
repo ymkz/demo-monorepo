@@ -2,11 +2,7 @@
 spring-boot = "3.5.5" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
 jackson = "2.20.0" # https://mvnrepository.com/artifact/com.fasterxml.jackson/jackson-bom
 junit = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
-
-spotless = "7.2.1" # https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
-
-springdoc-openapi = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.openapi-gradle-plugin/org.springdoc.openapi-gradle-plugin.gradle.plugin
-
+testcontainers = "1.21.3" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
 lombok = "1.18.40" # https://mvnrepository.com/artifact/org.projectlombok/lombok
 mybatis = "3.0.5" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
 mysql = "9.4.0" # https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
@@ -14,11 +10,14 @@ micrometer = "1.15.3" # https://mvnrepository.com/artifact/io.micrometer/microme
 springdoc-webmvc = "2.8.13" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api
 mockito = "5.19.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
 rest-assured = "5.5.6" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+spotless = "7.2.1" # https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
+springdoc-openapi = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.openapi-gradle-plugin/org.springdoc.openapi-gradle-plugin.gradle.plugin
 
 [libraries]
 spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
 
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
@@ -33,8 +32,10 @@ springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:springdoc-opena
 
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
+testcontainers-mysql = { module = "org.testcontainers:mysql" }
 rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
@@ -43,6 +44,12 @@ spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.re
 unit-test = [
   "spring-boot-starter-test",
   "mockito-junit-jupiter",
+]
+integration-test = [
+  "spring-boot-starter-test",
+  "spring-boot-testcontainers",
+  "testcontainers-junit-jupiter",
+  "testcontainers-mysql",
   "rest-assured",
 ]
 api = [
