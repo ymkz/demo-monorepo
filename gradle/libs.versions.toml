@@ -10,7 +10,7 @@ mybatis = "3.0.5" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/m
 mysql = "9.4.0" # https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
 micrometer = "1.15.2" # https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
 springdoc-webmvc = "2.8.12" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api
-mockito = "5.18.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+mockito = "5.19.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
 rest-assured = "5.5.6" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
 
 [libraries]
