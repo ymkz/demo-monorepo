@@ -1,6 +1,6 @@
 [versions]
 spring-boot = "3.5.5" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
-jackson = "2.19.2" # https://mvnrepository.com/artifact/com.fasterxml.jackson/jackson-bom
+jackson = "2.20.0" # https://mvnrepository.com/artifact/com.fasterxml.jackson/jackson-bom
 junit = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
 
 spotless = "7.2.1" # https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
