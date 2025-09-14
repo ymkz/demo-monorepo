@@ -1,7 +1,7 @@
 export default function Page() {
 	return (
 		<div>
-			<h1>ツール</h1>
+			<h1>フォーム</h1>
 		</div>
 	);
 }

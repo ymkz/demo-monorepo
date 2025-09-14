@@ -10,6 +10,8 @@
     "dev": "wireit",
     "build": "wireit",
     "typecheck": "wireit",
+    "test": "wireit",
+    "coverage": "wireit",
     "generate:openapi": "wireit"
   },
   "wireit": {
@@ -18,6 +20,7 @@
     },
     "dev": {
       "command": "next dev --turbopack -p 3000",
+      "service": true,
       "dependencies": [
         "generate:openapi"
       ]
@@ -48,11 +51,9 @@
     }
   },
   "dependencies": {
-    "httpxy": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "next": "catalog:",
-    "nuqs": "catalog:"
+    "next": "catalog:"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",

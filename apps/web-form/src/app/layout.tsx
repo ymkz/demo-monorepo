@@ -3,8 +3,8 @@ import "./global.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "ツール",
-	description: "ツール",
+	title: "フォーム",
+	description: "フォーム",
 };
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {

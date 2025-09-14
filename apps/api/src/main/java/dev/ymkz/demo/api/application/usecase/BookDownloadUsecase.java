@@ -18,15 +18,14 @@ import org.springframework.stereotype.Service;
 public class BookDownloadUsecase {
 
     private static final byte[] UTF8_BOM = new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
-
-    private final CsvMapper mapper = new CsvMapper().enable(CsvGenerator.Feature.ALWAYS_QUOTE_STRINGS);
+    private static final CsvMapper mapper = new CsvMapper().enable(CsvGenerator.Feature.ALWAYS_QUOTE_STRINGS);
 
     private final BookRepository repository;
 
     public byte[] execute(BookSearchQuery query) {
-        var data = repository.search(query);
+        var books = repository.download(query);
         var text = mapBooksToCsvText(
-                data.items().stream().map(DownloadBooksResponse::from).toList());
+                books.stream().map(DownloadBooksResponse::from).toList());
         var bytes = text.getBytes(StandardCharsets.UTF_8);
         return bytes;
     }
