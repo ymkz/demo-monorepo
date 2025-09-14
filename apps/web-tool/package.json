@@ -11,26 +11,45 @@
     "build": "wireit",
     "typecheck": "wireit",
     "test": "wireit",
-    "coverage": "wireit"
+    "coverage": "wireit",
+    "generate:openapi": "wireit"
   },
   "wireit": {
+    "generate:openapi": {
+      "command": "openapi-ts"
+    },
     "dev": {
-      "command": "next dev --turbopack -p 4000"
+      "command": "next dev --turbopack -p 4000",
+      "service": true,
+      "dependencies": [
+        "generate:openapi"
+      ]
     },
     "build": {
-      "command": "next build"
+      "command": "next build",
+      "dependencies": [
+        "generate:openapi"
+      ]
     },
     "typecheck": {
       "command": "tsc --noEmit"
     },
     "test": {
-      "command": "vitest --run"
+      "command": "vitest --run",
+      "dependencies": [
+        "generate:openapi"
+      ]
     },
     "coverage": {
-      "command": "vitest --run --coverage"
+      "command": "vitest --run --coverage",
+      "dependencies": [
+        "generate:openapi"
+      ]
     }
   },
   "dependencies": {
+    "@mantine/core": "catalog:",
+    "@mantine/hooks": "catalog:",
     "httpxy": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
@@ -39,6 +58,9 @@
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",
+    "postcss": "catalog:",
+    "postcss-preset-mantine": "catalog:",
+    "postcss-simple-vars": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:"
   }

@@ -116,12 +116,9 @@ public class BookController {
                 null,
                 null));
 
-        final var MEDIA_TYPE_TEXT_CSV = new MediaType("text", "csv");
-        final var CONTENT_DISPOSITION_VALUE = "attachment; filename=download.csv";
-
         return ResponseEntity.ok()
-                .header(CONTENT_DISPOSITION, CONTENT_DISPOSITION_VALUE)
-                .contentType(MEDIA_TYPE_TEXT_CSV)
+                .header(CONTENT_DISPOSITION, "attachment; filename=download.csv")
+                .contentType(new MediaType("text", "csv"))
                 .body(data);
     }
 
