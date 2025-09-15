@@ -1,0 +1,6 @@
+spring:
+  sql:
+    init:
+      schema-locations: classpath:init/00_schema.sql
+      data-locations: classpath:init/01_seed.sql
+      mode: always

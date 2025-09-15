@@ -1,7 +1,6 @@
 package dev.ymkz.demo.api;
 
 import static io.restassured.RestAssured.given;
-// import static org.hamcrest.Matchers.hasSize;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -30,6 +29,5 @@ public class SearchBooksIntTest {
                 .get("/books")
                 .then()
                 .statusCode(200);
-                // .body(".", hasSize(2));
     }
 }
