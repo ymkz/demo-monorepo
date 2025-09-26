@@ -1,5 +1,5 @@
 [versions]
-spring-boot = "3.5.5" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+spring-boot = "3.5.6" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
 jackson = "2.20.0" # https://mvnrepository.com/artifact/com.fasterxml.jackson/jackson-bom
 junit = "5.13.4" # https://mvnrepository.com/artifact/org.junit/junit-bom
 testcontainers = "1.21.3" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
