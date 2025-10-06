@@ -3,24 +3,24 @@ packages:
   - apps/web-tool
 
 catalog:
-  "@biomejs/biome": 2.2.4
-  "@hey-api/openapi-ts": 0.84.3
-  "@mantine/core": 8.3.2
-  "@mantine/hooks": 8.3.2
-  "@types/node": 24.5.2
-  "@types/react": 19.1.13
-  "@types/react-dom": 19.1.9
+  "@biomejs/biome": 2.2.5
+  "@hey-api/openapi-ts": 0.84.4
+  "@mantine/core": 8.3.3
+  "@mantine/hooks": 8.3.3
+  "@types/node": 24.6.2
+  "@types/react": 19.2.0
+  "@types/react-dom": 19.2.0
   "@vitest/coverage-v8": 3.2.4
   httpxy: 0.1.7
-  knip: 5.64.0
+  knip: 5.64.1
   next: 15.5.4
-  nuqs: 2.6.0
+  nuqs: 2.7.0
   postcss: 8.5.6
   postcss-preset-mantine: 1.18.0
   postcss-simple-vars: 7.0.1
-  react: 19.1.1
-  react-dom: 19.1.1
-  typescript: 5.9.2
+  react: 19.2.0
+  react-dom: 19.2.0
+  typescript: 5.9.3
   vitest: 3.2.4
   wireit: 0.14.12
 
