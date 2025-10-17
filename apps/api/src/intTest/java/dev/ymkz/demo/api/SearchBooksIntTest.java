@@ -24,10 +24,6 @@ public class SearchBooksIntTest {
 
     @Test
     void searchBooksが200でレスポンスされること() {
-        given().contentType(ContentType.JSON)
-                .when()
-                .get("/books")
-                .then()
-                .statusCode(200);
+        given().contentType(ContentType.JSON).when().get("/books").then().statusCode(200);
     }
 }
