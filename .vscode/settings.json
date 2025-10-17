@@ -9,6 +9,7 @@
   "java.compile.nullAnalysis.mode": "automatic",
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.completion.importOrder": ["#"],
+  "spring-boot.ls.problem.application-yaml.YAML_UNKNOWN_PROPERTY": "IGNORE",
   "[markdown][html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
