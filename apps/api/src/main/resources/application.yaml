@@ -33,6 +33,8 @@ logging:
         "[@timestamp]": time
         message: msg
 management:
+  server:
+    port: 8081
   endpoints:
     web:
       exposure:
@@ -52,20 +54,13 @@ management:
           - 1s
           - 10s
           - 30s
-  server:
-    port: 8081
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-springdoc:
-  api-docs:
-    path: /openapi/openapi.json
-  swagger-ui:
-    enabled: false
 
 app:
   externalapi:
     jsonplaceholder:
       base-url: https://jsonplaceholder.typicode.com
-      connect-timeout-ms: 500
-      read-timeout-ms: 3000
+      connect-timeout: 500ms
+      read-timeout: 3000ms

@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.bom))
     annotationProcessor(platform(libs.spring.boot.bom))
-    implementation(platform(libs.junit.bom))
+    implementation(platform(libs.spring.boot.bom))
+    testImplementation(platform(libs.junit.bom))
 
     annotationProcessor(libs.spring.boot.configuration.processor)
     annotationProcessor(libs.lombok)
