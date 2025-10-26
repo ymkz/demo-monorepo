@@ -50,8 +50,14 @@ spotless {
     }
 }
 
-tasks.withType<JavaCompile> {
+tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
+    options.compilerArgs.addAll(
+        listOf(
+            "-Xlint:unchecked",
+            "-Xlint:deprecation"
+        )
+    )
 }
 
 tasks.withType<Test> {
