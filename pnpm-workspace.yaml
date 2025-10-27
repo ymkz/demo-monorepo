@@ -10,10 +10,10 @@ catalog:
   "@types/node": 24.9.1
   "@types/react": 19.2.2
   "@types/react-dom": 19.2.2
-  "@vitest/coverage-v8": 3.2.4
+  "@vitest/coverage-v8": 4.0.3
   httpxy: 0.1.7
   knip: 5.66.2
-  next: 15.5.6
+  next: 16.0.0
   nuqs: 2.7.2
   postcss: 8.5.6
   postcss-preset-mantine: 1.18.0
@@ -21,7 +21,7 @@ catalog:
   react: 19.2.0
   react-dom: 19.2.0
   typescript: 5.9.3
-  vitest: 3.2.4
+  vitest: 4.0.3
   wireit: 0.14.12
 
 catalogMode: strict
