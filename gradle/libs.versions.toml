@@ -1,7 +1,7 @@
 [versions]
 spring-boot = "3.5.9" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
 jackson = "3.0.3" # https://mvnrepository.com/artifact/tools.jackson/jackson-bom
-junit = "6.0.1" # https://mvnrepository.com/artifact/org.junit/junit-bom
+junit = "6.0.2" # https://mvnrepository.com/artifact/org.junit/junit-bom
 testcontainers = "2.0.3" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
 lombok = "1.18.42" # https://mvnrepository.com/artifact/org.projectlombok/lombok
 mybatis = "3.0.5" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
