@@ -13,3 +13,11 @@ node_modules/
 next-env.d.ts
 *.local.json
 *.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+.project
+.classpath
+.settings/
+*.iml
