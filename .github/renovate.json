@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>ymkz/renovate"]
+  "extends": ["github>ymkz/renovate"],
+  "packageRules": [
+    {
+      "description": "Pin Testcontainers to 1.x due to Spring Boot 4.0 compatibility issues",
+      "matchPackagePatterns": ["^org.testcontainers"],
+      "allowedVersions": "1.x"
+    }
+  ]
 }

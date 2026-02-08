@@ -8,8 +8,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface BookMapper {
 
-    @Select(
-            """
+    @Select("""
         <script>
         SELECT
             COUNT(1)
@@ -57,8 +56,7 @@ public interface BookMapper {
     """)
     int count(BookSearchQuery query);
 
-    @Select(
-            """
+    @Select("""
         <script>
         SELECT
             b.id,

@@ -6,7 +6,10 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public record Paginated<T>(
-        List<T> items, @PositiveOrZero int totalCount, @Min(0) int offset, @Min(1) @Max(100) int limit) {
+        List<T> items,
+        @PositiveOrZero int totalCount,
+        @Min(0) int offset,
+        @Min(1) @Max(100) int limit) {
 
     public int returnedCount() {
         return items.size();
