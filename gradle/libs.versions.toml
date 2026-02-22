@@ -1,7 +1,7 @@
 [versions]
-spring-boot = "4.0.2" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+spring-boot = "4.0.3" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
 jackson = "3.0.4" # https://mvnrepository.com/artifact/tools.jackson/jackson-bom
-junit = "6.0.2" # https://mvnrepository.com/artifact/org.junit/junit-bom
+junit = "6.0.3" # https://mvnrepository.com/artifact/org.junit/junit-bom
 testcontainers = "1.21.4" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
 # pinned: Testcontainers 2.x is unstable with Spring Boot 4.0.2 (some modules not found in BOM)
 lombok = "1.18.42" # https://mvnrepository.com/artifact/org.projectlombok/lombok
