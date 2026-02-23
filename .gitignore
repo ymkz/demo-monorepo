@@ -1,6 +1,7 @@
 .gradle/
 .kotlin/
 .next/
+.settings/
 .wireit/
 bin/
 build/
@@ -8,8 +9,10 @@ coverage/
 dist/
 generated/
 node_modules/
+.classpath
 .env*
 .DS_Store
+.project
 next-env.d.ts
 *.local.json
 *.tsbuildinfo
