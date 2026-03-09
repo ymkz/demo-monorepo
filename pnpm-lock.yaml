@@ -8,20 +8,20 @@ settings:
 catalogs:
   default:
     '@biomejs/biome':
-      specifier: 2.4.4
-      version: 2.4.4
+      specifier: 2.4.6
+      version: 2.4.6
     '@hey-api/openapi-ts':
-      specifier: 0.93.0
-      version: 0.93.0
+      specifier: 0.94.0
+      version: 0.94.0
     '@mantine/core':
-      specifier: 8.3.15
-      version: 8.3.15
+      specifier: 8.3.16
+      version: 8.3.16
     '@mantine/hooks':
-      specifier: 8.3.15
-      version: 8.3.15
+      specifier: 8.3.16
+      version: 8.3.16
     '@types/node':
-      specifier: 24.10.15
-      version: 24.10.15
+      specifier: 24.11.2
+      version: 24.11.2
     '@types/react':
       specifier: 19.2.14
       version: 19.2.14
@@ -38,11 +38,11 @@ catalogs:
       specifier: 16.1.6
       version: 16.1.6
     nuqs:
-      specifier: 2.8.8
-      version: 2.8.8
+      specifier: 2.8.9
+      version: 2.8.9
     postcss:
-      specifier: 8.5.6
-      version: 8.5.6
+      specifier: 8.5.8
+      version: 8.5.8
     postcss-preset-mantine:
       specifier: 1.18.0
       version: 1.18.0
@@ -71,19 +71,19 @@ importers:
     devDependencies:
       '@biomejs/biome':
         specifier: 'catalog:'
-        version: 2.4.4
+        version: 2.4.6
       '@types/node':
         specifier: 'catalog:'
-        version: 24.10.15
+        version: 24.11.2
       knip:
         specifier: 'catalog:'
-        version: 5.85.0(@types/node@24.10.15)(typescript@5.9.3)
+        version: 5.85.0(@types/node@24.11.2)(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
       vitest:
         specifier: 'catalog:'
-        version: 4.0.18(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6))
+        version: 4.0.18(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8))
       wireit:
         specifier: 'catalog:'
         version: 0.14.12
@@ -102,7 +102,7 @@ importers:
     devDependencies:
       '@hey-api/openapi-ts':
         specifier: 'catalog:'
-        version: 0.93.0(typescript@5.9.3)
+        version: 0.94.0(typescript@5.9.3)
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.14
@@ -114,10 +114,10 @@ importers:
     dependencies:
       '@mantine/core':
         specifier: 'catalog:'
-        version: 8.3.15(@mantine/hooks@8.3.15(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 8.3.16(@mantine/hooks@8.3.16(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@mantine/hooks':
         specifier: 'catalog:'
-        version: 8.3.15(react@19.2.4)
+        version: 8.3.16(react@19.2.4)
       httpxy:
         specifier: 'catalog:'
         version: 0.3.1
@@ -126,7 +126,7 @@ importers:
         version: 16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       nuqs:
         specifier: 'catalog:'
-        version: 2.8.8(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+        version: 2.8.9(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -136,7 +136,7 @@ importers:
     devDependencies:
       '@hey-api/openapi-ts':
         specifier: 'catalog:'
-        version: 0.93.0(typescript@5.9.3)
+        version: 0.94.0(typescript@5.9.3)
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.14
@@ -145,13 +145,13 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       postcss:
         specifier: 'catalog:'
-        version: 8.5.6
+        version: 8.5.8
       postcss-preset-mantine:
         specifier: 'catalog:'
-        version: 1.18.0(postcss@8.5.6)
+        version: 1.18.0(postcss@8.5.8)
       postcss-simple-vars:
         specifier: 'catalog:'
-        version: 7.0.1(postcss@8.5.6)
+        version: 7.0.1(postcss@8.5.8)
 
 packages:
 
@@ -159,59 +159,59 @@ packages:
     resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
     engines: {node: '>=6.9.0'}
 
-  '@biomejs/biome@2.4.4':
-    resolution: {integrity: sha512-tigwWS5KfJf0cABVd52NVaXyAVv4qpUXOWJ1rxFL8xF1RVoeS2q/LK+FHgYoKMclJCuRoCWAPy1IXaN9/mS61Q==}
+  '@biomejs/biome@2.4.6':
+    resolution: {integrity: sha512-QnHe81PMslpy3mnpL8DnO2M4S4ZnYPkjlGCLWBZT/3R9M6b5daArWMMtEfP52/n174RKnwRIf3oT8+wc9ihSfQ==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.4.4':
-    resolution: {integrity: sha512-jZ+Xc6qvD6tTH5jM6eKX44dcbyNqJHssfl2nnwT6vma6B1sj7ZLTGIk6N5QwVBs5xGN52r3trk5fgd3sQ9We9A==}
+  '@biomejs/cli-darwin-arm64@2.4.6':
+    resolution: {integrity: sha512-NW18GSyxr+8sJIqgoGwVp5Zqm4SALH4b4gftIA0n62PTuBs6G2tHlwNAOj0Vq0KKSs7Sf88VjjmHh0O36EnzrQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.4.4':
-    resolution: {integrity: sha512-Dh1a/+W+SUCXhEdL7TiX3ArPTFCQKJTI1mGncZNWfO+6suk+gYA4lNyJcBB+pwvF49uw0pEbUS49BgYOY4hzUg==}
+  '@biomejs/cli-darwin-x64@2.4.6':
+    resolution: {integrity: sha512-4uiE/9tuI7cnjtY9b07RgS7gGyYOAfIAGeVJWEfeCnAarOAS7qVmuRyX6d7JTKw28/mt+rUzMasYeZ+0R/U1Mw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.4.4':
-    resolution: {integrity: sha512-+sPAXq3bxmFwhVFJnSwkSF5Rw2ZAJMH3MF6C9IveAEOdSpgajPhoQhbbAK12SehN9j2QrHpk4J/cHsa/HqWaYQ==}
+  '@biomejs/cli-linux-arm64-musl@2.4.6':
+    resolution: {integrity: sha512-F/JdB7eN22txiTqHM5KhIVt0jVkzZwVYrdTR1O3Y4auBOQcXxHK4dxULf4z43QyZI5tsnQJrRBHZy7wwtL+B3A==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-arm64@2.4.4':
-    resolution: {integrity: sha512-V/NFfbWhsUU6w+m5WYbBenlEAz8eYnSqRMDMAW3K+3v0tYVkNyZn8VU0XPxk/lOqNXLSCCrV7FmV/u3SjCBShg==}
+  '@biomejs/cli-linux-arm64@2.4.6':
+    resolution: {integrity: sha512-kMLaI7OF5GN1Q8Doymjro1P8rVEoy7BKQALNz6fiR8IC1WKduoNyteBtJlHT7ASIL0Cx2jR6VUOBIbcB1B8pew==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-linux-x64-musl@2.4.4':
-    resolution: {integrity: sha512-gGvFTGpOIQDb5CQ2VC0n9Z2UEqlP46c4aNgHmAMytYieTGEcfqhfCFnhs6xjt0S3igE6q5GLuIXtdQt3Izok+g==}
+  '@biomejs/cli-linux-x64-musl@2.4.6':
+    resolution: {integrity: sha512-C9s98IPDu7DYarjlZNuzJKTjVHN03RUnmHV5htvqsx6vEUXCDSJ59DNwjKVD5XYoSS4N+BYhq3RTBAL8X6svEg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-x64@2.4.4':
-    resolution: {integrity: sha512-R4+ZCDtG9kHArasyBO+UBD6jr/FcFCTH8QkNTOCu0pRJzCWyWC4EtZa2AmUZB5h3e0jD7bRV2KvrENcf8rndBg==}
+  '@biomejs/cli-linux-x64@2.4.6':
+    resolution: {integrity: sha512-oHXmUFEoH8Lql1xfc3QkFLiC1hGR7qedv5eKNlC185or+o4/4HiaU7vYODAH3peRCfsuLr1g6v2fK9dFFOYdyw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-win32-arm64@2.4.4':
-    resolution: {integrity: sha512-trzCqM7x+Gn832zZHgr28JoYagQNX4CZkUZhMUac2YxvvyDRLJDrb5m9IA7CaZLlX6lTQmADVfLEKP1et1Ma4Q==}
+  '@biomejs/cli-win32-arm64@2.4.6':
+    resolution: {integrity: sha512-xzThn87Pf3YrOGTEODFGONmqXpTwUNxovQb72iaUOdcw8sBSY3+3WD8Hm9IhMYLnPi0n32s3L3NWU6+eSjfqFg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.4.4':
-    resolution: {integrity: sha512-gnOHKVPFAAPrpoPt2t+Q6FZ7RPry/FDV3GcpU53P3PtLNnQjBmKyN2Vh/JtqXet+H4pme8CC76rScwdjDcT1/A==}
+  '@biomejs/cli-win32-x64@2.4.6':
+    resolution: {integrity: sha512-7++XhnsPlr1HDbor5amovPjOH6vsrFOCdp93iKXhFn6bcMUI6soodj3WWKfgEO6JosKU1W5n3uky3WW9RlRjTg==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -402,8 +402,8 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@hey-api/codegen-core@0.7.0':
-    resolution: {integrity: sha512-HglL4B4QwpzocE+c8qDU6XK8zMf8W8Pcv0RpFDYxHuYALWLTnpDUuEsglC7NQ4vC1maoXsBpMbmwpco0N4QviA==}
+  '@hey-api/codegen-core@0.7.1':
+    resolution: {integrity: sha512-X5qG+rr/BJvr+pEGcoW6l2azoZGrVuxsviEIhuf+3VwL9bk0atfubT65Xwo+4jDxXvjbhZvlwS0Ty3I7mLE2fg==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       typescript: '>=5.5.3'
@@ -412,15 +412,15 @@ packages:
     resolution: {integrity: sha512-7atnpUkT8TyUPHYPLk91j/GyaqMuwTEHanLOe50Dlx0EEvNuQqFD52Yjg8x4KU0UFL1mWlyhE+sUE/wAtQ1N2A==}
     engines: {node: '>=20.19.0'}
 
-  '@hey-api/openapi-ts@0.93.0':
-    resolution: {integrity: sha512-LzYpKHRSasPGJFP+UvgrvlhLBa5W0roqKJKAJCTbAMpAKutC0jcWegkYXD3m85RFpBU2aXFDJrG99hf3xw1QMA==}
+  '@hey-api/openapi-ts@0.94.0':
+    resolution: {integrity: sha512-dbg3GG+v7sg9/Ahb7yFzwzQIJwm151JAtsnh9KtFyqiN0rGkMGA3/VqogEUq1kJB9XWrlMQwigwzhiEQ33VCSg==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
       typescript: '>=5.5.3'
 
-  '@hey-api/shared@0.2.1':
-    resolution: {integrity: sha512-uWI9047e9OVe3Ss+6vPMnRiixjRcjcBbdgpeq4IQymet3+wsn0+N/4RLDHBz1h57SemaxayPRUA0JOOsuC1qyA==}
+  '@hey-api/shared@0.2.2':
+    resolution: {integrity: sha512-vMqCS+j7F9xpWoXC7TBbqZkaelwrdeuSB+s/3elu54V5iq++S59xhkSq5rOgDIpI1trpE59zZQa6dpyUxItOgw==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       typescript: '>=5.5.3'
@@ -576,15 +576,15 @@ packages:
   '@jsdevtools/ono@7.1.3':
     resolution: {integrity: sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==}
 
-  '@mantine/core@8.3.15':
-    resolution: {integrity: sha512-wBn/GogB4x7a2Uj7Ztt3amRaApjED+9XqfE4wyCLh88R7KV55k9vnTdCx+irI/GLOOu9tXNUGm3a4t5sTajwkQ==}
+  '@mantine/core@8.3.16':
+    resolution: {integrity: sha512-YgmoYrb0I9UUDYfs9OVLvBUTgkA5vn5KZTfxlOaOSFxzhyYjrtwMQK+P7fvEIkenNQbbikhelj/IRcC2yNQyFQ==}
     peerDependencies:
-      '@mantine/hooks': 8.3.15
+      '@mantine/hooks': 8.3.16
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
 
-  '@mantine/hooks@8.3.15':
-    resolution: {integrity: sha512-AUSnpUlzttHzJht3CJ1YWi16iy6NWRwtyWO5RLGHHsmiW05DyG0qOPKF8+R5dLHuOCnl3XOu4roI2Y1ku9U04Q==}
+  '@mantine/hooks@8.3.16':
+    resolution: {integrity: sha512-DthR8/KDCLIip3KoXyn370HEiKxiOwH+ZeXs1UoSv/e58xR88OE85Slyb5b5pRsDa4ndYnES+j9wyRyrRXLWfg==}
     peerDependencies:
       react: ^18.x || ^19.x
 
@@ -903,8 +903,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@24.10.15':
-    resolution: {integrity: sha512-BgjLoRuSr0MTI5wA6gMw9Xy0sFudAaUuvrnjgGx9wZ522fYYLA5SYJ+1Y30vTcJEG+DRCyDHx/gzQVfofYzSdg==}
+  '@types/node@24.11.2':
+    resolution: {integrity: sha512-HTsxyfkxTNxOXBsEdgIOzbMgBjDGPvkTfw0B1m09j1LFPk8u3tSL8SNBRTSc381wXXX/Wp93qPi1kQXwnWuHgA==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -1243,8 +1243,8 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  nuqs@2.8.8:
-    resolution: {integrity: sha512-LF5sw9nWpHyPWzMMu9oho3r9C5DvkpmBIg4LQN78sexIzGaeRx8DWr0uy3YiFx5i2QGZN1Qqcb+OAtEVRa2bnA==}
+  nuqs@2.8.9:
+    resolution: {integrity: sha512-8ou6AEwsxMWSYo2qkfZtYFVzngwbKmg4c00HVxC1fF6CEJv3Fwm6eoZmfVPALB+vw8Udo7KL5uy96PFcYe1BIQ==}
     peerDependencies:
       '@remix-run/react': '>=2'
       '@tanstack/react-router': ^1
@@ -1345,6 +1345,10 @@ packages:
 
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.8:
+    resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
   powershell-utils@0.1.0:
@@ -1693,39 +1697,39 @@ snapshots:
 
   '@babel/runtime@7.28.4': {}
 
-  '@biomejs/biome@2.4.4':
+  '@biomejs/biome@2.4.6':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.4.4
-      '@biomejs/cli-darwin-x64': 2.4.4
-      '@biomejs/cli-linux-arm64': 2.4.4
-      '@biomejs/cli-linux-arm64-musl': 2.4.4
-      '@biomejs/cli-linux-x64': 2.4.4
-      '@biomejs/cli-linux-x64-musl': 2.4.4
-      '@biomejs/cli-win32-arm64': 2.4.4
-      '@biomejs/cli-win32-x64': 2.4.4
+      '@biomejs/cli-darwin-arm64': 2.4.6
+      '@biomejs/cli-darwin-x64': 2.4.6
+      '@biomejs/cli-linux-arm64': 2.4.6
+      '@biomejs/cli-linux-arm64-musl': 2.4.6
+      '@biomejs/cli-linux-x64': 2.4.6
+      '@biomejs/cli-linux-x64-musl': 2.4.6
+      '@biomejs/cli-win32-arm64': 2.4.6
+      '@biomejs/cli-win32-x64': 2.4.6
 
-  '@biomejs/cli-darwin-arm64@2.4.4':
+  '@biomejs/cli-darwin-arm64@2.4.6':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.4.4':
+  '@biomejs/cli-darwin-x64@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.4.4':
+  '@biomejs/cli-linux-arm64-musl@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.4.4':
+  '@biomejs/cli-linux-arm64@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.4.4':
+  '@biomejs/cli-linux-x64-musl@2.4.6':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.4.4':
+  '@biomejs/cli-linux-x64@2.4.6':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.4.4':
+  '@biomejs/cli-win32-arm64@2.4.6':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.4.4':
+  '@biomejs/cli-win32-x64@2.4.6':
     optional: true
 
   '@emnapi/core@1.7.1':
@@ -1847,7 +1851,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@hey-api/codegen-core@0.7.0(typescript@5.9.3)':
+  '@hey-api/codegen-core@0.7.1(typescript@5.9.3)':
     dependencies:
       '@hey-api/types': 0.1.3(typescript@5.9.3)
       ansi-colors: 4.1.3
@@ -1863,11 +1867,11 @@ snapshots:
       '@types/json-schema': 7.0.15
       js-yaml: 4.1.1
 
-  '@hey-api/openapi-ts@0.93.0(typescript@5.9.3)':
+  '@hey-api/openapi-ts@0.94.0(typescript@5.9.3)':
     dependencies:
-      '@hey-api/codegen-core': 0.7.0(typescript@5.9.3)
+      '@hey-api/codegen-core': 0.7.1(typescript@5.9.3)
       '@hey-api/json-schema-ref-parser': 1.3.1
-      '@hey-api/shared': 0.2.1(typescript@5.9.3)
+      '@hey-api/shared': 0.2.2(typescript@5.9.3)
       '@hey-api/types': 0.1.3(typescript@5.9.3)
       ansi-colors: 4.1.3
       color-support: 1.1.3
@@ -1876,9 +1880,9 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@hey-api/shared@0.2.1(typescript@5.9.3)':
+  '@hey-api/shared@0.2.2(typescript@5.9.3)':
     dependencies:
-      '@hey-api/codegen-core': 0.7.0(typescript@5.9.3)
+      '@hey-api/codegen-core': 0.7.1(typescript@5.9.3)
       '@hey-api/json-schema-ref-parser': 1.3.1
       '@hey-api/types': 0.1.3(typescript@5.9.3)
       ansi-colors: 4.1.3
@@ -1986,10 +1990,10 @@ snapshots:
 
   '@jsdevtools/ono@7.1.3': {}
 
-  '@mantine/core@8.3.15(@mantine/hooks@8.3.15(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@mantine/core@8.3.16(@mantine/hooks@8.3.16(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@mantine/hooks': 8.3.15(react@19.2.4)
+      '@mantine/hooks': 8.3.16(react@19.2.4)
       clsx: 2.1.1
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
@@ -2000,7 +2004,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mantine/hooks@8.3.15(react@19.2.4)':
+  '@mantine/hooks@8.3.16(react@19.2.4)':
     dependencies:
       react: 19.2.4
 
@@ -2195,7 +2199,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@24.10.15':
+  '@types/node@24.11.2':
     dependencies:
       undici-types: 7.16.0
 
@@ -2216,13 +2220,13 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.18(vite@7.1.5(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6)))':
+  '@vitest/mocker@4.0.18(vite@7.1.5(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8)))':
     dependencies:
       '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.1.5(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6))
+      vite: 7.1.5(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8))
 
   '@vitest/pretty-format@4.0.18':
     dependencies:
@@ -2479,10 +2483,10 @@ snapshots:
 
   jsonc-parser@3.3.1: {}
 
-  knip@5.85.0(@types/node@24.10.15)(typescript@5.9.3):
+  knip@5.85.0(@types/node@24.11.2)(typescript@5.9.3):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
-      '@types/node': 24.10.15
+      '@types/node': 24.11.2
       fast-glob: 3.3.3
       formatly: 0.3.0
       jiti: 2.6.1
@@ -2539,7 +2543,7 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  nuqs@2.8.8(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4):
+  nuqs@2.8.9(next@16.1.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4):
     dependencies:
       '@standard-schema/spec': 1.0.0
       react: 19.2.4
@@ -2608,38 +2612,38 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
-  postcss-js@4.0.1(postcss@8.5.6):
+  postcss-js@4.0.1(postcss@8.5.8):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.5.6
+      postcss: 8.5.8
 
-  postcss-mixins@12.1.2(postcss@8.5.6):
+  postcss-mixins@12.1.2(postcss@8.5.8):
     dependencies:
-      postcss: 8.5.6
-      postcss-js: 4.0.1(postcss@8.5.6)
-      postcss-simple-vars: 7.0.1(postcss@8.5.6)
-      sugarss: 5.0.1(postcss@8.5.6)
+      postcss: 8.5.8
+      postcss-js: 4.0.1(postcss@8.5.8)
+      postcss-simple-vars: 7.0.1(postcss@8.5.8)
+      sugarss: 5.0.1(postcss@8.5.8)
       tinyglobby: 0.2.15
 
-  postcss-nested@7.0.2(postcss@8.5.6):
+  postcss-nested@7.0.2(postcss@8.5.8):
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.5.8
       postcss-selector-parser: 7.1.0
 
-  postcss-preset-mantine@1.18.0(postcss@8.5.6):
+  postcss-preset-mantine@1.18.0(postcss@8.5.8):
     dependencies:
-      postcss: 8.5.6
-      postcss-mixins: 12.1.2(postcss@8.5.6)
-      postcss-nested: 7.0.2(postcss@8.5.6)
+      postcss: 8.5.8
+      postcss-mixins: 12.1.2(postcss@8.5.8)
+      postcss-nested: 7.0.2(postcss@8.5.8)
 
   postcss-selector-parser@7.1.0:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-simple-vars@7.0.1(postcss@8.5.6):
+  postcss-simple-vars@7.0.1(postcss@8.5.8):
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.5.8
 
   postcss@8.4.31:
     dependencies:
@@ -2648,6 +2652,12 @@ snapshots:
       source-map-js: 1.2.1
 
   postcss@8.5.6:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.8:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -2818,9 +2828,9 @@ snapshots:
       client-only: 0.0.1
       react: 19.2.4
 
-  sugarss@5.0.1(postcss@8.5.6):
+  sugarss@5.0.1(postcss@8.5.8):
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.5.8
 
   tabbable@6.2.0: {}
 
@@ -2883,7 +2893,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite@7.1.5(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6)):
+  vite@7.1.5(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8)):
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)
@@ -2892,15 +2902,15 @@ snapshots:
       rollup: 4.50.1
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.10.15
+      '@types/node': 24.11.2
       fsevents: 2.3.3
       jiti: 2.6.1
-      sugarss: 5.0.1(postcss@8.5.6)
+      sugarss: 5.0.1(postcss@8.5.8)
 
-  vitest@4.0.18(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6)):
+  vitest@4.0.18(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8)):
     dependencies:
       '@vitest/expect': 4.0.18
-      '@vitest/mocker': 4.0.18(vite@7.1.5(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6)))
+      '@vitest/mocker': 4.0.18(vite@7.1.5(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8)))
       '@vitest/pretty-format': 4.0.18
       '@vitest/runner': 4.0.18
       '@vitest/snapshot': 4.0.18
@@ -2917,10 +2927,10 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.1.5(@types/node@24.10.15)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6))
+      vite: 7.1.5(@types/node@24.11.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.8))
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 24.10.15
+      '@types/node': 24.11.2
     transitivePeerDependencies:
       - jiti
       - less
