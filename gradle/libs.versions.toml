@@ -2,8 +2,7 @@
 spring-boot = "4.0.3" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
 jackson = "3.1.0" # https://mvnrepository.com/artifact/tools.jackson/jackson-bom
 junit = "6.0.3" # https://mvnrepository.com/artifact/org.junit/junit-bom
-testcontainers = "1.21.4" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
-# pinned: Testcontainers 2.x is unstable with Spring Boot 4.0.2 (some modules not found in BOM)
+testcontainers = "2.0.3" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
 lombok = "1.18.42" # https://mvnrepository.com/artifact/org.projectlombok/lombok
 mybatis = "4.0.1" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
 mysql = "9.6.0" # https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
@@ -36,8 +35,8 @@ junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
-testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
+testcontainers-mysql = { module = "org.testcontainers:testcontainers-mysql" }
 rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
