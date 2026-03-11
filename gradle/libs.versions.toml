@@ -20,7 +20,7 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
 
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-boot-starter-restclient = { module = "org.springframework.boot:spring-boot-starter-restclient" }
@@ -32,7 +32,9 @@ micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-p
 springdoc-openapi-starter-webmvc-api = { module = "org.springdoc:springdoc-openapi-starter-webmvc-api", version.ref = "springdoc-webmvc" }
 
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+spring-boot-starter-restclient-test = { module = "org.springframework.boot:spring-boot-starter-restclient-test" }
+spring-boot-starter-validation-test = { module = "org.springframework.boot:spring-boot-starter-validation-test" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
@@ -43,21 +45,25 @@ spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.re
 
 [bundles]
 unit-test = [
-  "spring-boot-starter-test",
-  "mockito-junit-jupiter",
+  "spring-boot-starter-webmvc-test",
+  "spring-boot-starter-restclient-test",
+  "spring-boot-starter-validation-test",
+  "mockito-junit-jupiter"
 ]
 integration-test = [
-  "spring-boot-starter-test",
+  "spring-boot-starter-webmvc-test",
+  "spring-boot-starter-restclient-test",
+  "spring-boot-starter-validation-test",
   "spring-boot-testcontainers",
   "testcontainers-junit-jupiter",
   "testcontainers-mysql",
-  "rest-assured",
+  "rest-assured"
 ]
 api = [
   "spring-boot-starter-validation",
   "spring-boot-starter-actuator",
   "micrometer-registry-prometheus",
-  "spring-boot-starter-web",
+  "spring-boot-starter-webmvc",
   "spring-boot-starter-restclient",
   "mybatis-spring-boot-starter",
   "mysql-connector-j",
