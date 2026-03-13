@@ -12,21 +12,20 @@ public class EventsCollector {
     private static final ThreadLocal<WideEventLog> holder = new ThreadLocal<>();
     private static final ThreadLocal<Boolean> warned = new ThreadLocal<>();
 
-    public static String initialize(String method, String path, String userAgent) {
+    public static String initialize(String method, String path) {
         String requestId = UUID.randomUUID().toString();
         WideEventLog eventLog = WideEventLog.builder()
                 .requestId(requestId)
                 .method(method)
                 .path(path)
                 .requestedAt(ZonedDateTime.now(JST))
-                .userAgent(userAgent)
                 .build();
         holder.set(eventLog);
         warned.set(false);
         return requestId;
     }
 
-    public static void record(String type, String name, Long durationMs, Object metadata) {
+    public static void record(String type, String name, Object metadata) {
         WideEventLog eventLog = holder.get();
         if (eventLog == null) {
             return;
@@ -48,7 +47,6 @@ public class EventsCollector {
                 .timestamp(ZonedDateTime.now(JST))
                 .type(type)
                 .name(name)
-                .durationMs(durationMs)
                 .metadata(metadata)
                 .build());
     }

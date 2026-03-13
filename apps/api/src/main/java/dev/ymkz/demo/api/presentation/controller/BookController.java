@@ -86,7 +86,6 @@ public class BookController {
         EventsCollector.record(
                 "business_logic",
                 "book_search",
-                System.currentTimeMillis() - start,
                 new SearchMetadata(queryParam.isbn(), queryParam.title(), offset, limit, data.totalCount()));
 
         return SearchBooksResponse.of(data);

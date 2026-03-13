@@ -44,8 +44,7 @@ public class WideEventLoggingFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
-        String requestId = EventsCollector.initialize(
-                httpReq.getMethod(), httpReq.getRequestURI(), httpReq.getHeader("User-Agent"));
+        String requestId = EventsCollector.initialize(httpReq.getMethod(), httpReq.getRequestURI());
         MDC.put("requestId", requestId);
 
         try {

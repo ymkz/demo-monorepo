@@ -16,7 +16,6 @@ public class WideEventLog {
     private ZonedDateTime respondedAt;
     private Long durationMs;
     private Integer statusCode;
-    private String userAgent;
 
     @Builder.Default
     private List<Event> events = new ArrayList<>();
@@ -29,7 +28,6 @@ public class WideEventLog {
         private ZonedDateTime timestamp;
         private String type;
         private String name;
-        private Long durationMs;
         private Object metadata;
     }
 
