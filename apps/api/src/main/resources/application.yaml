@@ -17,21 +17,6 @@ spring:
     contentnegotiation:
       media-types:
         csv: text/csv
-logging:
-  structured:
-    format:
-      console: logstash
-    json:
-      add:
-        app: demo-api
-      exclude:
-        - "@version"
-        - thread_name
-        - logger_name
-        - level_value
-      rename:
-        "[@timestamp]": time
-        message: msg
 management:
   server:
     port: 8081
