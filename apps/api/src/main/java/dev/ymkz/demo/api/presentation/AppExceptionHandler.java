@@ -1,5 +1,6 @@
 package dev.ymkz.demo.api.presentation;
 
+import dev.ymkz.demo.api.infrastructure.logging.EventsCollector;
 import dev.ymkz.demo.api.presentation.dto.ErrorResponse;
 import dev.ymkz.demo.core.domain.event.AppEvent;
 import jakarta.validation.ValidationException;
@@ -31,7 +32,17 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponse(AppEvent event, HttpStatus status, Exception ex) {
-        log.error("Error={}", event, ex);
+        String requestId = EventsCollector.getRequestId();
+        log.error("Error requestId={} event={}", requestId, event, ex);
+
+        String errorType = switch (event) {
+            case VALIDATION_FAILED -> "validation";
+            case DATABASE_MYBATIS_ERROR -> "db_query";
+            default -> "error";
+        };
+
+        EventsCollector.setError(errorType, event.name(), ex, null);
+
         return ResponseEntity.status(status).body(ErrorResponse.of(event));
     }
 }

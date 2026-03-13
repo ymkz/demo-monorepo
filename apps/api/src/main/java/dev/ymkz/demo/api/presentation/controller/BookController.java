@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import dev.ymkz.demo.api.application.usecase.BookDownloadUsecase;
 import dev.ymkz.demo.api.application.usecase.BookSearchUsecase;
 import dev.ymkz.demo.api.domain.model.BookSearchQuery;
+import dev.ymkz.demo.api.infrastructure.logging.EventsCollector;
 import dev.ymkz.demo.api.presentation.dto.CreateBookBody;
 import dev.ymkz.demo.api.presentation.dto.ErrorResponse;
 import dev.ymkz.demo.api.presentation.dto.FindBookByIdResponse;
@@ -71,7 +72,7 @@ public class BookController {
             @Valid @ParameterObject SearchBooksQueryParam queryParam,
             @Parameter(description = "取得置") @RequestParam(defaultValue = "0") @Min(0) Integer offset,
             @Parameter(description = "取得数") @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer limit) {
-        log.info("queryParam={} offset={} limit={}", queryParam, offset);
+        var start = System.currentTimeMillis();
         var data = bookSearchUsecase.execute(new BookSearchQuery(
                 Isbn.of(queryParam.isbn()),
                 queryParam.title(),
@@ -82,8 +83,18 @@ public class BookController {
                 offset,
                 limit));
 
+        EventsCollector.record(
+                "business_logic",
+                "book_search",
+                System.currentTimeMillis() - start,
+                new SearchMetadata(queryParam, offset, limit, data.totalCount()));
+
         return SearchBooksResponse.of(data);
     }
+
+    private record SearchMetadata(
+            SearchBooksQueryParam query, Integer offset, Integer limit, long totalResults) {}
+
 
     @GetMapping(path = "download", produces = "text/csv")
     @Operation(operationId = "downloadBooks", description = "[Internal Use Only]書籍情報をCSV形式でダウンロードする")
