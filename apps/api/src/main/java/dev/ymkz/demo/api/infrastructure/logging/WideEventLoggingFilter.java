@@ -1,7 +1,9 @@
 package dev.ymkz.demo.api.infrastructure.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.argument.StructuredArgument;
@@ -24,11 +27,16 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class WideEventLoggingFilter implements Filter {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public WideEventLoggingFilter() {
-        this.objectMapper.registerModule(new JavaTimeModule());
-        this.objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(new ZonedDateTimeSerializer(DATE_TIME_FORMATTER));
+        this.objectMapper.registerModule(javaTimeModule);
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         this.objectMapper.setTimeZone(java.util.TimeZone.getTimeZone(ZoneId.of("Asia/Tokyo")));
     }
 
@@ -53,8 +61,9 @@ public class WideEventLoggingFilter implements Filter {
             WideEventLog finalLog = EventsCollector.finalizeLog(httpRes.getStatus());
             if (finalLog != null) {
                 try {
-                    // WideEventLogの各フィールドをトップレベルに展開
+                    // WideEventLogの各フィールドをトップレベルに展開（requestIdはMDCで出力されるので除外）
                     Map<String, Object> fields = objectMapper.convertValue(finalLog, Map.class);
+                    fields.remove("requestId"); // MDCのrequestIdと重複するので除外
                     StructuredArgument[] args = fields.entrySet().stream()
                             .map(e -> StructuredArguments.value(e.getKey(), e.getValue()))
                             .toArray(StructuredArgument[]::new);
