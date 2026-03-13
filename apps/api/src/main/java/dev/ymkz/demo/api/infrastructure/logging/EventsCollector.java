@@ -77,7 +77,9 @@ public class EventsCollector {
             return null;
         }
 
-        eventLog.setDurationMs(ZonedDateTime.now(JST).toInstant().toEpochMilli()
+        ZonedDateTime now = ZonedDateTime.now(JST);
+        eventLog.setRespondedAt(now);
+        eventLog.setDurationMs(now.toInstant().toEpochMilli()
                 - eventLog.getRequestedAt().toInstant().toEpochMilli());
         eventLog.setStatusCode(statusCode);
 

@@ -13,6 +13,7 @@ public class WideEventLog {
     private String method;
     private String path;
     private ZonedDateTime requestedAt;
+    private ZonedDateTime respondedAt;
     private Long durationMs;
     private Integer statusCode;
     private String userAgent;
