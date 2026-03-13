@@ -2,74 +2,75 @@ package dev.ymkz.demo.api.infrastructure.logging;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class EventsCollector {
     private static final ZoneId JST = ZoneId.of("Asia/Tokyo");
-    private static final ThreadLocal<WideEventLog> holder = new ThreadLocal<>();
+    private static final ThreadLocal<Context> holder = new ThreadLocal<>();
+
+    private record Context(
+            String requestId,
+            String method,
+            String path,
+            ZonedDateTime requestedAt,
+            List<WideEventLog.Event> events,
+            WideEventLog.ErrorInfo error) {}
 
     public static String initialize(String method, String path) {
         String requestId = UUID.randomUUID().toString();
-        WideEventLog eventLog = WideEventLog.builder()
-                .requestId(requestId)
-                .method(method)
-                .path(path)
-                .requestedAt(ZonedDateTime.now(JST))
-                .build();
-        holder.set(eventLog);
+        Context ctx = new Context(requestId, method, path, ZonedDateTime.now(JST), new ArrayList<>(), null);
+        holder.set(ctx);
         return requestId;
     }
 
     public static void record(String type, String name, Object metadata) {
-        WideEventLog eventLog = holder.get();
-        if (eventLog == null) {
+        Context ctx = holder.get();
+        if (ctx == null) {
             return;
         }
 
-        eventLog.addEvent(WideEventLog.Event.builder()
-                .timestamp(ZonedDateTime.now(JST))
-                .type(type)
-                .name(name)
-                .metadata(metadata)
-                .build());
+        ctx.events.add(new WideEventLog.Event(ZonedDateTime.now(JST), type, name, metadata));
     }
 
     public static void setError(String type, String name, Exception ex, Object metadata) {
-        WideEventLog eventLog = holder.get();
-        if (eventLog == null) {
+        Context ctx = holder.get();
+        if (ctx == null) {
             return;
         }
 
-        WideEventLog.ErrorInfo errorInfo = WideEventLog.ErrorInfo.builder()
-                .type(type)
-                .name(name)
-                .occurredAt(ZonedDateTime.now(JST))
-                .errorType(ex.getClass().getSimpleName())
-                .errorMessage(ex.getMessage())
-                .metadata(metadata)
-                .build();
+        WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
+                type, name, ZonedDateTime.now(JST), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
 
-        eventLog.setError(errorInfo);
+        holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, ctx.events, errorInfo));
     }
 
     public static WideEventLog finalizeLog(int statusCode) {
-        WideEventLog eventLog = holder.get();
-        if (eventLog == null) {
+        Context ctx = holder.get();
+        if (ctx == null) {
             return null;
         }
 
         ZonedDateTime now = ZonedDateTime.now(JST);
-        eventLog.setRespondedAt(now);
-        eventLog.setDurationMs(now.toInstant().toEpochMilli()
-                - eventLog.getRequestedAt().toInstant().toEpochMilli());
-        eventLog.setStatusCode(statusCode);
+        long durationMs =
+                now.toInstant().toEpochMilli() - ctx.requestedAt.toInstant().toEpochMilli();
 
-        return eventLog;
+        return new WideEventLog(
+                ctx.requestId,
+                ctx.method,
+                ctx.path,
+                ctx.requestedAt,
+                now,
+                durationMs,
+                statusCode,
+                ctx.events,
+                ctx.error);
     }
 
     public static String getRequestId() {
-        WideEventLog eventLog = holder.get();
-        return eventLog != null ? eventLog.getRequestId() : null;
+        Context ctx = holder.get();
+        return ctx != null ? ctx.requestId : null;
     }
 
     public static void clear() {

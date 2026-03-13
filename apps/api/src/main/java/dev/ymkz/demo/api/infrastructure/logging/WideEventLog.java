@@ -1,48 +1,26 @@
 package dev.ymkz.demo.api.infrastructure.logging;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import lombok.Builder;
-import lombok.Data;
 
-@Data
-@Builder
-public class WideEventLog {
-    private String requestId;
-    private String method;
-    private String path;
-    private ZonedDateTime requestedAt;
-    private ZonedDateTime respondedAt;
-    private Long durationMs;
-    private Integer statusCode;
+public record WideEventLog(
+        String requestId,
+        String method,
+        String path,
+        ZonedDateTime requestedAt,
+        ZonedDateTime respondedAt,
+        Long durationMs,
+        Integer statusCode,
+        List<Event> events,
+        ErrorInfo error) {
 
-    @Builder.Default
-    private List<Event> events = new ArrayList<>();
+    public record Event(ZonedDateTime timestamp, String type, String name, Object metadata) {}
 
-    private ErrorInfo error;
-
-    @Data
-    @Builder
-    public static class Event {
-        private ZonedDateTime timestamp;
-        private String type;
-        private String name;
-        private Object metadata;
-    }
-
-    @Data
-    @Builder
-    public static class ErrorInfo {
-        private String type;
-        private String name;
-        private ZonedDateTime occurredAt;
-        private String errorType;
-        private String errorMessage;
-        private Object metadata;
-    }
-
-    public void addEvent(Event event) {
-        this.events.add(event);
-    }
+    public record ErrorInfo(
+            String type,
+            String name,
+            ZonedDateTime occurredAt,
+            String errorType,
+            String errorMessage,
+            Object metadata) {}
 }

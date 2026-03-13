@@ -69,7 +69,7 @@ public class WideEventLoggingFilter implements Filter {
                             .toArray(StructuredArgument[]::new);
 
                     // エラー有無でログレベルを切り替え
-                    if (finalLog.getError() != null) {
+                    if (finalLog.error() != null) {
                         log.error("WIDE_EVENT", args);
                     } else {
                         log.info("WIDE_EVENT", args);
@@ -78,11 +78,11 @@ public class WideEventLoggingFilter implements Filter {
                     // フォールバック: 最低限の情報は必ず出力
                     log.error(
                             "Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
-                            finalLog.getRequestId(),
-                            finalLog.getPath(),
-                            finalLog.getStatusCode(),
-                            finalLog.getEvents().size(),
-                            finalLog.getError() != null ? finalLog.getError().getErrorType() : "none",
+                            finalLog.requestId(),
+                            finalLog.path(),
+                            finalLog.statusCode(),
+                            finalLog.events().size(),
+                            finalLog.error() != null ? finalLog.error().errorType() : "none",
                             e);
                 }
             }
