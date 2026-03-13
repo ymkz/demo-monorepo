@@ -21,8 +21,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHandlerMethodValidationException(
             HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-        String requestId = EventsCollector.getRequestId();
-        log.error("Validation error requestId={}", requestId, ex);
         EventsCollector.setError("validation", "VALIDATION_FAILED", ex, null);
 
         // ProblemDetails形式を維持
@@ -31,8 +29,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MyBatisSystemException.class)
     public ResponseEntity<Object> handleMyBatisException(MyBatisSystemException ex, WebRequest request) {
-        String requestId = EventsCollector.getRequestId();
-        log.error("Database error requestId={}", requestId, ex);
         EventsCollector.setError("db_query", "DATABASE_MYBATIS_ERROR", ex, null);
 
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);

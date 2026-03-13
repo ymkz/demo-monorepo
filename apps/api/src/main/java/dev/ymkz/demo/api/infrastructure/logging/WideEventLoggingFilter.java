@@ -67,7 +67,13 @@ public class WideEventLoggingFilter implements Filter {
                     StructuredArgument[] args = fields.entrySet().stream()
                             .map(e -> StructuredArguments.value(e.getKey(), e.getValue()))
                             .toArray(StructuredArgument[]::new);
-                    log.info("WIDE_EVENT", args);
+
+                    // エラー有無でログレベルを切り替え
+                    if (finalLog.getError() != null) {
+                        log.error("WIDE_EVENT", args);
+                    } else {
+                        log.info("WIDE_EVENT", args);
+                    }
                 } catch (Exception e) {
                     // フォールバック: 最低限の情報は必ず出力
                     log.error(
