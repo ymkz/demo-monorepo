@@ -34,14 +34,14 @@ public class EventsCollector {
         ctx.events.add(new WideEventLog.Event(ZonedDateTime.now(JST), type, name, metadata));
     }
 
-    public static void setError(String type, String name, Exception ex, Object metadata) {
+    public static void setError(Exception ex, Object metadata) {
         Context ctx = holder.get();
         if (ctx == null) {
             return;
         }
 
         WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
-                type, name, ZonedDateTime.now(JST), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
+                ZonedDateTime.now(JST), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
 
         holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, ctx.events, errorInfo));
     }

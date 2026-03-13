@@ -82,7 +82,7 @@ public class WideEventLoggingFilter implements Filter {
                             finalLog.path(),
                             finalLog.statusCode(),
                             finalLog.events().size(),
-                            finalLog.error() != null ? finalLog.error().errorType() : "none",
+                            finalLog.error() != null ? finalLog.error().exception() : "none",
                             e);
                 }
             }

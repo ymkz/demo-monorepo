@@ -48,7 +48,7 @@ public class BookDownloadUsecase {
         } catch (JacksonException ex) {
             String requestId = EventsCollector.getRequestId();
             log.error("Failed to convert to CSV requestId={}", requestId, ex);
-            EventsCollector.setError("data_conversion", "csv_generation", ex, new CsvMetadata(data.size()));
+            EventsCollector.setError(ex, new CsvMetadata(data.size()));
             throw new RuntimeException("Failed to convert to CSV", ex);
         }
     }
