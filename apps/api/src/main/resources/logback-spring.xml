@@ -12,9 +12,6 @@
         <logLevel>
           <fieldName>severity</fieldName>
         </logLevel>
-        <loggerName>
-          <fieldName>logger</fieldName>
-        </loggerName>
         <message>
           <fieldName>msg</fieldName>
         </message>
