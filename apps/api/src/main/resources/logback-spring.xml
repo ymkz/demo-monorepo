@@ -19,6 +19,7 @@
           <fieldName>msg</fieldName>
         </message>
         <mdc/>
+        <arguments/>
         <pattern>
           <pattern>{"app":"${appName}"}</pattern>
         </pattern>

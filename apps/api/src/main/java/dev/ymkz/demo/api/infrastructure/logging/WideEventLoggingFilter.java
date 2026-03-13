@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import net.logstash.logback.argument.StructuredArguments;
 import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class WideEventLoggingFilter implements Filter {
 
     public WideEventLoggingFilter() {
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class WideEventLoggingFilter implements Filter {
             if (finalLog != null) {
                 try {
                     String json = objectMapper.writeValueAsString(finalLog);
-                    log.info("WIDE_EVENT {}", json);
+                    log.info("WIDE_EVENT", StructuredArguments.raw("wideEvent", json));
                 } catch (Exception e) {
                     // フォールバック: 最低限の情報は必ず出力
                     log.error(
