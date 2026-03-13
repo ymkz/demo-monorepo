@@ -14,7 +14,7 @@ public record WideEventLog(
         List<Event> events,
         ErrorInfo error) {
 
-    public record Event(ZonedDateTime timestamp, String type, String name, Object metadata) {}
+    public record Event(ZonedDateTime timestamp, String msg, Object metadata) {}
 
     public record ErrorInfo(ZonedDateTime occurredAt, String exception, String msg, Object metadata) {}
 }

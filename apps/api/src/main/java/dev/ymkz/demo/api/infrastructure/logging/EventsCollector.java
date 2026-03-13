@@ -25,13 +25,13 @@ public class EventsCollector {
         return requestId;
     }
 
-    public static void record(String type, String name, Object metadata) {
+    public static void record(String msg, Object metadata) {
         Context ctx = holder.get();
         if (ctx == null) {
             return;
         }
 
-        ctx.events.add(new WideEventLog.Event(ZonedDateTime.now(JST), type, name, metadata));
+        ctx.events.add(new WideEventLog.Event(ZonedDateTime.now(JST), msg, metadata));
     }
 
     public static void setError(Exception ex, Object metadata) {
