@@ -70,7 +70,7 @@ public class BookController {
             })
     public SearchBooksResponse searchBooks(
             @Valid @ParameterObject SearchBooksQueryParam queryParam,
-            @Parameter(description = "取得置") @RequestParam(defaultValue = "0") @Min(0) Integer offset,
+            @Parameter(description = "取得位置") @RequestParam(defaultValue = "0") @Min(0) Integer offset,
             @Parameter(description = "取得数") @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer limit) {
         var start = System.currentTimeMillis();
         var data = bookSearchUsecase.execute(new BookSearchQuery(
