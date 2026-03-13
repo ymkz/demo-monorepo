@@ -27,10 +27,7 @@ public class WideEventLoggingFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
-        EventsCollector.initialize(
-                httpReq.getMethod(),
-                httpReq.getRequestURI(),
-                httpReq.getHeader("User-Agent"));
+        EventsCollector.initialize(httpReq.getMethod(), httpReq.getRequestURI(), httpReq.getHeader("User-Agent"));
 
         try {
             chain.doFilter(request, response);
@@ -42,7 +39,8 @@ public class WideEventLoggingFilter implements Filter {
                     log.info("WIDE_EVENT {}", json);
                 } catch (Exception e) {
                     // フォールバック: 最低限の情報は必ず出力
-                    log.error("Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
+                    log.error(
+                            "Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
                             finalLog.getRequestId(),
                             finalLog.getPath(),
                             finalLog.getStatusCode(),

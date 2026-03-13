@@ -28,10 +28,7 @@ public class BookDownloadUsecase {
         var dbStart = System.currentTimeMillis();
         var books = repository.download(query);
         EventsCollector.record(
-                "db_query",
-                "book_download",
-                System.currentTimeMillis() - dbStart,
-                new DbMetadata(books.size()));
+                "db_query", "book_download", System.currentTimeMillis() - dbStart, new DbMetadata(books.size()));
 
         var text = mapBooksToCsvText(
                 books.stream().map(DownloadBooksResponse::from).toList());
@@ -40,7 +37,6 @@ public class BookDownloadUsecase {
     }
 
     private record DbMetadata(int rowCount) {}
-
 
     private String mapBooksToCsvText(List<DownloadBooksResponse> data) {
         var start = System.currentTimeMillis();
@@ -65,5 +61,4 @@ public class BookDownloadUsecase {
     }
 
     private record CsvMetadata(int rowCount) {}
-
 }

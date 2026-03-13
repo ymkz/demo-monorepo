@@ -35,11 +35,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         String requestId = EventsCollector.getRequestId();
         log.error("Error requestId={} event={}", requestId, event, ex);
 
-        String errorType = switch (event) {
-            case VALIDATION_FAILED -> "validation";
-            case DATABASE_MYBATIS_ERROR -> "db_query";
-            default -> "error";
-        };
+        String errorType =
+                switch (event) {
+                    case VALIDATION_FAILED -> "validation";
+                    case DATABASE_MYBATIS_ERROR -> "db_query";
+                    default -> "error";
+                };
 
         EventsCollector.setError(errorType, event.name(), ex, null);
 

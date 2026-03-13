@@ -29,8 +29,10 @@ public class EventsCollector {
         // 上限チェック: 超過時は古いものから削除
         if (eventLog.getEvents().size() >= MAX_EVENTS) {
             WideEventLog.Event removed = eventLog.getEvents().remove(0);
-            log.warn("WideEventLog event limit exceeded. Dropping oldest event: type={}, name={}",
-                    removed.getType(), removed.getName());
+            log.warn(
+                    "WideEventLog event limit exceeded. Dropping oldest event: type={}, name={}",
+                    removed.getType(),
+                    removed.getName());
         }
 
         eventLog.addEvent(WideEventLog.Event.builder()
@@ -66,7 +68,8 @@ public class EventsCollector {
             return null;
         }
 
-        eventLog.setDurationMs(Instant.now().toEpochMilli() - eventLog.getStartTime().toEpochMilli());
+        eventLog.setDurationMs(
+                Instant.now().toEpochMilli() - eventLog.getStartTime().toEpochMilli());
         eventLog.setStatusCode(statusCode);
 
         return eventLog;
