@@ -10,6 +10,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.argument.StructuredArgument;
@@ -28,6 +29,7 @@ public class WideEventLoggingFilter implements Filter {
     public WideEventLoggingFilter() {
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.setTimeZone(java.util.TimeZone.getTimeZone(ZoneId.of("Asia/Tokyo")));
     }
 
     @Override

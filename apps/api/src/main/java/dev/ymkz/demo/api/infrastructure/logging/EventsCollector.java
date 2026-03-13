@@ -1,12 +1,14 @@
 package dev.ymkz.demo.api.infrastructure.logging;
 
-import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class EventsCollector {
     private static final int MAX_EVENTS = 100;
+    private static final ZoneId JST = ZoneId.of("Asia/Tokyo");
     private static final ThreadLocal<WideEventLog> holder = new ThreadLocal<>();
     private static final ThreadLocal<Boolean> warned = new ThreadLocal<>();
 
@@ -16,7 +18,7 @@ public class EventsCollector {
                 .requestId(requestId)
                 .method(method)
                 .path(path)
-                .startTime(Instant.now())
+                .requestedAt(ZonedDateTime.now(JST))
                 .userAgent(userAgent)
                 .build();
         holder.set(eventLog);
@@ -43,7 +45,7 @@ public class EventsCollector {
         }
 
         eventLog.addEvent(WideEventLog.Event.builder()
-                .timestamp(Instant.now())
+                .timestamp(ZonedDateTime.now(JST))
                 .type(type)
                 .name(name)
                 .durationMs(durationMs)
@@ -60,7 +62,7 @@ public class EventsCollector {
         WideEventLog.ErrorInfo errorInfo = WideEventLog.ErrorInfo.builder()
                 .type(type)
                 .name(name)
-                .occurredAt(Instant.now())
+                .occurredAt(ZonedDateTime.now(JST))
                 .errorType(ex.getClass().getSimpleName())
                 .errorMessage(ex.getMessage())
                 .metadata(metadata)
@@ -75,8 +77,8 @@ public class EventsCollector {
             return null;
         }
 
-        eventLog.setDurationMs(
-                Instant.now().toEpochMilli() - eventLog.getStartTime().toEpochMilli());
+        eventLog.setDurationMs(ZonedDateTime.now(JST).toInstant().toEpochMilli()
+                - eventLog.getRequestedAt().toInstant().toEpochMilli());
         eventLog.setStatusCode(statusCode);
 
         return eventLog;
