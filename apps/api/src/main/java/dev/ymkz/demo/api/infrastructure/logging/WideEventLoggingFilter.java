@@ -10,7 +10,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import net.logstash.logback.argument.StructuredArgument;
 import net.logstash.logback.argument.StructuredArguments;
 import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
@@ -50,8 +52,12 @@ public class WideEventLoggingFilter implements Filter {
             WideEventLog finalLog = EventsCollector.finalizeLog(httpRes.getStatus());
             if (finalLog != null) {
                 try {
-                    String json = objectMapper.writeValueAsString(finalLog);
-                    log.info("WIDE_EVENT", StructuredArguments.raw("wideEvent", json));
+                    // WideEventLogの各フィールドをトップレベルに展開
+                    Map<String, Object> fields = objectMapper.convertValue(finalLog, Map.class);
+                    StructuredArgument[] args = fields.entrySet().stream()
+                            .map(e -> StructuredArguments.value(e.getKey(), e.getValue()))
+                            .toArray(StructuredArgument[]::new);
+                    log.info("WIDE_EVENT", args);
                 } catch (Exception e) {
                     // フォールバック: 最低限の情報は必ず出力
                     log.error(
