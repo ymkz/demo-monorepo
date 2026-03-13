@@ -87,13 +87,18 @@ public class BookController {
                 "business_logic",
                 "book_search",
                 System.currentTimeMillis() - start,
-                new SearchMetadata(queryParam, offset, limit, data.totalCount()));
+                new SearchMetadata(
+                        queryParam.isbn(),
+                        queryParam.title(),
+                        offset,
+                        limit,
+                        data.totalCount()));
 
         return SearchBooksResponse.of(data);
     }
 
     private record SearchMetadata(
-            SearchBooksQueryParam query, Integer offset, Integer limit, long totalResults) {}
+            String isbn, String title, Integer offset, Integer limit, long totalResults) {}
 
 
     @GetMapping(path = "download", produces = "text/csv")

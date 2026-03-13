@@ -2,34 +2,38 @@ package dev.ymkz.demo.api.infrastructure.logging;
 
 import java.time.Instant;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class EventsCollector {
     private static final int MAX_EVENTS = 100;
     private static final ThreadLocal<WideEventLog> holder = new ThreadLocal<>();
 
     public static void initialize(String method, String path, String userAgent) {
-        WideEventLog log = WideEventLog.builder()
+        WideEventLog eventLog = WideEventLog.builder()
                 .requestId(UUID.randomUUID().toString())
                 .method(method)
                 .path(path)
                 .startTime(Instant.now())
                 .userAgent(userAgent)
                 .build();
-        holder.set(log);
+        holder.set(eventLog);
     }
 
     public static void record(String type, String name, Long durationMs, Object metadata) {
-        WideEventLog log = holder.get();
-        if (log == null) {
+        WideEventLog eventLog = holder.get();
+        if (eventLog == null) {
             return;
         }
 
         // 上限チェック: 超過時は古いものから削除
-        if (log.getEvents().size() >= MAX_EVENTS) {
-            log.getEvents().remove(0);
+        if (eventLog.getEvents().size() >= MAX_EVENTS) {
+            WideEventLog.Event removed = eventLog.getEvents().remove(0);
+            log.warn("WideEventLog event limit exceeded. Dropping oldest event: type={}, name={}",
+                    removed.getType(), removed.getName());
         }
 
-        log.addEvent(WideEventLog.Event.builder()
+        eventLog.addEvent(WideEventLog.Event.builder()
                 .timestamp(Instant.now())
                 .type(type)
                 .name(name)
@@ -39,8 +43,8 @@ public class EventsCollector {
     }
 
     public static void setError(String type, String name, Exception ex, Object metadata) {
-        WideEventLog log = holder.get();
-        if (log == null) {
+        WideEventLog eventLog = holder.get();
+        if (eventLog == null) {
             return;
         }
 
@@ -53,24 +57,24 @@ public class EventsCollector {
                 .metadata(metadata)
                 .build();
 
-        log.setError(errorInfo);
+        eventLog.setError(errorInfo);
     }
 
     public static WideEventLog finalizeLog(int statusCode) {
-        WideEventLog log = holder.get();
-        if (log == null) {
+        WideEventLog eventLog = holder.get();
+        if (eventLog == null) {
             return null;
         }
 
-        log.setDurationMs(Instant.now().toEpochMilli() - log.getStartTime().toEpochMilli());
-        log.setStatusCode(statusCode);
+        eventLog.setDurationMs(Instant.now().toEpochMilli() - eventLog.getStartTime().toEpochMilli());
+        eventLog.setStatusCode(statusCode);
 
-        return log;
+        return eventLog;
     }
 
     public static String getRequestId() {
-        WideEventLog log = holder.get();
-        return log != null ? log.getRequestId() : null;
+        WideEventLog eventLog = holder.get();
+        return eventLog != null ? eventLog.getRequestId() : null;
     }
 
     public static void clear() {
