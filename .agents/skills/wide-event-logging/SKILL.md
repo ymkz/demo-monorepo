@@ -5,7 +5,7 @@ license: Proprietary
 compatibility: Spring Boot 3.x, Java 17+, logstash-logback-encoder
 metadata:
   author: ymkz
-  version: "1.0"
+  version: "1.1"
   language: java
 ---
 
@@ -19,14 +19,11 @@ metadata:
 // Controller層での使用例
 @GetMapping("/books")
 public Response search(Query query) {
-    var start = System.currentTimeMillis();
     var result = usecase.execute(query);
     
     EventsCollector.record(
-        "business_logic",      // event type
-        "book_search",         // event name
-        System.currentTimeMillis() - start,  // duration
-        Map.of("total", result.size())       // metadata
+        "book_search_executed",  // メッセージ
+        Map.of("total", result.size())  // metadata
     );
     
     return Response.of(result);
@@ -40,51 +37,23 @@ public Response search(Query query) {
 ```java
 package com.example.infrastructure.logging;
 
-import java.time.Instant;
-import java.util.ArrayList;
+import java.time.ZonedDateTime;
 import java.util.List;
-import lombok.Builder;
-import lombok.Data;
 
-@Data
-@Builder
-public class WideEventLog {
-    private String requestId;
-    private String method;
-    private String path;
-    private Instant startTime;
-    private Long durationMs;
-    private Integer statusCode;
-    private String userAgent;
+public record WideEventLog(
+        String requestId,
+        String method,
+        String path,
+        ZonedDateTime requestedAt,
+        ZonedDateTime respondedAt,
+        Long durationMs,
+        Integer statusCode,
+        List<Event> events,
+        ErrorInfo error) {
 
-    @Builder.Default
-    private List<Event> events = new ArrayList<>();
-    private ErrorInfo error;
+    public record Event(ZonedDateTime timestamp, String msg, Object metadata) {}
 
-    @Data
-    @Builder
-    public static class Event {
-        private Instant timestamp;
-        private String type;
-        private String name;
-        private Long durationMs;
-        private Object metadata;
-    }
-
-    @Data
-    @Builder
-    public static class ErrorInfo {
-        private String type;
-        private String name;
-        private Instant occurredAt;
-        private String errorType;
-        private String errorMessage;
-        private Object metadata;
-    }
-
-    public void addEvent(Event event) {
-        this.events.add(event);
-    }
+    public record ErrorInfo(ZonedDateTime occurredAt, String exception, String msg, Object metadata) {}
 }
 ```
 
@@ -93,67 +62,73 @@ public class WideEventLog {
 ```java
 package com.example.infrastructure.logging;
 
-import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class EventsCollector {
-    private static final int MAX_EVENTS = 100;
-    private static final ThreadLocal<WideEventLog> holder = new ThreadLocal<>();
+    private static final ZoneId JST = ZoneId.of("Asia/Tokyo");
+    private static final ThreadLocal<Context> holder = new ThreadLocal<>();
 
-    public static void initialize(String method, String path, String userAgent) {
-        WideEventLog log = WideEventLog.builder()
-                .requestId(UUID.randomUUID().toString())
-                .method(method)
-                .path(path)
-                .startTime(Instant.now())
-                .userAgent(userAgent)
-                .build();
-        holder.set(log);
+    private record Context(
+            String requestId,
+            String method,
+            String path,
+            ZonedDateTime requestedAt,
+            List<WideEventLog.Event> events,
+            WideEventLog.ErrorInfo error) {}
+
+    public static String initialize(String method, String path) {
+        String requestId = UUID.randomUUID().toString();
+        Context ctx = new Context(
+                requestId, method, path, ZonedDateTime.now(JST), 
+                new ArrayList<>(), null);
+        holder.set(ctx);
+        return requestId;
     }
 
-    public static void record(String type, String name, Long durationMs, Object metadata) {
-        WideEventLog log = holder.get();
-        if (log == null) return;
+    public static void record(String msg, Object metadata) {
+        Context ctx = holder.get();
+        if (ctx == null) return;
 
-        if (log.getEvents().size() >= MAX_EVENTS) {
-            log.getEvents().remove(0);
-        }
-
-        log.addEvent(WideEventLog.Event.builder()
-                .timestamp(Instant.now())
-                .type(type)
-                .name(name)
-                .durationMs(durationMs)
-                .metadata(metadata)
-                .build());
+        ctx.events.add(new WideEventLog.Event(
+                ZonedDateTime.now(JST), msg, metadata));
     }
 
-    public static void setError(String type, String name, Exception ex, Object metadata) {
-        WideEventLog log = holder.get();
-        if (log == null) return;
+    public static void setError(Exception ex, Object metadata) {
+        Context ctx = holder.get();
+        if (ctx == null) return;
 
-        log.setError(WideEventLog.ErrorInfo.builder()
-                .type(type)
-                .name(name)
-                .occurredAt(Instant.now())
-                .errorType(ex.getClass().getSimpleName())
-                .errorMessage(ex.getMessage())
-                .metadata(metadata)
-                .build());
+        WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
+                ZonedDateTime.now(JST),
+                ex.getClass().getSimpleName(),
+                ex.getMessage(),
+                metadata);
+
+        holder.set(new Context(
+                ctx.requestId, ctx.method, ctx.path, ctx.requestedAt,
+                ctx.events, errorInfo));
     }
 
     public static WideEventLog finalizeLog(int statusCode) {
-        WideEventLog log = holder.get();
-        if (log != null) {
-            log.setDurationMs(Instant.now().toEpochMilli() - log.getStartTime().toEpochMilli());
-            log.setStatusCode(statusCode);
-        }
-        return log;
+        Context ctx = holder.get();
+        if (ctx == null) return null;
+
+        ZonedDateTime now = ZonedDateTime.now(JST);
+        long durationMs = now.toInstant().toEpochMilli()
+                - ctx.requestedAt.toInstant().toEpochMilli();
+
+        return new WideEventLog(
+                ctx.requestId, ctx.method, ctx.path,
+                ctx.requestedAt, now, durationMs, statusCode,
+                ctx.events, ctx.error);
     }
 
     public static String getRequestId() {
-        WideEventLog log = holder.get();
-        return log != null ? log.getRequestId() : null;
+        Context ctx = holder.get();
+        return ctx != null ? ctx.requestId : null;
     }
 
     public static void clear() {
@@ -168,6 +143,9 @@ public class EventsCollector {
 package com.example.infrastructure.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -176,7 +154,13 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import net.logstash.logback.argument.StructuredArgument;
+import net.logstash.logback.argument.StructuredArguments;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -185,19 +169,34 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class WideEventLoggingFilter implements Filter {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public WideEventLoggingFilter() {
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(new ZonedDateTimeSerializer(DATE_TIME_FORMATTER));
+        this.objectMapper.registerModule(javaTimeModule);
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.setTimeZone(java.util.TimeZone.getTimeZone(ZoneId.of("Asia/Tokyo")));
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+        if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
-        EventsCollector.initialize(
-                httpReq.getMethod(),
-                httpReq.getRequestURI(),
-                httpReq.getHeader("User-Agent"));
+        String requestId = EventsCollector.initialize(
+                httpReq.getMethod(), httpReq.getRequestURI());
+        MDC.put("requestId", requestId);
 
         try {
             chain.doFilter(request, response);
@@ -205,13 +204,23 @@ public class WideEventLoggingFilter implements Filter {
             WideEventLog finalLog = EventsCollector.finalizeLog(httpRes.getStatus());
             if (finalLog != null) {
                 try {
-                    String json = objectMapper.writeValueAsString(finalLog);
-                    log.info("WIDE_EVENT {}", json);
+                    Map<String, Object> fields = objectMapper.convertValue(finalLog, Map.class);
+                    fields.remove("requestId");
+                    StructuredArgument[] args = fields.entrySet().stream()
+                            .map(e -> StructuredArguments.value(e.getKey(), e.getValue()))
+                            .toArray(StructuredArgument[]::new);
+
+                    if (finalLog.error() != null) {
+                        log.error("WIDE_EVENT", args);
+                    } else {
+                        log.info("WIDE_EVENT", args);
+                    }
                 } catch (Exception e) {
                     log.error("Failed to serialize WideEventLog", e);
                 }
             }
             EventsCollector.clear();
+            MDC.remove("requestId");
         }
     }
 }
@@ -222,64 +231,49 @@ public class WideEventLoggingFilter implements Filter {
 ### Pattern 1: Controller Layer
 
 ```java
-var start = System.currentTimeMillis();
-var data = bookSearchUsecase.execute(query);
+@GetMapping("/books")
+public SearchBooksResponse searchBooks(SearchQuery query) {
+    var data = bookSearchUsecase.execute(query);
+    
+    EventsCollector.record(
+        "book_search_executed",
+        new SearchMetadata(query, data.totalCount()));
+    
+    return SearchBooksResponse.of(data);
+}
 
-EventsCollector.record(
-    "business_logic",
-    "book_search",
-    System.currentTimeMillis() - start,
-    new SearchMetadata(query, offset, limit, data.totalCount())
-);
-
-private record SearchMetadata(Object query, int offset, int limit, long totalResults) {}
+private record SearchMetadata(Object query, long totalResults) {}
 ```
 
 ### Pattern 2: Exception Handler
 
 ```java
-@ExceptionHandler
-public ResponseEntity handle(Exception ex) {
-    String requestId = EventsCollector.getRequestId();
-    log.error("Error requestId={}", requestId, ex);
-    
-    EventsCollector.setError(
-        "validation",
-        "request_validation",
-        ex,
-        null
-    );
-    
-    return ResponseEntity.status(400).body(ErrorResponse.of(ex));
+@ExceptionHandler(HandlerMethodValidationException.class)
+public ResponseEntity<Object> handleValidationException(HandlerMethodValidationException ex) {
+    EventsCollector.setError(ex, null);
+    return super.handleHandlerMethodValidationException(ex, headers, status, request);
 }
 ```
 
-### Pattern 3: Usecase Layer with DB Query
+### Pattern 3: Usecase Layer
 
 ```java
-var dbStart = System.currentTimeMillis();
-var books = repository.download(query);
-EventsCollector.record(
-    "db_query",
-    "book_download",
-    System.currentTimeMillis() - dbStart,
-    Map.of("rowCount", books.size())
-);
+public List<Book> findBooks(Query query) {
+    var books = bookMapper.select(query);
+    EventsCollector.record("book_select_executed", Map.of("rowCount", books.size()));
+    return books;
+}
 ```
 
 ### Pattern 4: Error Handling
 
 ```java
-var start = System.currentTimeMillis();
 try {
     var result = convert(data);
-    EventsCollector.record("data_conversion", "csv_generation", 
-        System.currentTimeMillis() - start, Map.of("rows", data.size()));
+    EventsCollector.record("csv_generation_executed", new CsvMetadata(data.size()));
     return result;
 } catch (JacksonException ex) {
-    log.error("Failed requestId={}", EventsCollector.getRequestId(), ex);
-    EventsCollector.setError("data_conversion", "csv_generation", ex, 
-        Map.of("rows", data.size()));
+    EventsCollector.setError(ex, new CsvMetadata(data.size()));
     throw new RuntimeException("Conversion failed", ex);
 }
 ```
@@ -290,28 +284,24 @@ try {
 
 ```json
 {
+  "loggedAt": "2026-03-14T01:21:09.744+09:00",
+  "severity": "INFO",
+  "msg": "WIDE_EVENT",
   "requestId": "550e8400-e29b-41d4-a716-446655440000",
   "method": "GET",
   "path": "/books",
-  "startTime": "2026-03-13T10:00:00.000Z",
-  "durationMs": 23,
+  "requestedAt": "2026-03-14T01:21:09.422+09:00",
+  "respondedAt": "2026-03-14T01:21:09.717+09:00",
+  "durationMs": 295,
   "statusCode": 200,
   "events": [
     {
-      "timestamp": "2026-03-13T10:00:00.005Z",
-      "type": "db_query",
-      "name": "BookMapper.search",
-      "durationMs": 5,
-      "metadata": {"commandType": "SELECT"}
-    },
-    {
-      "timestamp": "2026-03-13T10:00:00.012Z",
-      "type": "business_logic",
-      "name": "book_search",
-      "durationMs": 15,
+      "timestamp": "2026-03-14T01:21:09.679+09:00",
+      "msg": "book_search_executed",
       "metadata": {"totalResults": 42}
     }
-  ]
+  ],
+  "error": null
 }
 ```
 
@@ -319,75 +309,78 @@ try {
 
 ```json
 {
-  "statusCode": 500,
-  "durationMs": 150,
+  "loggedAt": "2026-03-14T01:17:49.475+09:00",
+  "severity": "ERROR",
+  "msg": "WIDE_EVENT",
+  "requestId": "...",
+  "method": "GET",
+  "path": "/books",
+  "requestedAt": "...",
+  "respondedAt": "...",
+  "durationMs": 103,
+  "statusCode": 400,
   "events": [],
   "error": {
-    "type": "data_conversion",
-    "name": "csv_generation",
-    "occurredAt": "2026-03-13T10:00:00.150Z",
-    "errorType": "JacksonException",
-    "errorMessage": "Invalid UTF-8 character",
-    "metadata": {"rowCount": 10000}
+    "occurredAt": "2026-03-14T01:17:49.418+09:00",
+    "exception": "HandlerMethodValidationException",
+    "msg": "400 BAD_REQUEST \"Validation failure\"",
+    "metadata": null
   }
 }
 ```
 
 ## Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| `events` array for successes only | Separation of concerns; simplifies success/failure queries |
-| `error` field at top level | Easy filtering with `ispresent(error)` in log queries |
-| Stack traces excluded from Wide Event | Keep JSON size manageable; output separately with `log.error()` |
-| 100 event limit with FIFO eviction | Memory protection against runaway logging |
-| ThreadLocal with mandatory `clear()` | Request isolation; prevents memory leaks |
-| ISO-8601 timestamps with `Instant` | Standard format; timezone-aware |
+| 項目 | 決定事項 |
+|------|----------|
+| **データ構造** | Java Recordで不変性を保証 |
+| **イベント** | `msg`フィールドのみ（`type`/`name`は廃止） |
+| **エラー情報** | `exception`/`msg`のみ（`type`/`name`は廃止） |
+| **severity** | error有無で自動切り替え（INFO/ERROR） |
+| **時刻** | JST（Asia/Tokyo）で統一、ISO-8601形式 |
+| **イベント制限** | 現状は無制限（必要に応じて将来検討） |
+| **ThreadLocal** | リクエストスレッドごとに分離。finallyで必ずclear |
 
 ## Query Examples
 
 ### CloudWatch Logs Insights
 
 ```sql
--- Find error requests
+-- エラーリクエスト抽出
 fields @timestamp, requestId, path, statusCode
-| filter ispresent(error)
+| filter severity = "ERROR"
 | sort @timestamp desc
 
--- Specific error type
-fields @timestamp, requestId, error.errorType
-| filter error.type = 'db_query'
+-- 特定例外タイプ検索
+fields @timestamp, requestId, error.exception
+| filter error.exception = "HandlerMethodValidationException"
 
--- Average duration by endpoint
+-- 平均処理時間の集計
 fields durationMs, path
 | stats avg(durationMs) by path
 | sort avg(durationMs) desc
 
--- Requests with many events (potential complexity issues)
+-- 特定イベントを含むリクエスト
 fields @timestamp, requestId, events
-| stats count(events) as eventCount by requestId
-| sort eventCount desc
-| limit 100
+| filter events[*].msg = "book_search_executed"
 ```
 
 ## Warnings
 
-- **Do not include PII in metadata** - Email addresses, phone numbers, etc. should be masked or omitted
-- **Watch JSON size** - Large metadata objects can inflate log volume. Consider sampling in production
-- **Handle request interruption** - JVM shutdown may lose in-flight events. Critical events should also use immediate `log.info/warn`
-- **Avoid circular references** - Jackson will fail to serialize entities with bidirectional relationships. Use DTOs or Maps for metadata
+- **PII取り扱い**: `metadata`に個人情報を含めない。必要ならマスキング処理追加
+- **ログサイズ**: 大量イベント時はサイズ増大。開発環境でのみ有効化も検討
+- **リクエスト中断**: JVMシャットダウン時の情報消失を防ぐため、重要イベントは即座出力も併用
+- **循環参照**: `metadata`にエンティティなど循環参照を持つオブジェクトを渡さない
 
 ## Edge Cases
 
-| Scenario | Behavior |
-|----------|----------|
-| EventsCollector called before initialization | Silently ignored (null check) |
-| More than 100 events | Oldest events removed (FIFO) |
-| Exception during JSON serialization | Logged separately; request continues |
-| Nested error calls | Last call wins (overwrites previous error) |
-| Async processing | ThreadLocal isolation breaks - use explicit context propagation |
+| シナリオ | 動作 |
+|----------|------|
+| EventsCollector呼び出し前に初期化なし | 無視（nullチェック） |
+| 例外時のJSONシリアライズ失敗 | エラーログ出力、リクエストは継続 |
+| Async処理（@Async等） | ThreadLocalが分離されるため未対応 |
 
 ## References
 
-- ADR: [docs/adr/20260313-wide-event-logging.md](../../../docs/adr/20260313-wide-event-logging.md)
-- Implementation: [apps/api/src/main/java/dev/ymkz/demo/api/infrastructure/logging/](../../../apps/api/src/main/java/dev/ymkz/demo/api/infrastructure/logging/)
+- ADR: `docs/adr/20260313-wide-event-logging.md`
+- Implementation: `apps/api/src/main/java/dev/ymkz/demo/api/infrastructure/logging/`

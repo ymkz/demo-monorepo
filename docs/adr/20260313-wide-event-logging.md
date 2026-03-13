@@ -6,8 +6,8 @@
 
 ## 実装サマリー
 
-- `WideEventLog.java` - データ構造（`events`配列 + `error`フィールド）
-- `EventsCollector.java` - ThreadLocal管理（上限100件で古いイベントを破棄）
+- `WideEventLog.java` - Java Recordで定義されたデータ構造（`events`配列 + `error`フィールド）
+- `EventsCollector.java` - ThreadLocalベースのイベント収集
 - `WideEventLoggingFilter.java` - Servlet Filter（Order=1で最初に実行）
 - 既存ログ移行完了: `BookController`, `AppExceptionHandler`, `BookDownloadUsecase`
 
@@ -45,12 +45,14 @@
 │    ↓                                                        │
 │  [WideEventLoggingFilter] MDC初期化                          │
 │    - requestId生成                                           │
-│    - WideEventLogインスタンスをThreadLocalに保持              │
+│    - EventsCollectorに保持                                   │
 │    ↓                                                        │
 │  各レイヤーで EventsCollector.record() を呼び出し            │
 │    ↓                                                        │
 │  [WideEventLoggingFilter] レスポンス返却前に出力             │
+│    - WideEventLogレコードを生成                              │
 │    - 1行のJSONとしてWide Eventを出力                         │
+│    - severityはerror有無で自動切り替え（INFO/ERROR）         │
 │    - MDCクリア                                               │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -59,29 +61,20 @@
 
 ```json
 {
-  "timestamp": "2026-03-13T19:15:26.123Z",
-  "level": "INFO",
-  "message": "WIDE_EVENT",
+  "loggedAt": "2026-03-14T01:21:09.744+09:00",
+  "severity": "INFO",
+  "msg": "WIDE_EVENT",
   "requestId": "550e8400-e29b-41d4-a716-446655440000",
   "method": "GET",
   "path": "/books",
-  "startTime": "2026-03-13T19:15:26.100Z",
-  "durationMs": 23,
+  "requestedAt": "2026-03-14T01:21:09.422+09:00",
+  "respondedAt": "2026-03-14T01:21:09.717+09:00",
+  "durationMs": 295,
   "statusCode": 200,
-  "userAgent": "Mozilla/5.0...",
   "events": [
     {
-      "timestamp": "2026-03-13T19:15:26.105Z",
-      "type": "db_query",
-      "name": "BookMapper.search",
-      "durationMs": 5,
-      "metadata": { "commandType": "SELECT" }
-    },
-    {
-      "timestamp": "2026-03-13T19:15:26.112Z",
-      "type": "business_logic",
-      "name": "book_search",
-      "durationMs": 15,
+      "timestamp": "2026-03-14T01:21:09.679+09:00",
+      "msg": "book_search_executed",
       "metadata": { "totalResults": 42 }
     }
   ],
@@ -93,42 +86,40 @@
 
 ```json
 {
-  "events": [
-    // エラー発生前の成功イベントのみ
-  ],
+  "severity": "ERROR",
+  "statusCode": 400,
+  "events": [],
   "error": {
-    "type": "db_query",
-    "name": "book_search",
-    "occurredAt": "2026-03-13T19:15:26.105Z",
-    "errorType": "MyBatisSystemException",
-    "errorMessage": "Connection refused",
-    "metadata": { "timeout": 5000 }
+    "occurredAt": "2026-03-14T01:17:49.418+09:00",
+    "exception": "HandlerMethodValidationException",
+    "msg": "400 BAD_REQUEST \"Validation failure\"",
+    "metadata": null
   }
 }
 ```
 
-**重要**: 
-- `events`配列には**成功した処理のみ**を記録
-- エラー情報はトップレベルの`error`フィールドに分離
-- スタックトレースはWide Eventには含めず、従来のERRORログに別途出力
+### 時刻フィールドの意味
 
-### イベントタイプ定義
+| フィールド | 意味 | タイムゾーン |
+|-----------|------|-------------|
+| `loggedAt` | ログが記録された時刻 | JST (+09:00) |
+| `requestedAt` | リクエスト開始時刻 | JST (+09:00) |
+| `respondedAt` | レスポンス返却時刻 | JST (+09:00) |
+| `events[].timestamp` | 各イベント発生時刻 | JST (+09:00) |
+| `error.occurredAt` | エラー発生時刻 | JST (+09:00) |
 
-| type | 説明 | 使用例 |
-|------|------|--------|
-| `db_query` | データベース問い合わせ | MyBatis Mapper実行 |
-| `business_logic` | 業務ロジック実行 | ユースケース層の処理 |
-| `data_conversion` | データ形式変換 | CSV生成、JSONパース |
-| `external_api` | 外部API呼び出し | 決済ゲートウェイ等（将来拡張） |
-| `validation` | 入力検証 | バリデーションエラー |
+### severityの自動切り替え
+
+- `error` フィールドが `null` の場合: `severity: "INFO"`
+- `error` フィールドが存在する場合: `severity: "ERROR"`
 
 ## 影響
 
 ### ポジティブ
 
 1. **トレーサビリティの向上**: 1リクエストの全ての処理を1JSONで追跡可能
-2. **パフォーマンス分析**: ボトルネック特定が容易（各eventのdurationMs）
-3. **クエリの簡易化**: `error`フィールドの有無で成功/失敗を即座に判定
+2. **パフォーマンス分析**: ボトルネック特定が容易（`requestedAt`/`respondedAt`/`durationMs`）
+3. **クエリの簡易化**: `severity`/`error`フィールドの有無で成功/失敗を即座に判定
 4. **モノレポ親和性**: `web-form`, `web-tool` との分散トレーシング基盤に再利用可能
 5. **段階的導入**: 既存ログを置き換えず、並行運用が可能
 
@@ -136,31 +127,31 @@
 
 | リスク | 対策 |
 |--------|------|
-| メモリ増大（大量イベント時） | events配列の上限（100件）を設定。超過時は古いものから破棄 |
-| ログサイズ増加（約1.5倍） | 開発環境でのみ有効化、またはサンプリング（1%記録）機能を追加 |
+| メモリ増大（大量イベント時） | 現状は無制限。必要に応じて将来制限を検討 |
+| ログサイズ増加 | 開発環境でのみ有効化、またはサンプリングを検討 |
 | リクエスト中断時の情報消失 | JVMシャットダウンフックでflush、重要イベントは即座に出力 |
 | 機密情報の漏洩 | metadataにはPIIを含めない。必要な場合はマスキング処理を追加 |
 
 ## 実装計画
 
-### Phase 1: 基盤実装（1日）
+### Phase 1: 基盤実装（完了）
 
-- [ ] `WideEventLog` - データ構造クラス
-- [ ] `EventsCollector` - ThreadLocal管理とイベント収集
-- [ ] `WideEventLoggingFilter` - Servlet Filter実装
-- [ ] `logback-spring.xml` - JSONエンコーダー設定
+- [x] `WideEventLog` - Java Recordでデータ構造定義
+- [x] `EventsCollector` - ThreadLocal管理とイベント収集
+- [x] `WideEventLoggingFilter` - Servlet Filter実装
+- [x] `logback-spring.xml` - JSONエンコーダー設定
 
-### Phase 2: 既存ログ移行（1日）
+### Phase 2: 既存ログ移行（完了）
 
-- [ ] `BookController.searchBooks()` → `EventsCollector.record()`
-- [ ] `AppExceptionHandler` → `EventsCollector.setError()`
-- [ ] `BookDownloadUsecase` → `EventsCollector.record()` / `setError()`
+- [x] `BookController.searchBooks()` → `EventsCollector.record()`
+- [x] `AppExceptionHandler` → `EventsCollector.setError()`
+- [x] `BookDownloadUsecase` → `EventsCollector.record()`
 
-### Phase 3: 検証（1日）
+### Phase 3: 検証（完了）
 
-- [ ] ローカル環境でログ出力確認
-- [ ] CloudWatch Logs Insightsクエリの検証
-- [ ] パフォーマンス影響測定（スループット比較）
+- [x] ローカル環境でログ出力確認
+- [x] CloudWatch Logs Insightsクエリの検証
+- [x] パフォーマンス影響測定（スループット比較）
 
 ### Phase 4: 拡張（将来）
 
@@ -172,7 +163,7 @@
 
 - [Spring Boot公式: Logging](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.logging)
 - [logstash-logback-encoder](https://github.com/logfellow/logstash-logback-encoder)
-- 関連コード: `apps/api/src/main/java/dev/ymkz/demo/api/presentation/controller/BookController.java`
+- Agent Skill: `.agents/skills/wide-event-logging/SKILL.md`
 
 ## 備考
 
