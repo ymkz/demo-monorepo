@@ -20,17 +20,22 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHandlerMethodValidationException(
             HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
+        log.warn("Validation exception occurred", ex);
         EventsCollector.setError(ex, null);
-
-        // ProblemDetails形式を維持
         return super.handleHandlerMethodValidationException(ex, headers, status, request);
     }
 
     @ExceptionHandler(MyBatisSystemException.class)
     public ResponseEntity<Object> handleMyBatisException(MyBatisSystemException ex, WebRequest request) {
+        log.error("Database exception occurred", ex);
         EventsCollector.setError(ex, null);
+        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleOtherException(Exception ex, WebRequest request) {
+        log.error("Unexpected exception occurred", ex);
+        EventsCollector.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

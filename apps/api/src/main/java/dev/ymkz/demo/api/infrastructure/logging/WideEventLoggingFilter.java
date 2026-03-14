@@ -1,5 +1,6 @@
 package dev.ymkz.demo.api.infrastructure.logging;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -62,7 +63,7 @@ public class WideEventLoggingFilter implements Filter {
             if (finalLog != null) {
                 try {
                     // WideEventLogの各フィールドをトップレベルに展開（requestIdはMDCで出力されるので除外）
-                    Map<String, Object> fields = objectMapper.convertValue(finalLog, Map.class);
+                    Map<String, Object> fields = objectMapper.convertValue(finalLog, new TypeReference<>() {});
                     fields.remove("requestId"); // MDCのrequestIdと重複するので除外
                     StructuredArgument[] args = fields.entrySet().stream()
                             .map(e -> StructuredArguments.value(e.getKey(), e.getValue()))
@@ -70,9 +71,9 @@ public class WideEventLoggingFilter implements Filter {
 
                     // エラー有無でログレベルを切り替え
                     if (finalLog.error() != null) {
-                        log.error("WIDE_EVENT", args);
+                        log.error("WIDE_EVENT", (Object[]) args);
                     } else {
-                        log.info("WIDE_EVENT", args);
+                        log.info("WIDE_EVENT", (Object[]) args);
                     }
                 } catch (Exception e) {
                     // フォールバック: 最低限の情報は必ず出力

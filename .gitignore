@@ -12,6 +12,7 @@ node_modules/
 .classpath
 .env*
 .DS_Store
+.factorypath
 .project
 next-env.d.ts
 *.local.json

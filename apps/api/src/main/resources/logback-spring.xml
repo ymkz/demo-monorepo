@@ -17,6 +17,7 @@
         </message>
         <mdc/>
         <arguments/>
+        <stackTrace/>
         <pattern>
           <pattern>{"app":"${appName}"}</pattern>
         </pattern>
