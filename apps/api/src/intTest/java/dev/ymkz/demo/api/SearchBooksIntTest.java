@@ -26,4 +26,23 @@ public class SearchBooksIntTest {
     void searchBooksが200でレスポンスされること() {
         given().contentType(ContentType.JSON).when().get("/books").then().statusCode(200);
     }
+
+    @Test
+    void バリデーションエラー時に400を返す() {
+        // limit=101は@Max(100)違反
+        given().contentType(ContentType.JSON)
+                .when()
+                .get("/books?limit=101")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void 存在しないパスにアクセスすると404を返す() {
+        given().contentType(ContentType.JSON)
+                .when()
+                .get("/nonexistent-path")
+                .then()
+                .statusCode(404);
+    }
 }

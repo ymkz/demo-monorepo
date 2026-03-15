@@ -2,6 +2,7 @@ package dev.ymkz.demo.api.application.usecase;
 
 import dev.ymkz.demo.api.domain.model.BookSearchQuery;
 import dev.ymkz.demo.api.domain.repository.BookRepository;
+import dev.ymkz.demo.api.infrastructure.logging.EventsCollector;
 import dev.ymkz.demo.api.presentation.dto.DownloadBooksResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -25,21 +26,32 @@ public class BookDownloadUsecase {
 
     public byte[] execute(BookSearchQuery query) {
         var books = repository.download(query);
+        EventsCollector.record("book_download_executed", new DbMetadata(books.size()));
+
         var text = mapBooksToCsvText(
                 books.stream().map(DownloadBooksResponse::from).toList());
         var bytes = text.getBytes(StandardCharsets.UTF_8);
         return bytes;
     }
 
+    private record DbMetadata(int rowCount) {}
+
     private String mapBooksToCsvText(List<DownloadBooksResponse> data) {
         try {
             var schema = mapper.schemaFor(DownloadBooksResponse.class).withHeader();
             var text = mapper.writer(schema).writeValueAsString(data);
             var textWithBom = new String(UTF8_BOM) + text;
+
+            EventsCollector.record("csv_generation_executed", new CsvMetadata(data.size()));
+
             return textWithBom;
         } catch (JacksonException ex) {
-            log.error("Failed to convert to CSV: {}", ex);
+            String requestId = EventsCollector.getRequestId();
+            log.error("Failed to convert to CSV requestId={}", requestId, ex);
+            EventsCollector.setError(ex, new CsvMetadata(data.size()));
             throw new RuntimeException("Failed to convert to CSV", ex);
         }
     }
+
+    private record CsvMetadata(int rowCount) {}
 }
