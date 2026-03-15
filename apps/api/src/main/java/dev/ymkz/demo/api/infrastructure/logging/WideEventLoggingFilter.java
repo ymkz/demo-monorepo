@@ -18,8 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class WideEventLoggingFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-            FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
 
         String requestId = EventsCollector.initialize(request.getMethod(), request.getRequestURI());
         MDC.put("requestId", requestId);

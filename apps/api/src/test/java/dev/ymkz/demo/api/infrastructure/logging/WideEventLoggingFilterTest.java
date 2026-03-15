@@ -43,9 +43,11 @@ class WideEventLoggingFilterTest {
     void doFilterInternal_正常終了時にEventsCollectorのThreadLocalがクリアされること() throws Exception {
         // given
         doAnswer(invocation -> {
-            assertThat(EventsCollector.getRequestId()).isNotEmpty();
-            return null;
-        }).when(chain).doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
+                    assertThat(EventsCollector.getRequestId()).isNotEmpty();
+                    return null;
+                })
+                .when(chain)
+                .doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
 
         // when
         filter.doFilterInternal(request, response, chain);
@@ -58,7 +60,8 @@ class WideEventLoggingFilterTest {
     void doFilterInternal_チェーン内で例外が発生してもEventsCollectorのThreadLocalがクリアされること() throws Exception {
         // given
         doThrow(new RuntimeException("Test exception"))
-                .when(chain).doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
+                .when(chain)
+                .doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
 
         // when & then
         assertThatThrownBy(() -> filter.doFilterInternal(request, response, chain))
@@ -74,7 +77,8 @@ class WideEventLoggingFilterTest {
         when(response.getStatus()).thenThrow(new RuntimeException("Serialization error"));
 
         doAnswer(invocation -> null)
-                .when(chain).doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
+                .when(chain)
+                .doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
 
         // when & then
         assertThatThrownBy(() -> filter.doFilterInternal(request, response, chain))
@@ -88,10 +92,12 @@ class WideEventLoggingFilterTest {
     void doFilterInternal_複数回のリクエストでThreadLocalがリークしないこと() throws Exception {
         // given
         doAnswer(invocation -> {
-            String requestId = EventsCollector.getRequestId();
-            assertThat(requestId).isNotEmpty();
-            return null;
-        }).when(chain).doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
+                    String requestId = EventsCollector.getRequestId();
+                    assertThat(requestId).isNotEmpty();
+                    return null;
+                })
+                .when(chain)
+                .doFilter(any(HttpServletRequest.class), any(HttpServletResponse.class));
 
         for (int i = 0; i < 3; i++) {
             filter.doFilterInternal(request, response, chain);
