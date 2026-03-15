@@ -53,6 +53,23 @@ src/main/java/dev/ymkz/demo/api/
 - **Core module dependency**: `project(":apps:core")` for shared domain
 - **Spring Boot BOM**: Managed dependency versions
 
+## POST-MODIFICATION VALIDATION
+
+コード修正後は必ず以下を実行し、すべてパスすることを確認する：
+
+```bash
+./gradlew :apps:api:test           # 単体テスト
+./gradlew :apps:api:intTest        # 統合テスト
+./gradlew :apps:api:spotlessCheck  # フォーマットチェック
+./gradlew :apps:api:build          # ビルド（テスト含む）
+```
+
+失敗した場合：
+1. エラーを修正
+2. `./gradlew :apps:api:spotlessApply` で自動修正可能な場合は適用
+3. 再度実行してパス確認
+4. すべてパスしてからコミット
+
 ## ANTI-PATTERNS
 
 | Pattern | Why Forbidden |
