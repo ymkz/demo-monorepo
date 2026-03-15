@@ -1,347 +1,166 @@
 ---
 name: wide-event-logging
-description: Spring Bootアプリケーションで1リクエストあたりの全イベントを1つのJSONログに集約する。MDCを使用し、リクエスト処理のトレーサビリティ向上とパフォーマンス分析を実現する。1リクエストの処理が複数ログ行に分散している、ボトルネック分析が必要、分散トレーシング基盤が欲しい場合に使用する。
+description: このプロジェクトでは1リクエストあたりの全イベントを1つのJSONログに集約する「ワイドイベントロギング」を採用している。MDCとThreadLocalを組み合わせ、リクエスト処理のトレーサビリティ向上とパフォーマンス分析を実現する。
 license: Proprietary
 compatibility: Spring Boot 3.x, Java 17+, logstash-logback-encoder
 metadata:
   author: ymkz
-  version: "1.1"
+  version: "2.0"
   language: java
 ---
 
-# Wide Event Logging
+# Wide Event Logging 方針
 
-1リクエストの全イベント（DBクエリ、業務処理、エラー等）を1つのJSONログに集約するパターン。
+## 核心理念
 
-## Quick Start
+1リクエストの全イベント（DBクエリ、業務処理、エラー等）を**1つのJSONログ**に集約し、以下を実現する：
+
+- **トレーサビリティ**: リクエストIDで関連ログを即座に特定
+- **パフォーマンス分析**: 処理時間・イベント発生箇所の可視化
+- **構造化ログ**: JSON形式でログ基盤（Grafana Loki等）と連携
+
+## 実装方針
+
+### アーキテクチャ
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│  Filter (MDC)   │────→│ EventsCollector  │────→│  JSON出力   │
+│  requestId設定   │     │  (ThreadLocal)   │     │  レスポンス時  │
+└─────────────────┘     └──────────────────┘     └─────────────┘
+         ↑                                               │
+         └───────────────────────────────────────────────┘
+              各レイヤーで EventsCollector.record() 呼び出し
+```
+
+### データフロー
+
+1. **リクエスト開始時**（Filter）
+   - `EventsCollector.initialize()` でコンテキスト初期化
+   - `MDC.put("requestId")` で全ログにrequestIdを紐付け
+
+2. **処理中**（Controller/Usecase/Domain）
+   - `EventsCollector.record()` で業務イベントを記録
+   - `EventsCollector.setError()` でエラー情報を設定
+
+3. **レスポンス時**（Filter finally）
+   - `EventsCollector.finalizeLog()` で集約されたデータを取得
+   - JSON形式で一括出力
+   - `EventsCollector.clear()` でThreadLocalを必ずクリア
+
+## 記録すべき情報
+
+### 推奨するイベント
+
+| レイヤー | 記録タイミング | 例 |
+|---------|--------------|-----|
+| Controller | 処理開始/終了 | `book_search_executed` |
+| Usecase | 業務ロジック実行 | `payment_processed` |
+| Domain | 重要な状態変化 | `order_status_changed` |
+| Infrastructure | DBクエリ実行 | `book_select_executed` |
+| ErrorHandler | 例外発生時 | （自動的に記録） |
+
+### メタデータ設計
 
 ```java
-// Controller層での使用例
-@GetMapping("/books")
-public Response search(Query query) {
-    var result = usecase.execute(query);
-    
-    EventsCollector.record(
-        "book_search_executed",  // メッセージ
-        Map.of("total", result.size())  // metadata
-    );
-    
-    return Response.of(result);
-}
+// 良い例：シンプルで検索しやすい構造
+EventsCollector.record("book_search_executed", 
+    Map.of("totalResults", 42, "queryType", "advanced"));
+
+// 避けるべき例：循環参照・大きすぎるオブジェクト
+EventsCollector.record("book_search_executed", bookEntity);  // NG
 ```
 
-## Implementation Steps
+### 命名規約
 
-### Step 1: Data Structure (WideEventLog.java)
+- **イベントメッセージ**: `snake_case` で動詞終わり
+  - ✅ `book_search_executed`
+  - ✅ `payment_processing_started`
+  - ❌ `bookSearch`（camelCase）
+  - ❌ `SEARCH_BOOK`（定数スタイル）
+
+## 実装上の注意点
+
+### ✅ 推奨パターン
+
+1. **即時return前の記録**
+   ```java
+   EventsCollector.record("validation_failed", 
+       Map.of("field", fieldName, "reason", errorReason));
+   return ResponseEntity.badRequest().body(error);
+   ```
+
+2. **エラー情報の設定**
+   ```java
+   try {
+       processPayment(order);
+   } catch (PaymentException ex) {
+       EventsCollector.setError(ex, Map.of("orderId", orderId));
+       throw ex;  // 再スローしてハンドラに任せる
+   }
+   ```
+
+3. **メタデータの最小化**
+   - 必要最小限の情報のみ記録
+   - PII（個人識別情報）は含めない
+   - 大きなオブジェクトはIDや統計値に絞る
+
+### ❌ アンチパターン
+
+| パターン | 問題 | 対応 |
+|---------|------|------|
+| JPAエンティティをmetadataに渡す | 循環参照でシリアライズ失敗 | IDや必要なフィールドのみ抽出 |
+| 大量のイベント記録（1000件以上） | ログサイズ肥大・遅延 | サンプリングまたは集計して記録 |
+| 個人情報をmetadataに含める | プライバシー侵害 | マスキングまたは除外 |
+| 例外を握りつぶして記録 | エラー隠蔽 | 記録後に再スロー |
+| @Async内でrecord呼び出し | ThreadLocalが別スレッド | 別のトレーシング方式を検討 |
+
+## テスト方針
+
+### 必須テスト
+
+1. **ThreadLocalクリア確認**
+   - 正常終了時にclear()が呼ばれること
+   - 例外発生時もclear()が呼ばれること
+
+2. **ログ出力確認**
+   - 期待するイベントが含まれること
+   - JSON構造が正しいこと
+
+### テスト実装例
 
 ```java
-package com.example.infrastructure.logging;
+@Test
+void 正常終了時にEventsCollectorのThreadLocalがクリアされること() {
+    // given
+    doAnswer(invocation -> {
+        assertThat(EventsCollector.getRequestId()).isNotEmpty();
+        return null;
+    }).when(chain).doFilter(any(), any());
 
-import java.time.ZonedDateTime;
-import java.util.List;
+    // when
+    filter.doFilterInternal(request, response, chain);
 
-public record WideEventLog(
-        String requestId,
-        String method,
-        String path,
-        ZonedDateTime requestedAt,
-        ZonedDateTime respondedAt,
-        Long durationMs,
-        Integer statusCode,
-        List<Event> events,
-        ErrorInfo error) {
-
-    public record Event(ZonedDateTime timestamp, String msg, Object metadata) {}
-
-    public record ErrorInfo(ZonedDateTime occurredAt, String exception, String msg, Object metadata) {}
+    // then
+    assertThat(EventsCollector.getRequestId()).isEmpty();
 }
 ```
 
-### Step 2: ThreadLocal Manager (EventsCollector.java)
+## ログ基盤連携
 
-```java
-package com.example.infrastructure.logging;
+### Grafana Loki (LogQL) クエリ例
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+```logql
+# エラーリクエスト抽出
+{app="demo-api"} | json | msg="WIDE_EVENT" | severity="ERROR"
 
-public class EventsCollector {
-    private static final ZoneId JST = ZoneId.of("Asia/Tokyo");
-    private static final ThreadLocal<Context> holder = new ThreadLocal<>();
+# 特定イベントを含むリクエスト
+{app="demo-api"} | json | msg="WIDE_EVENT"
+| line_format "{{.events}}" |~ "book_search_executed"
 
-    private record Context(
-            String requestId,
-            String method,
-            String path,
-            ZonedDateTime requestedAt,
-            List<WideEventLog.Event> events,
-            WideEventLog.ErrorInfo error) {}
-
-    public static String initialize(String method, String path) {
-        String requestId = UUID.randomUUID().toString();
-        Context ctx = new Context(
-                requestId, method, path, ZonedDateTime.now(JST), 
-                new ArrayList<>(), null);
-        holder.set(ctx);
-        return requestId;
-    }
-
-    public static void record(String msg, Object metadata) {
-        Context ctx = holder.get();
-        if (ctx == null) return;
-
-        ctx.events.add(new WideEventLog.Event(
-                ZonedDateTime.now(JST), msg, metadata));
-    }
-
-    public static void setError(Exception ex, Object metadata) {
-        Context ctx = holder.get();
-        if (ctx == null) return;
-
-        WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
-                ZonedDateTime.now(JST),
-                ex.getClass().getSimpleName(),
-                ex.getMessage(),
-                metadata);
-
-        holder.set(new Context(
-                ctx.requestId, ctx.method, ctx.path, ctx.requestedAt,
-                ctx.events, errorInfo));
-    }
-
-    public static WideEventLog finalizeLog(int statusCode) {
-        Context ctx = holder.get();
-        if (ctx == null) return null;
-
-        ZonedDateTime now = ZonedDateTime.now(JST);
-        long durationMs = now.toInstant().toEpochMilli()
-                - ctx.requestedAt.toInstant().toEpochMilli();
-
-        return new WideEventLog(
-                ctx.requestId, ctx.method, ctx.path,
-                ctx.requestedAt, now, durationMs, statusCode,
-                ctx.events, ctx.error);
-    }
-
-    public static String getRequestId() {
-        Context ctx = holder.get();
-        return ctx != null ? ctx.requestId : null;
-    }
-
-    public static void clear() {
-        holder.remove();
-    }
-}
+# 処理時間が閾値を超えたリクエスト
+{app="demo-api"} | json | msg="WIDE_EVENT" | durationMs > 1000
 ```
-
-### Step 3: Servlet Filter (WideEventLoggingFilter.java)
-
-```java
-package com.example.infrastructure.logging;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import net.logstash.logback.argument.StructuredArgument;
-import net.logstash.logback.argument.StructuredArguments;
-import org.slf4j.MDC;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
-@Component
-@Order(1)
-@Slf4j
-public class WideEventLoggingFilter implements Filter {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public WideEventLoggingFilter() {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(new ZonedDateTimeSerializer(DATE_TIME_FORMATTER));
-        this.objectMapper.registerModule(javaTimeModule);
-        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        this.objectMapper.setTimeZone(java.util.TimeZone.getTimeZone(ZoneId.of("Asia/Tokyo")));
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
-        if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        HttpServletRequest httpReq = (HttpServletRequest) request;
-        HttpServletResponse httpRes = (HttpServletResponse) response;
-
-        String requestId = EventsCollector.initialize(
-                httpReq.getMethod(), httpReq.getRequestURI());
-        MDC.put("requestId", requestId);
-
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            WideEventLog finalLog = EventsCollector.finalizeLog(httpRes.getStatus());
-            if (finalLog != null) {
-                try {
-                    Map<String, Object> fields = objectMapper.convertValue(finalLog, Map.class);
-                    fields.remove("requestId");
-                    StructuredArgument[] args = fields.entrySet().stream()
-                            .map(e -> StructuredArguments.value(e.getKey(), e.getValue()))
-                            .toArray(StructuredArgument[]::new);
-
-                    if (finalLog.error() != null) {
-                        log.error("WIDE_EVENT", args);
-                    } else {
-                        log.info("WIDE_EVENT", args);
-                    }
-                } catch (Exception e) {
-                    log.error("Failed to serialize WideEventLog", e);
-                }
-            }
-            EventsCollector.clear();
-            MDC.remove("requestId");
-        }
-    }
-}
-```
-
-## Usage Patterns
-
-### Pattern 1: Controller Layer
-
-```java
-@GetMapping("/books")
-public SearchBooksResponse searchBooks(SearchQuery query) {
-    var data = bookSearchUsecase.execute(query);
-    
-    EventsCollector.record(
-        "book_search_executed",
-        new SearchMetadata(query, data.totalCount()));
-    
-    return SearchBooksResponse.of(data);
-}
-
-private record SearchMetadata(Object query, long totalResults) {}
-```
-
-### Pattern 2: Exception Handler
-
-```java
-@ExceptionHandler(HandlerMethodValidationException.class)
-public ResponseEntity<Object> handleValidationException(HandlerMethodValidationException ex) {
-    EventsCollector.setError(ex, null);
-    return super.handleHandlerMethodValidationException(ex, headers, status, request);
-}
-```
-
-### Pattern 3: Usecase Layer
-
-```java
-public List<Book> findBooks(Query query) {
-    var books = bookMapper.select(query);
-    EventsCollector.record("book_select_executed", Map.of("rowCount", books.size()));
-    return books;
-}
-```
-
-### Pattern 4: Error Handling
-
-```java
-try {
-    var result = convert(data);
-    EventsCollector.record("csv_generation_executed", new CsvMetadata(data.size()));
-    return result;
-} catch (JacksonException ex) {
-    EventsCollector.setError(ex, new CsvMetadata(data.size()));
-    throw new RuntimeException("Conversion failed", ex);
-}
-```
-
-## Output Format
-
-### Success Response
-
-```json
-{
-  "loggedAt": "2026-03-14T01:21:09.744+09:00",
-  "severity": "INFO",
-  "msg": "WIDE_EVENT",
-  "requestId": "550e8400-e29b-41d4-a716-446655440000",
-  "method": "GET",
-  "path": "/books",
-  "requestedAt": "2026-03-14T01:21:09.422+09:00",
-  "respondedAt": "2026-03-14T01:21:09.717+09:00",
-  "durationMs": 295,
-  "statusCode": 200,
-  "events": [
-    {
-      "timestamp": "2026-03-14T01:21:09.679+09:00",
-      "msg": "book_search_executed",
-      "metadata": {"totalResults": 42}
-    }
-  ],
-  "error": null
-}
-```
-
-### Error Response
-
-```json
-{
-  "loggedAt": "2026-03-14T01:17:49.475+09:00",
-  "severity": "ERROR",
-  "msg": "WIDE_EVENT",
-  "requestId": "...",
-  "method": "GET",
-  "path": "/books",
-  "requestedAt": "...",
-  "respondedAt": "...",
-  "durationMs": 103,
-  "statusCode": 400,
-  "events": [],
-  "error": {
-    "occurredAt": "2026-03-14T01:17:49.418+09:00",
-    "exception": "HandlerMethodValidationException",
-    "msg": "400 BAD_REQUEST \"Validation failure\"",
-    "metadata": null
-  }
-}
-```
-
-## Design Decisions
-
-| 項目 | 決定事項 |
-|------|----------|
-| **データ構造** | Java Recordで不変性を保証 |
-| **イベント** | `msg`フィールドのみ（`type`/`name`は廃止） |
-| **エラー情報** | `exception`/`msg`のみ（`type`/`name`は廃止） |
-| **severity** | error有無で自動切り替え（INFO/ERROR） |
-| **時刻** | JST（Asia/Tokyo）で統一、ISO-8601形式 |
-| **イベント制限** | 現状は無制限（必要に応じて将来検討） |
-| **ThreadLocal** | リクエストスレッドごとに分離。finallyで必ずclear |
-
-## Query Examples
 
 ### CloudWatch Logs Insights
 
@@ -351,36 +170,23 @@ fields @timestamp, requestId, path, statusCode
 | filter severity = "ERROR"
 | sort @timestamp desc
 
--- 特定例外タイプ検索
-fields @timestamp, requestId, error.exception
-| filter error.exception = "HandlerMethodValidationException"
-
 -- 平均処理時間の集計
 fields durationMs, path
 | stats avg(durationMs) by path
 | sort avg(durationMs) desc
-
--- 特定イベントを含むリクエスト
-fields @timestamp, requestId, events
-| filter events[*].msg = "book_search_executed"
 ```
 
-## Warnings
+## 制約・制限事項
 
-- **PII取り扱い**: `metadata`に個人情報を含めない。必要ならマスキング処理追加
-- **ログサイズ**: 大量イベント時はサイズ増大。開発環境でのみ有効化も検討
-- **リクエスト中断**: JVMシャットダウン時の情報消失を防ぐため、重要イベントは即座出力も併用
-- **循環参照**: `metadata`にエンティティなど循環参照を持つオブジェクトを渡さない
+| 項目 | 制約 | 備考 |
+|------|------|------|
+| **Async処理** | 非対応 | @Asyncなど別スレッドではThreadLocalが分離される |
+| **イベント数** | 無制限（推奨：100件以下） | 過多の場合はログサイズに注意 |
+| **metadataサイズ** | 制限なし（推奨：1KB以下） | 大きすぎるとシリアライズ遅延 |
+| **スレッドセーフ** | 対応済み | ThreadLocal使用により自動的に保証 |
 
-## Edge Cases
-
-| シナリオ | 動作 |
-|----------|------|
-| EventsCollector呼び出し前に初期化なし | 無視（nullチェック） |
-| 例外時のJSONシリアライズ失敗 | エラーログ出力、リクエストは継続 |
-| Async処理（@Async等） | ThreadLocalが分離されるため未対応 |
-
-## References
+## 参考資料
 
 - ADR: `docs/adr/20260313-wide-event-logging.md`
-- Implementation: `apps/api/src/main/java/dev/ymkz/demo/api/infrastructure/logging/`
+- 実装: `apps/api/src/main/java/dev/ymkz/demo/api/infrastructure/logging/`
+- テスト: `apps/api/src/test/java/dev/ymkz/demo/api/infrastructure/logging/WideEventLoggingFilterTest.java`
