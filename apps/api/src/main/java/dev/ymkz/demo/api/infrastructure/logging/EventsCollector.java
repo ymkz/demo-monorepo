@@ -18,9 +18,13 @@ public class EventsCollector {
             List<WideEventLog.Event> events,
             WideEventLog.ErrorInfo error) {}
 
+    private static ZonedDateTime nowJst() {
+        return ZonedDateTime.now(JST);
+    }
+
     public static String initialize(String method, String path) {
         String requestId = UUID.randomUUID().toString();
-        Context ctx = new Context(requestId, method, path, ZonedDateTime.now(JST), new ArrayList<>(), null);
+        Context ctx = new Context(requestId, method, path, nowJst(), new ArrayList<>(), null);
         holder.set(ctx);
         return requestId;
     }
@@ -31,7 +35,7 @@ public class EventsCollector {
             return;
         }
 
-        ctx.events.add(new WideEventLog.Event(ZonedDateTime.now(JST), msg, metadata));
+        ctx.events.add(new WideEventLog.Event(nowJst(), msg, metadata));
     }
 
     public static void setError(Exception ex, Object metadata) {
@@ -41,9 +45,10 @@ public class EventsCollector {
         }
 
         WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
-                ZonedDateTime.now(JST), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
+                nowJst(), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
 
-        holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, ctx.events, errorInfo));
+        List<WideEventLog.Event> newEvents = new ArrayList<>(ctx.events);
+        holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, newEvents, errorInfo));
     }
 
     public static WideEventLog finalizeLog(int statusCode) {
@@ -52,7 +57,7 @@ public class EventsCollector {
             return null;
         }
 
-        ZonedDateTime now = ZonedDateTime.now(JST);
+        ZonedDateTime now = nowJst();
         long durationMs =
                 now.toInstant().toEpochMilli() - ctx.requestedAt.toInstant().toEpochMilli();
 
@@ -70,7 +75,7 @@ public class EventsCollector {
 
     public static String getRequestId() {
         Context ctx = holder.get();
-        return ctx != null ? ctx.requestId : null;
+        return ctx != null ? ctx.requestId : "";
     }
 
     public static void clear() {
