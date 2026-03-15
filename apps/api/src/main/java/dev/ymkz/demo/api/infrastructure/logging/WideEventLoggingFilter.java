@@ -1,5 +1,6 @@
 package dev.ymkz.demo.api.infrastructure.logging;
 
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-            jakarta.servlet.FilterChain chain) throws ServletException, IOException {
+            FilterChain chain) throws ServletException, IOException {
 
         String requestId = EventsCollector.initialize(request.getMethod(), request.getRequestURI());
         MDC.put("requestId", requestId);
