@@ -44,8 +44,8 @@ public class EventsCollector {
             return;
         }
 
-        WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
-                nowJst(), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
+        WideEventLog.ErrorInfo errorInfo =
+                new WideEventLog.ErrorInfo(nowJst(), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
 
         List<WideEventLog.Event> newEvents = new ArrayList<>(ctx.events);
         holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, newEvents, errorInfo));
