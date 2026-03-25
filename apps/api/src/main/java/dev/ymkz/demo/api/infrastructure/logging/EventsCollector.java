@@ -29,7 +29,7 @@ public class EventsCollector {
         return requestId;
     }
 
-    public static void record(String msg, Object metadata) {
+    public static void addEvent(String msg, Object metadata) {
         Context ctx = holder.get();
         if (ctx == null) {
             return;
@@ -51,7 +51,7 @@ public class EventsCollector {
         holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, newEvents, errorInfo));
     }
 
-    public static WideEventLog finalizeLog(int statusCode) {
+    public static WideEventLog finalize(int statusCode) {
         Context ctx = holder.get();
         if (ctx == null) {
             return null;

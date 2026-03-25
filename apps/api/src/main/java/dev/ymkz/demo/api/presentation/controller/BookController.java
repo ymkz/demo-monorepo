@@ -82,7 +82,7 @@ public class BookController {
                 offset,
                 limit));
 
-        EventsCollector.record(
+        EventsCollector.addEvent(
                 "book_search_executed",
                 new SearchMetadata(queryParam.isbn(), queryParam.title(), offset, limit, data.totalCount()));
 
