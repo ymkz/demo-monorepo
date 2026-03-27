@@ -1,4 +1,4 @@
 plugins {
     base
-    id("com.diffplug.spotless") version "7.0.3" apply false
+    id("com.diffplug.spotless") version "8.4.0" apply false
 }
