@@ -77,3 +77,4 @@ api = [
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 springdoc-openapi = { id = "org.springdoc.openapi-gradle-plugin", version.ref = "springdoc-openapi" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
