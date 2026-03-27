@@ -28,7 +28,7 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } finally {
             try {
-                WideEventLog eventLog = EventsCollector.finalizeLog(response.getStatus());
+                WideEventLog eventLog = EventsCollector.finalize(response.getStatus());
                 try {
                     var args = new Object[] {
                         StructuredArguments.value("method", eventLog.method()),
@@ -41,11 +41,11 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
                         StructuredArguments.value("error", eventLog.error())
                     };
                     if (eventLog.error() != null) {
-                        log.error("WIDE_EVENT", args);
+                        log.error("request_error", args);
                     } else {
-                        log.info("WIDE_EVENT", args);
+                        log.info("request_success", args);
                     }
-                } catch (Exception e) {
+                } catch (Exception ex) {
                     log.error(
                             "Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
                             eventLog.requestId(),
@@ -53,7 +53,7 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
                             eventLog.statusCode(),
                             eventLog.events().size(),
                             eventLog.error() != null ? eventLog.error().exception() : "none",
-                            e);
+                            ex);
                 }
             } finally {
                 EventsCollector.clear();

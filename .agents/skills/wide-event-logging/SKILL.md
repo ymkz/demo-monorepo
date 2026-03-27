@@ -30,7 +30,7 @@ metadata:
 └─────────────────┘     └──────────────────┘     └─────────────┘
          ↑                                               │
          └───────────────────────────────────────────────┘
-              各レイヤーで EventsCollector.record() 呼び出し
+              各レイヤーで EventsCollector.addEvent() 呼び出し
 ```
 
 ### データフロー
@@ -40,11 +40,11 @@ metadata:
    - `MDC.put("requestId")` で全ログにrequestIdを紐付け
 
 2. **処理中**（Controller/Usecase/Domain）
-   - `EventsCollector.record()` で業務イベントを記録
+   - `EventsCollector.addEvent()` で業務イベントを記録
    - `EventsCollector.setError()` でエラー情報を設定
 
 3. **レスポンス時**（Filter finally）
-   - `EventsCollector.finalizeLog()` で集約されたデータを取得
+   - `EventsCollector.finalize()` で集約されたデータを取得
    - JSON形式で一括出力
    - `EventsCollector.clear()` でThreadLocalを必ずクリア
 
@@ -64,11 +64,11 @@ metadata:
 
 ```java
 // 良い例：シンプルで検索しやすい構造
-EventsCollector.record("book_search_executed", 
+EventsCollector.addEvent("book_search_executed", 
     Map.of("totalResults", 42, "queryType", "advanced"));
 
 // 避けるべき例：循環参照・大きすぎるオブジェクト
-EventsCollector.record("book_search_executed", bookEntity);  // NG
+EventsCollector.addEvent("book_search_executed", bookEntity);  // NG
 ```
 
 ### 命名規約
@@ -85,7 +85,7 @@ EventsCollector.record("book_search_executed", bookEntity);  // NG
 
 1. **即時return前の記録**
    ```java
-   EventsCollector.record("validation_failed", 
+   EventsCollector.addEvent("validation_failed", 
        Map.of("field", fieldName, "reason", errorReason));
    return ResponseEntity.badRequest().body(error);
    ```
@@ -113,7 +113,7 @@ EventsCollector.record("book_search_executed", bookEntity);  // NG
 | 大量のイベント記録（1000件以上） | ログサイズ肥大・遅延 | サンプリングまたは集計して記録 |
 | 個人情報をmetadataに含める | プライバシー侵害 | マスキングまたは除外 |
 | 例外を握りつぶして記録 | エラー隠蔽 | 記録後に再スロー |
-| @Async内でrecord呼び出し | ThreadLocalが別スレッド | 別のトレーシング方式を検討 |
+| @Async内でaddEvent呼び出し | ThreadLocalが別スレッド | 別のトレーシング方式を検討 |
 
 ## テスト方針
 
@@ -184,6 +184,47 @@ fields durationMs, path
 | **イベント数** | 無制限（推奨：100件以下） | 過多の場合はログサイズに注意 |
 | **metadataサイズ** | 制限なし（推奨：1KB以下） | 大きすぎるとシリアライズ遅延 |
 | **スレッドセーフ** | 対応済み | ThreadLocal使用により自動的に保証 |
+
+### 非同期処理の注意点
+
+ThreadLocalは**スレッドローカル変数**であり、別スレッドに処理を委譲すると値が引き継がれません。
+
+**問題の例：**
+```java
+@Service
+public class BookService {
+    @Async("taskExecutor")
+    public CompletableFuture<Book> findByIdAsync(Long id) {
+        // 別スレッドで実行されるため、EventsCollector.getRequestId() は空文字を返す
+        EventsCollector.addEvent("book_search_started", Map.of("id", id));
+        // ... 処理 ...
+    }
+}
+```
+
+**対応策：**
+
+1. **非同期処理内ではEventsCollectorを使用しない**
+   - 非同期処理の結果を待つ親スレッドでイベントを記録
+
+2. **手動でContextを渡す**（必要な場合）
+   ```java
+   String requestId = EventsCollector.getRequestId();
+   return CompletableFuture.supplyAsync(() -> {
+       // MDCだけは引き継げる
+       MDC.put("requestId", requestId);
+       try {
+           // 処理実行（ただしEventsCollectorは使えない）
+           return process();
+       } finally {
+           MDC.remove("requestId");
+       }
+   }, taskExecutor);
+   ```
+
+3. **分散トレーシングを導入する**
+   - Micrometer Tracing + Brave/OTelなどを使用
+   - 非同期処理でもtraceIdが伝播される
 
 ## 参考資料
 

@@ -26,7 +26,7 @@ public class BookDownloadUsecase {
 
     public byte[] execute(BookSearchQuery query) {
         var books = repository.download(query);
-        EventsCollector.record("book_download_executed", new DbMetadata(books.size()));
+        EventsCollector.addEvent("book_download_executed", new DbMetadata(books.size()));
 
         var text = mapBooksToCsvText(
                 books.stream().map(DownloadBooksResponse::from).toList());
@@ -42,7 +42,7 @@ public class BookDownloadUsecase {
             var text = mapper.writer(schema).writeValueAsString(data);
             var textWithBom = new String(UTF8_BOM) + text;
 
-            EventsCollector.record("csv_generation_executed", new CsvMetadata(data.size()));
+            EventsCollector.addEvent("csv_generation_executed", new CsvMetadata(data.size()));
 
             return textWithBom;
         } catch (JacksonException ex) {
