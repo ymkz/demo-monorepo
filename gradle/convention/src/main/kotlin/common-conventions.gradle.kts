@@ -70,6 +70,7 @@ tasks.register<Test>("intTest") {
     description = "Runs the integration-test suite."
     testClassesDirs = sourceSets["intTest"].output.classesDirs
     classpath = sourceSets["intTest"].runtimeClasspath
+    environment("TESTCONTAINERS_RYUK_DISABLED", "true")
 }
 
 tasks.named("build") {
