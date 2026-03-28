@@ -35,7 +35,7 @@ public class EventsCollector {
             return;
         }
 
-        ctx.events.add(new WideEventLog.Event(nowJst(), msg, metadata));
+        ctx.events.add(new WideEventLog.Event(WideEventLog.format(nowJst()), msg, metadata));
     }
 
     public static void setError(Exception ex, Object metadata) {
@@ -44,8 +44,8 @@ public class EventsCollector {
             return;
         }
 
-        WideEventLog.ErrorInfo errorInfo =
-                new WideEventLog.ErrorInfo(nowJst(), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
+        WideEventLog.ErrorInfo errorInfo = new WideEventLog.ErrorInfo(
+                WideEventLog.format(nowJst()), ex.getClass().getSimpleName(), ex.getMessage(), metadata);
 
         List<WideEventLog.Event> newEvents = new ArrayList<>(ctx.events);
         holder.set(new Context(ctx.requestId, ctx.method, ctx.path, ctx.requestedAt, newEvents, errorInfo));
@@ -65,8 +65,8 @@ public class EventsCollector {
                 ctx.requestId,
                 ctx.method,
                 ctx.path,
-                ctx.requestedAt,
-                now,
+                WideEventLog.format(ctx.requestedAt),
+                WideEventLog.format(now),
                 durationMs,
                 statusCode,
                 ctx.events,

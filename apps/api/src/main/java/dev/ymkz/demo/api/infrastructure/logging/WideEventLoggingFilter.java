@@ -28,19 +28,19 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } finally {
             try {
-                WideEventLog eventLog = EventsCollector.finalize(response.getStatus());
+                WideEventLog dto = EventsCollector.finalize(response.getStatus());
                 try {
                     var args = new Object[] {
-                        StructuredArguments.value("method", eventLog.method()),
-                        StructuredArguments.value("path", eventLog.path()),
-                        StructuredArguments.value("requestedAt", eventLog.requestedAt()),
-                        StructuredArguments.value("respondedAt", eventLog.respondedAt()),
-                        StructuredArguments.value("durationMs", eventLog.durationMs()),
-                        StructuredArguments.value("statusCode", eventLog.statusCode()),
-                        StructuredArguments.value("events", eventLog.events()),
-                        StructuredArguments.value("error", eventLog.error())
+                        StructuredArguments.value("method", dto.method()),
+                        StructuredArguments.value("path", dto.path()),
+                        StructuredArguments.value("requestedAt", dto.requestedAt()),
+                        StructuredArguments.value("respondedAt", dto.respondedAt()),
+                        StructuredArguments.value("durationMs", dto.durationMs()),
+                        StructuredArguments.value("statusCode", dto.statusCode()),
+                        StructuredArguments.value("events", dto.events()),
+                        StructuredArguments.value("error", dto.error())
                     };
-                    if (eventLog.error() != null) {
+                    if (dto.error() != null) {
                         log.error("request_error", args);
                     } else {
                         log.info("request_success", args);
@@ -48,11 +48,11 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
                 } catch (Exception ex) {
                     log.error(
                             "Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
-                            eventLog.requestId(),
-                            eventLog.path(),
-                            eventLog.statusCode(),
-                            eventLog.events().size(),
-                            eventLog.error() != null ? eventLog.error().exception() : "none",
+                            dto.requestId(),
+                            dto.path(),
+                            dto.statusCode(),
+                            dto.events().size(),
+                            dto.error() != null ? dto.error().exception() : "none",
                             ex);
                 }
             } finally {
