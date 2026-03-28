@@ -1,5 +1,5 @@
 ---
-name: verification-before-completion
+name: inspection-protocol
 description: コード変更後、必ず検証コマンドを実行してから完了宣言をする場合に使用する。GradleプロジェクトではspotlessCheck/test/build/intTestを、pnpmプロジェクトではbuild/lint/testを実行し、すべてパスすることを確認する。
 license: MIT
 compatibility: Gradle 8.0+, pnpm 9.5+, Node.js 18+
