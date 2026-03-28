@@ -28,9 +28,9 @@
     "@tailwindcss/vite": "^4.2.2",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "spiceflow": "latest",
+    "spiceflow": "catalog:",
     "tailwindcss": "^4.0.6",
-    "zod": "^3.25.0"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "catalog:",

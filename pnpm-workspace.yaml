@@ -20,6 +20,7 @@ catalog:
   postcss-simple-vars: 7.0.1
   react: 19.2.4
   react-dom: 19.2.4
+  spiceflow: 1.18.0-rsc.16
   typescript: 5.9.3
   vitest: 4.1.0
   wireit: 0.14.12
