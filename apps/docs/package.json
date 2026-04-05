@@ -17,7 +17,8 @@
     "react-dom": "catalog:",
     "fumadocs-core": "catalog:",
     "fumadocs-ui": "catalog:",
-    "fumadocs-mdx": "catalog:"
+    "fumadocs-mdx": "catalog:",
+    "mermaid": "^11.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
