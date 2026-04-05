@@ -139,6 +139,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      wireit:
+        specifier: 'catalog:'
+        version: 0.14.12
 
   apps/web-form:
     dependencies:
