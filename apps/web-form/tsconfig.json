@@ -14,13 +14,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "target": "ES2024",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
