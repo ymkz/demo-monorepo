@@ -41,9 +41,9 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
                         StructuredArguments.value("error", dto.error())
                     };
                     if (dto.error() != null) {
-                        log.error("request_error", args);
+                        log.error("response_error", args);
                     } else {
-                        log.info("request_success", args);
+                        log.info("response_success", args);
                     }
                 } catch (Exception ex) {
                     log.error(

@@ -1,59 +1,58 @@
 # WEB-TOOL APP
 
-**Generated:** 2026-02-23T21:16:51+09:00
+**Generated:** 2026-03-29
 **Parent:** /AGENTS.md
 
 ## OVERVIEW
-Next.js 16 Pages Router application with API routes and Mantine UI.
+Spiceflow RSC (React Server Components) application with Tailwind CSS.
 
 ## STRUCTURE
 ```
-apps/web-tool/src/
-├── pages/                 # Next.js Pages Router (legacy)
-│   ├── index.tsx          # Home page
-│   ├── _app.tsx           # Custom App component
-│   ├── _document.tsx      # Custom HTML document
-│   └── api/               # Next.js API routes
-│       └── books/
-│           └── download.ts # Backend proxy endpoint
-└── generated/             # Auto-generated from OpenAPI
-    ├── client/            # API client
-    └── core/              # Core types
+apps/web-tool/
+├── app/                  # Spiceflow application
+│   ├── main.tsx         # App entry with routes
+│   └── pages/           # RSC pages
+│       └── index.tsx    # Search page
+├── src/
+│   └── generated/       # Auto-generated from OpenAPI
+│       ├── client/      # API client
+│       └── core/        # Core types
+├── vite.config.ts       # Vite + Spiceflow plugin
+└── package.json
 ```
 
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Pages | `src/pages/` | Pages Router file-based routing |
-| API Routes | `src/pages/api/` | Next.js API endpoints (server-side) |
+| Routes | `app/main.tsx` | Spiceflow routes with type-safe handlers |
+| Pages | `app/pages/` | RSC components |
 | API Client | `src/generated/client/` | Auto-generated from backend OpenAPI |
 | Config | `openapi-ts.config.ts` | OpenAPI codegen configuration |
-| UI Components | Mantine | UI library |
+| Styles | Tailwind CSS | Utility-first styling |
 
 ## CONVENTIONS
 
-### Pages Router Patterns
-- `getServerSideProps` for server-rendered pages
-- Custom App via `_app.tsx` for global state/providers
-- Custom Document via `_document.tsx` for HTML structure
-- API routes in `pages/api/` for backend endpoints
+### Spiceflow Patterns
+- Routes defined in `main.tsx` using `.route()` method
+- RSC pages in `pages/` directory
+- Layout at root level with `.layout('/*', ...)`
+- Type-safe queries using Zod schemas
 
-### OpenAPI Workflow
-1. Backend generates OpenAPI spec via `springdoc-openapi`
-2. Frontend runs `pnpm generate:web-tool` → `@hey-api/openapi-ts`
-3. Generated code in `src/generated/` (gitignored)
+### API Routes
+- Use `.route()` with method/path/query/response schemas
+- Proxy to backend via fetch()
+- Environment variables for tokens (API_TOKEN)
 
 ### Development
-- Port 4000 (via `next dev --turbopack -p 4000`)
-- Turbopack enabled for faster dev builds
+- Port 4000 (via `vite dev --port 4000`)
+- Vite for fast HMR
 - Biome for linting (run `pnpm lint`)
 
 ## ANTI-PATTERNS
 
 | Pattern | Why Forbidden |
 |---------|---------------|
-| **Hardcoded API tokens** | `pages/api/books/download.ts` has `"X-API-Token": "TODO"` - CRITICAL SECURITY ISSUE |
+| Hardcoded secrets | Use environment variables |
 | Manual API types | Use generated OpenAPI types instead |
-| Mixed routers | Don't mix App Router patterns into Pages Router |
-| Client-only secrets | Never store tokens in frontend code |
+| Client-side state | Use RSC server state instead |

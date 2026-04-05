@@ -19,14 +19,14 @@
       "command": "openapi-ts"
     },
     "dev": {
-      "command": "next dev --turbopack -p 3000",
+      "command": "vite dev",
       "service": true,
       "dependencies": [
         "generate:openapi"
       ]
     },
     "build": {
-      "command": "next build",
+      "command": "vite build",
       "dependencies": [
         "generate:openapi"
       ]
@@ -53,11 +53,20 @@
   "dependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
-    "next": "catalog:"
+    "pino": "catalog:",
+    "spiceflow": "catalog:",
+    "tailwindcss": "catalog:",
+    "temporal-polyfill-lite": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",
+    "@tailwindcss/vite": "catalog:",
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:"
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "vitest": "catalog:",
+    "vite": "catalog:"
   }
 }

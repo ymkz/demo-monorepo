@@ -5,24 +5,24 @@ packages:
 catalog:
   "@biomejs/biome": 2.4.9
   "@hey-api/openapi-ts": 0.94.5
-  "@mantine/core": 8.3.18
-  "@mantine/hooks": 8.3.18
+  "@tailwindcss/vite": 4.1.0
   "@types/node": 24.12.0
   "@types/react": 19.2.14
   "@types/react-dom": 19.2.3
+  "@vitejs/plugin-react": 4.3.4
   "@vitest/coverage-v8": 4.1.2
-  httpxy: 0.5.0
   knip: 5.88.1
-  next: 16.2.1
-  nuqs: 2.8.9
-  postcss: 8.5.8
-  postcss-preset-mantine: 1.18.0
-  postcss-simple-vars: 7.0.1
+  pino: 10.3.1
   react: 19.2.4
   react-dom: 19.2.4
+  spiceflow: 1.18.0-rsc.18
+  tailwindcss: 4.1.0
+  temporal-polyfill-lite: 0.3.3
   typescript: 5.9.3
+  vite: 6.2.0
   vitest: 4.1.2
   wireit: 0.14.12
+  zod: 4.3.6
 
 catalogMode: strict
 
@@ -33,4 +33,4 @@ managePackageManagerVersions: true
 syncInjectedDepsAfterScripts:
   - build
 
-useNodeVersion: 24.13.0
+useNodeVersion: 25.6.1

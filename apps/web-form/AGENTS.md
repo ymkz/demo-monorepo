@@ -1,50 +1,56 @@
-# WEB-FRAME APP
+# WEB-FORM APP
 
-**Generated:** 2026-02-23T21:16:51+09:00
+**Generated:** 2026-03-30
 **Parent:** /AGENTS.md
 
 ## OVERVIEW
-Next.js 16 App Router application consuming OpenAPI-generated backend types.
+Spiceflow RSC (React Server Components) application with Tailwind CSS.
 
 ## STRUCTURE
 ```
-apps/web-form/src/
-├── app/                    # Next.js App Router (new)
-│   ├── layout.tsx          # Root layout
-│   ├── page.tsx            # Home page
-│   └── global.css          # Global styles
-└── generated/              # Auto-generated from OpenAPI
-    ├── client/             # API client
-    └── core/               # Core types
+apps/web-form/
+├── src/
+│   ├── index.tsx          # App entry with routes
+│   ├── components/        # Shared components
+│   │   └── layout.tsx     # Root layout component
+│   ├── routes/            # RSC pages
+│   │   └── index.tsx      # Home page
+│   ├── style.css          # Global styles
+│   └── generated/         # Auto-generated from OpenAPI
+│       ├── client/        # API client
+│       └── core/          # Core types
+├── vite.config.ts         # Vite + Spiceflow plugin
+└── package.json
 ```
 
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Pages | `src/app/` | App Router file-based routing |
+| Routes | `src/index.tsx` | Spiceflow routes with type-safe handlers |
+| Pages | `src/routes/` | RSC components |
+| Layout | `src/components/layout.tsx` | Shared layout component |
 | API Client | `src/generated/client/` | Auto-generated from backend OpenAPI |
 | Type definitions | `src/generated/core/` | TypeScript types from OpenAPI spec |
-| Styles | `src/app/global.css` | Global CSS with Tailwind/Mantine |
+| Styles | `src/style.css` | Global CSS with Tailwind CSS |
 | Config | `openapi-ts.config.ts` | OpenAPI codegen configuration |
 
 ## CONVENTIONS
 
-### OpenAPI Workflow
-1. Backend generates OpenAPI spec via `springdoc-openapi`
-2. Frontend runs `pnpm generate:web-form` → `@hey-api/openapi-ts`
-3. Generated code in `src/generated/` (gitignored)
-4. Use generated client for type-safe API calls
+### Spiceflow Patterns
+- Routes defined in `index.tsx` using `.page()` method
+- RSC pages in `routes/` directory
+- Layout at root level with `.layout('/*', ...)`
+- Type-safe queries using Zod schemas (when needed)
 
-### App Router Patterns
-- Use Server Components by default
-- File-based routing: `app/books/[id]/page.tsx`
-- `layout.tsx` for shared UI
-- `page.tsx` for route handlers
+### API Routes
+- Use `.route()` with method/path/query/response schemas
+- Proxy to backend via fetch()
+- Environment variables for configuration
 
 ### Development
-- Port 3000 (via `next dev --turbopack -p 3000`)
-- Turbopack enabled for faster dev builds
+- Port 3000 (via `vite dev`)
+- Vite for fast HMR
 - Biome for linting (run `pnpm lint`)
 
 ## ANTI-PATTERNS
@@ -52,5 +58,5 @@ apps/web-form/src/
 | Pattern | Why Forbidden |
 |---------|---------------|
 | Manual API types | Use generated OpenAPI types instead |
-| Mixed Server/Client | Use `'use client'` directive explicitly when needed |
-| Fetch directly | Use generated API client for consistency |
+| Hardcoded secrets | Use environment variables |
+| Client-side state | Use RSC server state instead |
