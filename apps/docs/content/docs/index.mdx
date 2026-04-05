@@ -1,0 +1,25 @@
+---
+title: "Demo Monorepo ドキュメント"
+description: "社内開発者向けドキュメントサイト"
+---
+
+# Demo Monorepo ドキュメント
+
+このサイトでは、プロジェクトの開発ガイド、APIリファレンス、アーキテクチャ決定記録などを提供します。
+
+## クイックスタート
+
+- [開発環境のセットアップ](/docs/guides/setup)
+- [APIリファレンス](/docs/api)
+- [データベース設計](/docs/database)
+
+## プロジェクト構成
+
+このモノレポは以下のアプリケーションで構成されています：
+
+| アプリ | 説明 | ポート |
+|--------|------|--------|
+| `apps/api` | Spring Boot REST API | 8080 |
+| `apps/web-form` | Next.js App Router フロントエンド | 3000 |
+| `apps/web-tool` | Next.js Pages Router フロントエンド | 4000 |
+| `apps/docs` | ドキュメントサイト（本サイト） | 5000 |
