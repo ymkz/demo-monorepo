@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "apps/api/src/main/resources/static/openapi/**"
+      - ".github/workflows/gh-pages.yml"
 
 permissions:
   contents: read
@@ -26,35 +29,25 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+      - name: Create dist directory
+        run: mkdir -p dist
 
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version-file: package.json
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Build docs
-        run: pnpm --filter @demo/docs build
-
-      - name: Copy OpenAPI to docs
+      - name: Copy OpenAPI files
         run: |
-          mkdir -p apps/docs/dist/api
-          cp -r apps/api/src/main/resources/static/openapi apps/docs/dist/api/openapi
+          cp -r apps/api/src/main/resources/static/openapi dist/
 
-      - name: Create redirect index.html
+      - name: Create index.html
         run: |
-          cat > apps/docs/dist/index.html << 'EOF'
+          cat > dist/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
             <meta charset="UTF-8">
-            <meta http-equiv="refresh" content="0; url=./docs/">
+            <meta http-equiv="refresh" content="0; url=./openapi/">
             <title>Redirecting...</title>
           </head>
           <body>
-            <p>Redirecting to <a href="./docs/">documentation</a>...</p>
+            <p>Redirecting to <a href="./openapi/">OpenAPI Documentation</a>...</p>
           </body>
           </html>
           EOF
@@ -63,7 +56,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
-          path: apps/docs/dist
+          path: dist
 
   deploy:
     runs-on: ubuntu-latest
