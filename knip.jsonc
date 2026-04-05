@@ -1,5 +1,5 @@
 {
   "$schema": "./node_modules/knip/schema.json",
-  // TypeScriptで記述する各種設定ファイルファイルと自動生成ファイルは対象としない
-  "ignore": ["**/*.config.ts", "**/*.setup.ts", "**/generated/**/*"]
+  // TypeScriptで記述する各種設定ファイルと自動生成ファイルは対象としない
+  "ignore": ["**/*.config.ts", "**/generated/**/*"]
 }
