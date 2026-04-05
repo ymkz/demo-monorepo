@@ -32,7 +32,10 @@
       ]
     },
     "typecheck": {
-      "command": "tsc --noEmit"
+      "command": "tsc --noEmit",
+      "dependencies": [
+        "generate:openapi"
+      ]
     },
     "test": {
       "command": "vitest --run",
