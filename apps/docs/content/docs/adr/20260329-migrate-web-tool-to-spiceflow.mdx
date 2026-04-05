@@ -1,0 +1,156 @@
+---
+title: "ADR 002: web-toolをSpiceflow RSCに移行"
+description: "Next.js Pages RouterからSpiceflow RSCへの移行"
+date: 2026-03-29
+status: accepted
+---
+
+# ADR 002: web-toolをSpiceflow RSCに移行
+
+**Status:** Accepted  
+**Date:** 2026-03-29  
+**Deciders:** @ymkz
+
+## Context
+
+`apps/web-tool`はNext.js 16 Pages Routerで構築されていたが、以下の課題があった：
+
+1. **アーキテクチャの不統一**: web-formはNext.js App Router、web-toolはPages Routerと異なるパラダイムが混在
+2. **型安全性の欠如**: Next.jsのAPI Routesは手動での型定義が必要で、OpenAPIスキーマとの同期が困難
+3. **複雑な状態管理**: getServerSideProps + nuqsによるクエリパラメータ管理が複雑化
+4. **セキュリティ問題**: APIトークンがハードコードされていた（`"X-API-Token": "TODO"`）
+5. **重厚なフレームワーク**: Next.jsの機能の多くが未使用ながらビルド・依存関係に影響
+
+## Decision
+
+**web-toolをSpiceflow RSC（React Server Components）フレームワークに移行する。**
+
+具体的な変更：
+
+- **フレームワーク**: Next.js 16 → Spiceflow 1.18.0-rsc
+- **レンダリング**: Pages Router（クライアント/サーバー混合）→ RSC（サーバーファースト）
+- **スタイリング**: Mantine → Tailwind CSS
+- **クエリパラメータ**: nuqs → Zodスキーマによる型安全なバリデーション
+- **ビルドツール**: Next.js独自 → Vite
+- **ポート**: 4000（維持）
+
+## Consequences
+
+### Positive
+
+- **型安全性の向上**: APIルートとクエリパラメータがZodスキーマで完全に型付けされる
+- **シンプルなアーキテクチャ**: Next.jsの複雑な抽象化レイヤーがなくなり、コードの可読性向上
+- **一貫したエラーハンドリング**: Spiceflowの標準的な`throw new Response()`パターン
+- **セキュリティ改善**: 環境変数によるAPIトークン管理
+- **高速な開発体験**: ViteのHMRによる即時フィードバック
+- **軽量な依存関係**: Next.js関連パッケージの削除によりnode_modulesサイズ削減
+
+### Negative
+
+- **エコシステムの差異**: Next.jsの豊富なプラグイン・ミドルウェアが直接使用不可
+- **移行コスト**: 既存コードの全面的な書き換えが必要
+- **学習曲線**: チームメンバーがSpiceflowの概念（RSC、Server Actions等）を学習する必要
+- **インフラの変更**: デプロイ方法の見直しが必要（Viteビルド成果物の扱い）
+
+### Neutral
+
+- **OpenAPI連携**: `@hey-api/openapi-ts`は継続使用（生成コードのパス変更のみ）
+- **Wireit**: ビルドパイプラインは引き続きWireitで管理
+
+## Alternatives Considered
+
+### 1. Next.js App Routerへの移行（Rejected）
+
+**検討理由**: 既にweb-formで使用しており、統一性がある。
+
+**却下理由**:
+- App RouterもPages Routerと同様に重厚なフレームワーク
+- RSCの扱いが複雑（Server Components/Client Componentsの境界管理）
+- API Routesの型安全性が依然として不十分
+
+### 2. Hono + React（Rejected）
+
+**検討理由**: 軽量で型安全なAPIフレームワーク。
+
+**却下理由**:
+- RSC（React Server Components）のサポートが不完全
+- フルスタックフレームワークとしての機能が不足
+
+### 3. Remix（Rejected）
+
+**検討理由**: サーバーサイドレンダリングに強みがある。
+
+**却下理由**:
+- RSC非対応（当時）
+- より重厚なフレームワーク構成
+
+## Implementation Notes
+
+### 移行手順
+
+1. **依存関係の入れ替え**
+   ```json
+   // 削除
+   "next": "catalog:",
+   "@mantine/core": "catalog:",
+   "nuqs": "catalog:",
+   
+   // 追加
+   "spiceflow": "catalog:",
+   "tailwindcss": "catalog:",
+   "zod": "catalog:"
+   ```
+
+2. **設定ファイルの更新**
+   - `vite.config.ts`を新規作成
+   - `tsconfig.json`からNext.js固有設定を削除
+   - `postcss.config.cjs`を削除（TailwindはViteプラグインで使用）
+
+3. **コード構造の変更**
+   ```
+   src/pages/index.tsx          → app/pages/index.tsx
+   src/pages/api/books/download.ts → app/main.tsx（統合）
+   src/pages/_app.tsx           → 削除（layoutで代替）
+   src/pages/_document.tsx      → 削除（layoutで代替）
+   ```
+
+4. **クエリパラメータの移行**
+   ```typescript
+   // Before (nuqs)
+   const searchParams = {
+     isbn: parseAsString,
+     limit: parseAsInteger.withDefault(20)
+   };
+   const loadSearchParams = createLoader(searchParams);
+   
+   // After (Zod)
+   const searchQuerySchema = z.object({
+     isbn: z.string().optional(),
+     limit: z.coerce.number().default(20)
+   });
+   ```
+
+5. **APIルートの型安全化**
+   ```typescript
+   .route({
+     method: "GET",
+     path: "/api/books/download",
+     query: searchQuerySchema,
+     async handler({ query }) {
+       // queryは完全に型付けされている
+     }
+   })
+   ```
+
+### 環境変数
+
+```bash
+# .env.local
+API_TOKEN=<backend-api-token>
+```
+
+## References
+
+- [Spiceflow Documentation](https://github.com/remorses/spiceflow)
+- [React Server Components RFC](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md)
+- [Zod Documentation](https://zod.dev/)
