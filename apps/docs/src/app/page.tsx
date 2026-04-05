@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
 export default function HomePage() {
-	redirect("/docs");
+	const basePath = process.env.NODE_ENV === "production" ? "/demo-monorepo" : "";
+	redirect(`${basePath}/docs`);
 }
