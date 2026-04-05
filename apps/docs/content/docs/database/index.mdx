@@ -1,0 +1,36 @@
+---
+title: "データベース設計"
+description: "データベース構成と設計方針"
+---
+
+# データベース設計
+
+## 概要
+
+このプロジェクトではMySQLを使用しています。データベーススキーマはtblsを使用して自動生成されています。
+
+## テーブル一覧
+
+| テーブル | 説明 | カラム数 |
+|----------|------|----------|
+| [authors](/docs/database/schema/authors) | 著者の情報を格納するテーブル | 5 |
+| [books](/docs/database/schema/books) | 書籍の基本情報を格納するテーブル | 11 |
+| [publishers](/docs/database/schema/publishers) | 出版社の情報を格納するテーブル | 5 |
+| [book_status](/docs/database/schema/book_status) | 書籍のステータスマスタを格納するテーブル | 5 |
+
+## ER図
+
+詳細なER図は[ER図ページ](/docs/database/er-diagram)を参照してください。
+
+## スキーマ定義
+
+各テーブルの詳細定義は[スキーマページ](/docs/database/schema)を参照してください。
+
+## スキーマ更新手順
+
+```sh
+REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
+tbls doc mysql://demo_user:${DEMODB_DEMOUSER_PASSWORD}@localhost:3306/demo_db "${REPOSITORY_ROOT}/docs/database/schema" --force
+```
+
+上記コマンドを実行することでスキーマの情報が更新されます。
