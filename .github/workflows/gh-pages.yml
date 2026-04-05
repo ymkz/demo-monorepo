@@ -43,6 +43,22 @@ jobs:
           mkdir -p apps/docs/dist/api
           cp -r apps/api/src/main/resources/static/openapi apps/docs/dist/api/openapi
 
+      - name: Create redirect index.html
+        run: |
+          cat > apps/docs/dist/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0; url=./docs/">
+            <title>Redirecting...</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="./docs/">documentation</a>...</p>
+          </body>
+          </html>
+          EOF
+
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
 
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
