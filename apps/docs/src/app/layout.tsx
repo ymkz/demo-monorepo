@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../styles/globals.css";
 import { RootProvider } from "fumadocs-ui/provider";
 import type { ReactNode } from "react";
 
