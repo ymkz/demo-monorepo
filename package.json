@@ -21,22 +21,19 @@
     "dev": {
       "dependencies": [
         "./apps/web-form:dev",
-        "./apps/web-tool:dev",
-        "./apps/docs:dev"
+        "./apps/web-tool:dev"
       ]
     },
     "build": {
       "dependencies": [
         "./apps/web-form:build",
-        "./apps/web-tool:build",
-        "./apps/docs:build"
+        "./apps/web-tool:build"
       ]
     },
     "typecheck": {
       "dependencies": [
         "./apps/web-form:typecheck",
-        "./apps/web-tool:typecheck",
-        "./apps/docs:typecheck"
+        "./apps/web-tool:typecheck"
       ]
     },
     "test": {
