@@ -84,15 +84,15 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.2(@types/node@24.12.0)(vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2))
       wireit:
         specifier: 'catalog:'
         version: 0.14.12
 
   apps/web-form:
     dependencies:
+      pino:
+        specifier: 'catalog:'
+        version: 10.3.1
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -105,6 +105,12 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.0
+      temporal-polyfill-lite:
+        specifier: 'catalog:'
+        version: 0.3.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.6
     devDependencies:
       '@hey-api/openapi-ts':
         specifier: 'catalog:'
@@ -170,9 +176,15 @@ importers:
       '@vitejs/plugin-react':
         specifier: 'catalog:'
         version: 4.3.4(vite@6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2))
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 4.1.2(vitest@4.1.2(@types/node@24.12.0)(vite@6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)))
       vite:
         specifier: 'catalog:'
         version: 6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.2(@types/node@24.12.0)(vite@6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2))
 
 packages:
 
@@ -1840,46 +1852,6 @@ packages:
       yaml:
         optional: true
 
-  vite@7.1.5:
-    resolution: {integrity: sha512-4cKBO9wR75r0BeIWWWId9XK9Lj6La5X846Zw9dFfzMRw38IlTk2iCcUt6hsyiDRcPidc55ZParFYDXi0nXOeLQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
-      jiti: '>=1.21.0'
-      less: ^4.0.0
-      lightningcss: ^1.21.0
-      sass: ^1.70.0
-      sass-embedded: ^1.70.0
-      stylus: '>=0.54.8'
-      sugarss: ^5.0.0
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
   vitefu@1.1.3:
     resolution: {integrity: sha512-ub4okH7Z5KLjb6hDyjqrGXqWtWvoYdU3IGm/NorpgHncKoLTCfRIbvlhBm7r0YstIaQRYlp4yEbFqDcKSzXSSg==}
     peerDependencies:
@@ -1966,9 +1938,6 @@ packages:
 
   zimmerframe@1.1.4:
     resolution: {integrity: sha512-B58NGBEoc8Y9MWWCQGl/gq9xBCe4IiKM0a2x7GZdQKOW5Exr8S1W24J6OgM1njK8xCRGvAJIL/MxXHf6SkmQKQ==}
-
-  zod@4.1.11:
-    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
 
   zod@4.3.6:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
@@ -2650,14 +2619,6 @@ snapshots:
     optionalDependencies:
       vite: 6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)
 
-  '@vitest/mocker@4.1.2(vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2))':
-    dependencies:
-      '@vitest/spy': 4.1.2
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)
-
   '@vitest/pretty-format@4.1.2':
     dependencies:
       tinyrainbow: 3.1.0
@@ -3043,7 +3004,7 @@ snapshots:
       typescript: 5.9.3
       unbash: 2.2.0
       yaml: 2.8.2
-      zod: 4.1.11
+      zod: 4.3.6
 
   lightningcss-darwin-arm64@1.29.2:
     optional: true
@@ -3467,22 +3428,6 @@ snapshots:
       sugarss: 5.0.1(postcss@8.5.8)
       yaml: 2.8.2
 
-  vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2):
-    dependencies:
-      esbuild: 0.25.9
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.8
-      rollup: 4.50.1
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 24.12.0
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      lightningcss: 1.29.2
-      sugarss: 5.0.1(postcss@8.5.8)
-      yaml: 2.8.2
-
   vitefu@1.1.3(vite@6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)):
     optionalDependencies:
       vite: 6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)
@@ -3508,33 +3453,6 @@ snapshots:
       tinyglobby: 0.2.15
       tinyrainbow: 3.1.0
       vite: 6.2.0(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 24.12.0
-    transitivePeerDependencies:
-      - msw
-
-  vitest@4.1.2(@types/node@24.12.0)(vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)):
-    dependencies:
-      '@vitest/expect': 4.1.2
-      '@vitest/mocker': 4.1.2(vite@7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2))
-      '@vitest/pretty-format': 4.1.2
-      '@vitest/runner': 4.1.2
-      '@vitest/snapshot': 4.1.2
-      '@vitest/spy': 4.1.2
-      '@vitest/utils': 4.1.2
-      es-module-lexer: 2.0.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.3
-      std-env: 4.0.0
-      tinybench: 2.9.0
-      tinyexec: 1.0.2
-      tinyglobby: 0.2.15
-      tinyrainbow: 3.1.0
-      vite: 7.1.5(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.29.2)(sugarss@5.0.1(postcss@8.5.8))(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.12.0
@@ -3579,7 +3497,5 @@ snapshots:
   yaml@2.8.2: {}
 
   zimmerframe@1.1.4: {}
-
-  zod@4.1.11: {}
 
   zod@4.3.6: {}

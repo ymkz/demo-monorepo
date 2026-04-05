@@ -61,7 +61,6 @@
     "@types/node": "catalog:",
     "knip": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:",
     "wireit": "catalog:"
   }
 }

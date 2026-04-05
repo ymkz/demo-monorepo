@@ -53,8 +53,11 @@
   "dependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
+    "pino": "catalog:",
     "spiceflow": "catalog:",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "catalog:",
+    "temporal-polyfill-lite": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",
