@@ -7,7 +7,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["apps/web-form/**", "apps/web-tool/**", "apps/docs/**", "!**/generated"]
+    "includes": ["apps/web-form/**", "apps/web-tool/**", "apps/docs/**", "!**/generated", "!**/.source"]
   },
   "formatter": {
     "lineWidth": 120

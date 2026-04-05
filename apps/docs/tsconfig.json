@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/content": ["./content/*"]
+      "@/content": ["./content/*"],
+      ".source/*": ["./.source/*"]
     },
     "plugins": [{ "name": "next" }]
   },
