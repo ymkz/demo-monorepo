@@ -1,12 +1,13 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "root": true,
   "vcs": {
     "clientKind": "git",
     "enabled": true,
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["apps/web-form/**", "apps/web-tool/**", "!**/generated"]
+    "includes": ["apps/web-form/**", "apps/web-tool/**", "apps/docs/**", "!**/generated"]
   },
   "formatter": {
     "lineWidth": 120

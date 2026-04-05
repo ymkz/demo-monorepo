@@ -2,6 +2,10 @@
   "name": "@demo/docs",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "next dev -p 5000",
     "build": "wireit",
@@ -9,19 +13,31 @@
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",
-    "generate-openapi": "wireit"
+    "generate:openapi": "wireit"
   },
   "wireit": {
-    "generate-openapi": {
+    "generate:openapi": {
       "command": "cd ../.. && ./gradlew :apps:api:generateOpenApiDocs --quiet || echo 'OpenAPI generation skipped'",
-      "files": ["../../api/src/**/*"],
-      "output": ["../../api/build/openapi.json"]
+      "files": [
+        "../../api/src/**/*"
+      ],
+      "output": [
+        "../../api/build/openapi.json"
+      ]
     },
     "build": {
-      "dependencies": ["generate-openapi"],
+      "dependencies": [
+        "generate:openapi"
+      ],
       "command": "next build",
-      "files": ["src/**/*", "../../api/build/openapi.json"],
-      "output": [".next/**", "dist/**"]
+      "files": [
+        "src/**/*",
+        "../../api/build/openapi.json"
+      ],
+      "output": [
+        ".next/**",
+        "dist/**"
+      ]
     }
   },
   "dependencies": {
