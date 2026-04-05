@@ -1,0 +1,74 @@
+---
+title: "ローカル開発ガイド"
+description: "日々の開発作業での推奨手法"
+---
+
+# ローカル開発ガイド
+
+## 開発ワークフロー
+
+### ブランチ戦略
+
+- `main`: 本番環境
+- `feature/*`: 機能開発
+- `fix/*`: バグ修正
+
+### コミットメッセージ
+
+```
+feat: 新機能追加
+fix: バグ修正
+docs: ドキュメント更新
+refactor: リファクタリング
+test: テスト追加・修正
+chore: その他
+```
+
+## コード品質
+
+### チェックコマンド
+
+```bash
+# フロントエンド
+pnpm check          # lint + typecheck
+pnpm check:fix      # 自動修正
+
+# バックエンド
+./gradlew spotlessCheck   # フォーマットチェック
+./gradlew spotlessApply   # 自動修正
+```
+
+### テスト実行
+
+```bash
+# フロントエンド
+pnpm test
+
+# バックエンド
+./gradlew test      # 単体テスト
+./gradlew intTest   # 統合テスト
+```
+
+## トラブルシューティング
+
+### ポート競合
+
+`.env`でポートを変更：
+
+```env
+WEB_FORM_PORT=3001
+WEB_TOOL_PORT=4001
+API_PORT=8081
+DOCS_PORT=5001
+```
+
+### データベース接続エラー
+
+```bash
+# MySQLコンテナ再起動
+docker-compose restart mysql
+
+# データ初期化（注意：データが消えます）
+docker-compose down -v
+docker-compose up -d mysql
+```

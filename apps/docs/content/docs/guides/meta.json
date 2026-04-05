@@ -1,0 +1,4 @@
+{
+  "title": "開発ガイド",
+  "pages": ["setup", "local-dev", "testing"]
+}
