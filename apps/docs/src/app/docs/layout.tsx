@@ -1,15 +1,9 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
-import { source } from "../../../source";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
-		<DocsLayout
-			tree={source.pageTree}
-			nav={{
-				title: "Demo Monorepo Docs",
-			}}
-		>
+		<DocsLayout tree={{ name: "docs", children: [] }} nav={{ title: "Demo Docs" }}>
 			{children}
 		</DocsLayout>
 	);
