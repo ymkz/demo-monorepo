@@ -39,7 +39,9 @@ jobs:
         run: pnpm --filter @demo/docs build
 
       - name: Copy OpenAPI to docs
-        run: cp -r apps/api/src/main/resources/static/openapi apps/docs/dist/api/openapi
+        run: |
+          mkdir -p apps/docs/dist/api
+          cp -r apps/api/src/main/resources/static/openapi apps/docs/dist/api/openapi
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
 
