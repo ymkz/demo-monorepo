@@ -1,0 +1,7 @@
+{
+  "extends": ["../../biome.jsonc"],
+  "files": {
+    "include": ["src/**/*", "content/**/*"],
+    "ignore": [".next", "dist", "node_modules"]
+  }
+}

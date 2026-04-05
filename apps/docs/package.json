@@ -1,0 +1,46 @@
+{
+  "name": "@demo/docs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5000",
+    "build": "wireit",
+    "start": "next start",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "generate-openapi": "wireit"
+  },
+  "wireit": {
+    "generate-openapi": {
+      "command": "cd ../.. && ./gradlew :apps:api:generateOpenApiDocs --quiet || echo 'OpenAPI generation skipped'",
+      "files": ["../../api/src/**/*"],
+      "output": ["../../api/build/openapi.json"]
+    },
+    "build": {
+      "dependencies": ["generate-openapi"],
+      "command": "next build",
+      "files": ["src/**/*", "../../api/build/openapi.json"],
+      "output": [".next/**", "dist/**"]
+    }
+  },
+  "dependencies": {
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "fumadocs-core": "^14.0.0",
+    "fumadocs-ui": "^14.0.0",
+    "fumadocs-mdx": "^11.0.0",
+    "fumadocs-openapi": "^5.0.0",
+    "mermaid": "^11.0.0",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "wireit": "catalog:"
+  }
+}
