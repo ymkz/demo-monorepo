@@ -1,3 +1,9 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/")({
+	component: IndexPage,
+});
+
 export function IndexPage() {
 	return (
 		<div className="min-h-screen flex flex-col">

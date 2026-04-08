@@ -1,28 +1,14 @@
-import { z } from "zod";
+import { createFileRoute } from "@tanstack/react-router";
+import { parseSearchParams, toDownloadSearchParams } from "../lib/search-params";
 
-export const searchParamSchema = z.object({
-	isbn: z.string().optional(),
-	title: z.string().optional(),
-	status: z.string().optional(),
-	priceFrom: z.coerce.number().int().optional(),
-	priceTo: z.coerce.number().int().optional(),
-	publishedAtStart: z.iso.datetime({ local: true, offset: true }).optional(),
-	publishedAtEnd: z.iso.datetime({ local: true, offset: true }).optional(),
-	order: z.string().default("-published_at"),
-	offset: z.coerce.number().int().default(0),
-	limit: z.coerce.number().int().default(20),
+export const Route = createFileRoute("/")({
+	validateSearch: parseSearchParams,
+	component: IndexPage,
 });
 
-type Props = {
-	query: z.infer<typeof searchParamSchema>;
-};
-
-export function IndexPage({ query }: Props) {
-	const downloadUrl = `/books/download?${new URLSearchParams(
-		Object.entries(query)
-			.filter(([, v]) => v !== undefined && v !== null)
-			.map(([k, v]) => [k, String(v)]),
-	)}`;
+function IndexPage() {
+	const query = Route.useSearch();
+	const downloadUrl = `/books/download?${toDownloadSearchParams(query).toString()}`;
 
 	return (
 		<div className="min-h-screen flex flex-col">
