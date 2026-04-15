@@ -28,16 +28,9 @@
       "enabled": true
     }
   },
-  "overrides": [
-    {
-      "includes": ["**/globals.css"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noUnknownAtRules": "off"
-          }
-        }
-      }
+  "assist": {
+    "actions": {
+      "recommended": true
     }
-  ]
+  }
 }

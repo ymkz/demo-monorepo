@@ -1,29 +1,29 @@
 {
   "biome.enabled": true,
   "prettier.enable": true,
-  "typescript.preferences.importModuleSpecifier": "shortest",
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "javascript.updateImportsOnFileMove.enabled": "always",
+  "js/ts.preferences.importModuleSpecifier": "shortest",
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "js/ts.updateImportsOnFileMove.enabled": "always",
   "java.autobuild.enabled": false,
   "java.compile.nullAnalysis.mode": "automatic",
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.completion.importOrder": ["#"],
   "spring-boot.ls.problem.application-yaml.YAML_UNKNOWN_PROPERTY": "IGNORE",
-  "[markdown][html]": {
+  "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true
+    "editor.formatOnSave": true
   },
   "[yaml][dockercompose]": {
     "editor.defaultFormatter": "redhat.vscode-yaml",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true
+    "editor.formatOnSave": true
   },
-  "[css][json][jsonc][javascript][typescript][typescriptreact]": {
+  "[toml]": {
+    "editor.defaultFormatter": "tombi-toml.tombi",
+    "editor.formatOnSave": true
+  },
+  "[html][css][json][jsonc][javascript][typescript][typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome",
     "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
       "quickfix.biome": "explicit",
       "source.organizeImports.biome": "explicit"
