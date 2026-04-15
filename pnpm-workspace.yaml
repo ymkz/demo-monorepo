@@ -15,6 +15,7 @@ catalog:
   pino: 10.3.1
   react: 19.2.4
   react-dom: 19.2.4
+  # renovate: ignore
   spiceflow: 1.18.0-rsc.18
   tailwindcss: 4.1.0
   temporal-polyfill-lite: 0.3.3
