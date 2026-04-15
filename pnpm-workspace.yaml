@@ -13,10 +13,18 @@ catalog:
   "@vitest/coverage-v8": 4.1.4
   knip: 5.88.1
   pino: 10.3.1
+<<<<<<< renovate/npm-dependencies
   react: 19.2.5
   react-dom: 19.2.5
   spiceflow: 1.18.0
   tailwindcss: 4.2.2
+=======
+  react: 19.2.4
+  react-dom: 19.2.4
+  # renovate: ignore
+  spiceflow: 1.18.0-rsc.18
+  tailwindcss: 4.1.0
+>>>>>>> main
   temporal-polyfill-lite: 0.3.3
   typescript: 5.9.3
   vite: 6.4.2

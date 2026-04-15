@@ -3,6 +3,7 @@
 .next/
 .settings/
 .wireit/
+.worktrees/
 bin/
 build/
 coverage/
