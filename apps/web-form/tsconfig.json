@@ -16,6 +16,6 @@
     "target": "ES2024",
     "lib": ["dom", "dom.iterable", "esnext"]
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
   "exclude": ["node_modules"]
 }
