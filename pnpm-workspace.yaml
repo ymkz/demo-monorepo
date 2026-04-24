@@ -34,4 +34,4 @@ managePackageManagerVersions: true
 syncInjectedDepsAfterScripts:
   - build
 
-useNodeVersion: 25.6.1
+useNodeVersion: 25.9.0
