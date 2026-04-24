@@ -8,79 +8,78 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as BooksDownloadRouteImport } from './routes/books/download'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as BooksDownloadRouteImport } from "./routes/books/download";
+import { Route as IndexRouteImport } from "./routes/index";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const BooksDownloadRoute = BooksDownloadRouteImport.update({
-  id: '/books/download',
-  path: '/books/download',
+  id: "/books/download",
+  path: "/books/download",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/books/download': typeof BooksDownloadRoute
+  "/": typeof IndexRoute;
+  "/books/download": typeof BooksDownloadRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/books/download': typeof BooksDownloadRoute
+  "/": typeof IndexRoute;
+  "/books/download": typeof BooksDownloadRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/books/download': typeof BooksDownloadRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/books/download": typeof BooksDownloadRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/books/download'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/books/download'
-  id: '__root__' | '/' | '/books/download'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/books/download";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/books/download";
+  id: "__root__" | "/" | "/books/download";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  BooksDownloadRoute: typeof BooksDownloadRoute
+  IndexRoute: typeof IndexRoute;
+  BooksDownloadRoute: typeof BooksDownloadRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/books/download': {
-      id: '/books/download'
-      path: '/books/download'
-      fullPath: '/books/download'
-      preLoaderRoute: typeof BooksDownloadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/books/download": {
+      id: "/books/download";
+      path: "/books/download";
+      fullPath: "/books/download";
+      preLoaderRoute: typeof BooksDownloadRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BooksDownloadRoute: BooksDownloadRoute,
-}
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+};
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { createStart } from "@tanstack/react-start";
+import type { getRouter } from "./router.tsx";
+
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }
