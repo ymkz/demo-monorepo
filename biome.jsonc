@@ -7,15 +7,11 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["apps/web-form/**", "apps/web-tool/**", "apps/docs/**", "!**/generated", "!**/.source"]
+    "includes": ["apps/web-form/**", "apps/web-tool/**", "apps/docs/**", "!**/routeTree.gen.ts"]
   },
   "formatter": {
+    "indentStyle": "space",
     "lineWidth": 120
-  },
-  "json": {
-    "formatter": {
-      "indentStyle": "space"
-    }
   },
   "css": {
     "parser": {
@@ -23,14 +19,6 @@
     },
     "formatter": {
       "enabled": true
-    },
-    "linter": {
-      "enabled": true
-    }
-  },
-  "assist": {
-    "actions": {
-      "recommended": true
     }
   }
 }

@@ -2,6 +2,7 @@
 .kotlin/
 .next/
 .settings/
+.tanstack/
 .wireit/
 .worktrees/
 bin/

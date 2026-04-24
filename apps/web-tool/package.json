@@ -51,12 +51,11 @@
     }
   },
   "dependencies": {
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "pino": "catalog:",
-    "spiceflow": "catalog:",
     "tailwindcss": "catalog:",
-    "temporal-polyfill-lite": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

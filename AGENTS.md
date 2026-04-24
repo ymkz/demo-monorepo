@@ -3,15 +3,15 @@
 **Commit:** ced8292 | **Branch:** main
 
 ## OVERVIEW
-Hybrid monorepo: Spring Boot (Kotlin) backend + Next.js (TypeScript) frontends. OpenAPI-first, MySQL persistence.
+Hybrid monorepo: Spring Boot (Kotlin) backend + TypeScript frontends. OpenAPI-first, MySQL persistence.
 
 ## STRUCTURE
 ```
 apps/
 ├── api/         # Spring Boot REST (MyBatis + MySQL)
 ├── core/        # Shared domain library
-├── web-form/    # Next.js App Router (port 3000)
-└── web-tool/    # Next.js Pages Router (port 4000)
+├── web-form/    # TanStack Start (port 3000)
+└── web-tool/    # TanStack Start (port 4000)
 ```
 
 ## ANTI-PATTERNS (禁止事項)
@@ -20,7 +20,7 @@ apps/
 |-------------|------|
 | ハードコードされた秘密情報 | `apps/web-tool/src/pages/api/books/download.ts`で発見 |
 | コミット内のTODOコメント | Issueを作成すること |
-| 混在するルーターパターン | web-form(App Router) vs web-tool(Pages Router) |
+| フロントエンドでSpiceflowを再導入 | TanStack Startへ移行済み |
 | src内のビルド出力 | `static/openapi/`は`build/`に属すべき |
 
 ## UNIQUE STYLES
@@ -28,7 +28,7 @@ apps/
 - **日本語必須**: すべてのドキュメントと応答は日本語
 - **テスト名**: 日本語使用（例: `enumValues_期待される全ての値が存在すること`）
 - **Biome**使用: ESLint/Prettier禁止
-- **Next.js 16.1.6** + **React 19.2.4**
+- **TanStack Start** + **React 19.2.5**
 
 ## COMMANDS
 
