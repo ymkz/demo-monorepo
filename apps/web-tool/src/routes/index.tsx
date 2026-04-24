@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const searchParamSchema = z.object({
@@ -13,11 +14,13 @@ export const searchParamSchema = z.object({
 	limit: z.coerce.number().int().default(20),
 });
 
-type Props = {
-	query: z.infer<typeof searchParamSchema>;
-};
+export const Route = createFileRoute("/")({
+	validateSearch: (search) => searchParamSchema.parse(search),
+	component: IndexPage,
+});
 
-export function IndexPage({ query }: Props) {
+export function IndexPage() {
+	const query = Route.useSearch();
 	const downloadUrl = `/books/download?${new URLSearchParams(
 		Object.entries(query)
 			.filter(([, v]) => v !== undefined && v !== null)

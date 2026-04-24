@@ -5,6 +5,8 @@ packages:
 catalog:
   "@biomejs/biome": 2.4.11
   "@hey-api/openapi-ts": 0.95.0
+  "@tanstack/react-router": 1.168.23
+  "@tanstack/react-start": 1.167.42
   "@tailwindcss/vite": 4.2.2
   "@types/node": 24.12.2
   "@types/react": 19.2.14
@@ -12,13 +14,9 @@ catalog:
   "@vitejs/plugin-react": 6.0.1
   "@vitest/coverage-v8": 4.1.4
   knip: 6.4.0
-  pino: 10.3.1
   react: 19.2.5
   react-dom: 19.2.5
-  # renovate: ignore
-  spiceflow: 1.18.0-rsc.29
   tailwindcss: 4.2.2
-  temporal-polyfill-lite: 0.3.3
   typescript: 6.0.2
   vite: 8.0.8
   vitest: 4.1.4

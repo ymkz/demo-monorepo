@@ -7,7 +7,14 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["apps/web-form/**", "apps/web-tool/**", "apps/docs/**", "!**/generated", "!**/.source"]
+    "includes": [
+      "apps/web-form/**",
+      "apps/web-tool/**",
+      "apps/docs/**",
+      "!**/generated",
+      "!**/.source",
+      "!**/routeTree.gen.ts"
+    ]
   },
   "formatter": {
     "lineWidth": 120
