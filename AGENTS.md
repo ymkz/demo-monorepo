@@ -21,7 +21,7 @@ apps/
 | ハードコードされた秘密情報 | `apps/web-tool/src/pages/api/books/download.ts`で発見 |
 | コミット内のTODOコメント | Issueを作成すること |
 | フロントエンドでSpiceflowを再導入 | TanStack Startへ移行済み |
-| src内のビルド出力 | `static/openapi/`は`build/`に属すべき |
+| `src`内のビルド出力 | ただし`apps/api/src/main/resources/static/openapi/`はドキュメント公開用の例外 |
 
 ## UNIQUE STYLES
 
@@ -45,5 +45,6 @@ pnpm check            # lint + typecheck + build
 
 - Wireit使用: 個別コマンドではなく`pnpm dev`を使用
 - 日本語応答必須（`.github/copilot-instructions.md`参照）
-- OpenAPI specはビルド成果物だがリポジトリにコミット
+- OpenAPI specはコードファーストで生成するが、ドキュメントとしてデプロイするため`apps/api/src/main/resources/static/openapi/`をリポジトリにコミット
+- フロントエンドの`apps/*/src/generated/`はOpenAPIから生成する一時成果物のためコミットしない
 - `apps/core`はGradleモジュールのみ（Next.jsから不可）

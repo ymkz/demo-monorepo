@@ -8,6 +8,7 @@
 - `adr/` - アーキテクチャ決定記録（Architecture Decision Records）
 - `database/` - データベース設計情報（スキーマ、ER図）
 - `development/` - 開発ガイド（セットアップ、テストポリシー等）
+  - [OpenAPI 運用方針](./development/openapi-policy.md)
 
 ## ドキュメントサイトについて
 
