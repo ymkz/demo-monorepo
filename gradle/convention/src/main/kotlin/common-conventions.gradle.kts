@@ -74,7 +74,7 @@ tasks.register<Test>("intTest") {
 }
 
 tasks.named("build") {
-    dependsOn("spotlessApply")
+    dependsOn("spotlessCheck")
 }
 
 tasks.named("check") {

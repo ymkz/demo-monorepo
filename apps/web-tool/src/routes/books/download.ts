@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const TARGET_ENDPOINT = "http://localhost:8080";
+const TARGET_ENDPOINT = import.meta.env.VITE_WEB_TOOL_API_BASE_URL ?? "http://localhost:8080";
 
 export const Route = createFileRoute("/books/download")({
   server: {
