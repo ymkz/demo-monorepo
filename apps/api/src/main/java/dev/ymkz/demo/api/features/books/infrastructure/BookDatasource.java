@@ -7,6 +7,7 @@ import dev.ymkz.demo.api.features.books.domain.BookSearchQuery;
 import dev.ymkz.demo.api.features.books.domain.BookUpdateCommand;
 import dev.ymkz.demo.core.domain.valueobject.Paginated;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,21 +32,25 @@ public class BookDatasource implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) {
-        return null;
+        return bookMapper.findById(id).map(BookEntity::toBook);
     }
 
     @Override
     public void create(BookCreateCommand book) {
-        return;
+        bookMapper.create(book);
     }
 
     @Override
     public void update(BookUpdateCommand book) {
-        return;
+        if (bookMapper.update(book) == 0) {
+            throw new NoSuchElementException("Book not found: " + book.id());
+        }
     }
 
     @Override
     public void delete(long id) {
-        return;
+        if (bookMapper.delete(id) == 0) {
+            throw new NoSuchElementException("Book not found: " + id);
+        }
     }
 }

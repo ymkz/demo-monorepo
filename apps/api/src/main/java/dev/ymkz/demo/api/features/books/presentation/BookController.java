@@ -3,8 +3,12 @@ package dev.ymkz.demo.api.features.books.presentation;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import dev.ymkz.demo.api.features.books.application.BookCreateUsecase;
+import dev.ymkz.demo.api.features.books.application.BookDeleteUsecase;
 import dev.ymkz.demo.api.features.books.application.BookDownloadUsecase;
+import dev.ymkz.demo.api.features.books.application.BookFindUsecase;
 import dev.ymkz.demo.api.features.books.application.BookSearchUsecase;
+import dev.ymkz.demo.api.features.books.application.BookUpdateUsecase;
 import dev.ymkz.demo.api.features.books.presentation.dto.CreateBookBody;
 import dev.ymkz.demo.api.features.books.presentation.dto.FindBookByIdResponse;
 import dev.ymkz.demo.api.features.books.presentation.dto.SearchBooksQueryParam;
@@ -47,6 +51,10 @@ public class BookController {
 
     private final BookSearchUsecase bookSearchUsecase;
     private final BookDownloadUsecase bookDownloadUsecase;
+    private final BookFindUsecase bookFindUsecase;
+    private final BookCreateUsecase bookCreateUsecase;
+    private final BookUpdateUsecase bookUpdateUsecase;
+    private final BookDeleteUsecase bookDeleteUsecase;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @Operation(operationId = "searchBooks", description = "書籍情報を検索して取得する")
@@ -125,7 +133,7 @@ public class BookController {
                         content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
     public FindBookByIdResponse findBookById(@PathVariable long id) {
-        return FindBookByIdResponse.of(null);
+        return FindBookByIdResponse.of(bookFindUsecase.execute(id));
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -143,7 +151,9 @@ public class BookController {
                         description = "アプリケーションエラー",
                         content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
-    public void createBook(@Validated @RequestBody CreateBookBody body) {}
+    public void createBook(@Validated @RequestBody CreateBookBody body) {
+        bookCreateUsecase.execute(body.toCommand());
+    }
 
     @PatchMapping(path = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @Operation(operationId = "updateBook", description = "指定したIDの書籍情報を更新する")
@@ -163,7 +173,9 @@ public class BookController {
                         description = "アプリケーションエラー",
                         content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
-    public void updateBook(@PathVariable long id, @RequestBody UpdateBookBody body) {}
+    public void updateBook(@PathVariable long id, @Validated @RequestBody UpdateBookBody body) {
+        bookUpdateUsecase.execute(body.toCommand(id));
+    }
 
     @DeleteMapping(path = "{id}", produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -184,5 +196,7 @@ public class BookController {
                         description = "アプリケーションエラー",
                         content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             })
-    public void deleteBook(@PathVariable long id) {}
+    public void deleteBook(@PathVariable long id) {
+        bookDeleteUsecase.execute(id);
+    }
 }

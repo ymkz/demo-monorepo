@@ -1,9 +1,14 @@
 package dev.ymkz.demo.api.features.books.infrastructure;
 
+import dev.ymkz.demo.api.features.books.domain.BookCreateCommand;
 import dev.ymkz.demo.api.features.books.domain.BookSearchQuery;
+import dev.ymkz.demo.api.features.books.domain.BookUpdateCommand;
 import java.util.List;
+import java.util.Optional;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface BookMapper {
@@ -113,7 +118,20 @@ public interface BookMapper {
                 AND b.published_at &lt;= #{publishedAtRange.end}
             </if>
         ORDER BY
-            #{order.orderBy}
+            <choose>
+                <when test='order != null and order.name() == "PRICE_ASC"'>
+                    b.price ASC
+                </when>
+                <when test='order != null and order.name() == "PRICE_DESC"'>
+                    b.price DESC
+                </when>
+                <when test='order != null and order.name() == "PUBLISHED_AT_ASC"'>
+                    b.published_at ASC
+                </when>
+                <otherwise>
+                    b.published_at DESC
+                </otherwise>
+            </choose>
         <if test="limit != null">
             LIMIT #{limit}
         </if>
@@ -123,4 +141,98 @@ public interface BookMapper {
         </script>
     """)
     List<BookEntity> list(BookSearchQuery query);
+
+    @Select("""
+        SELECT
+            b.id,
+            b.isbn,
+            b.title,
+            b.price,
+            b.status,
+            b.published_at,
+            b.author_id,
+            a.author_name,
+            b.publisher_id,
+            p.publisher_name,
+            b.created_at,
+            b.updated_at,
+            b.deleted_at
+        FROM
+            books as b
+        INNER JOIN
+            authors as a ON b.author_id = a.id AND a.deleted_at IS NULL
+        INNER JOIN
+            publishers as p ON b.publisher_id = p.id AND p.deleted_at IS NULL
+        WHERE
+            b.id = #{id}
+            AND b.deleted_at IS NULL
+        """)
+    Optional<BookEntity> findById(long id);
+
+    @Insert("""
+        INSERT INTO books (
+            isbn,
+            title,
+            price,
+            status,
+            published_at,
+            author_id,
+            publisher_id
+        ) VALUES (
+            #{isbn.value},
+            #{title},
+            #{price},
+            #{status},
+            #{publishedAt},
+            #{authorId},
+            #{publisherId}
+        )
+        """)
+    int create(BookCreateCommand command);
+
+    @Update("""
+        <script>
+        UPDATE
+            books
+        <set>
+            updated_at = CURRENT_TIMESTAMP,
+            <if test="isbn != null">
+                isbn = #{isbn.value},
+            </if>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="publishedAt != null">
+                published_at = #{publishedAt},
+            </if>
+            <if test="authorId != null">
+                author_id = #{authorId},
+            </if>
+            <if test="publisherId != null">
+                publisher_id = #{publisherId},
+            </if>
+        </set>
+        WHERE
+            id = #{id}
+            AND deleted_at IS NULL
+        </script>
+        """)
+    int update(BookUpdateCommand command);
+
+    @Update("""
+        UPDATE
+            books
+        SET
+            deleted_at = CURRENT_TIMESTAMP
+        WHERE
+            id = #{id}
+            AND deleted_at IS NULL
+        """)
+    int delete(long id);
 }

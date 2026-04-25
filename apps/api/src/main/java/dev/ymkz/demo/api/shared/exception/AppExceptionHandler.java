@@ -1,6 +1,7 @@
 package dev.ymkz.demo.api.shared.exception;
 
 import dev.ymkz.demo.api.shared.logging.EventsCollector;
+import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("Database exception occurred", ex);
         EventsCollector.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex, WebRequest request) {
+        log.warn("Resource not found", ex);
+        EventsCollector.setError(ex, null);
+        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(Exception.class)

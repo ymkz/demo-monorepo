@@ -1,6 +1,8 @@
 package dev.ymkz.demo.api.features.books.presentation.dto;
 
+import dev.ymkz.demo.api.features.books.domain.BookCreateCommand;
 import dev.ymkz.demo.api.features.books.domain.BookStatus;
+import dev.ymkz.demo.core.domain.valueobject.Isbn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -21,4 +23,14 @@ public record CreateBookBody(
         BookStatus status,
 
         @Schema(description = "出版日時:ISO8601", example = "2025-01-23T01:23:45.000Z")
-        LocalDateTime publishedAt) {}
+        LocalDateTime publishedAt,
+
+        @Schema(description = "著者ID", example = "1") @NotNull
+        Integer authorId,
+
+        @Schema(description = "出版社ID", example = "1") @NotNull
+        Integer publisherId) {
+    public BookCreateCommand toCommand() {
+        return new BookCreateCommand(Isbn.of(isbn), title, price, status, publishedAt, authorId, publisherId);
+    }
+}
