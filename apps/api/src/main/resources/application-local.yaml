@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:configtree:/tmp/ymkz/demo-monorepo/configtree/
   web:
     resources:
       add-mappings: true

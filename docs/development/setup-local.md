@@ -2,16 +2,27 @@
 
 ## 最初のセットアップ
 
-ローカル環境では mise を使って`.env`を自動的に読み込み環境変数を展開する。\
-実行時に必要となるクレデンシャルはこれを利用して参照する。
+ローカル環境のクレデンシャルは `.env` ではなく Spring Boot の config tree と Docker Compose secrets で読み込む。
+
+このプロジェクトのローカル開発では、config tree の配置先を `/tmp/ymkz/demo-monorepo/configtree/` に統一する。
 
 ```sh { name=setup-local }
-REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
+CONFIG_TREE_DIR=/tmp/ymkz/demo-monorepo/configtree
 
-cat << EOS >> "${REPOSITORY_ROOT}/.env"
-DEMODB_DEMOUSER_PASSWORD=demo_pass
-EOS
+install -d -m 700 "${CONFIG_TREE_DIR}"
+printf '%s' 'demo_pass' > "${CONFIG_TREE_DIR}/DEMODB_DEMOUSER_PASSWORD"
+printf '%s' 'root' > "${CONFIG_TREE_DIR}/MYSQL_ROOT_PASSWORD"
+chmod 600 "${CONFIG_TREE_DIR}"/*
+
+pnpm install --frozen-lockfile
 ```
+
+`/tmp` 配下は OS の再起動やクリーンアップで削除される可能性がある。Docker Compose や API 起動時に secret ファイルが見つからない場合は、上記のセットアップを再実行する。
+
+## 読み込み方式
+
+- Spring Boot: `spring.config.import=optional:configtree:/tmp/ymkz/demo-monorepo/configtree/`
+- Docker Compose: MySQL 公式イメージの `*_FILE` 環境変数と Compose secrets
 
 ## 困ったときは
 

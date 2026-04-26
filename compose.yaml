@@ -10,12 +10,21 @@ services:
       - ./compose/mysql/init:/docker-entrypoint-initdb.d
       - ./compose/mysql/my.conf:/etc/mysql/conf.d/my.cnf
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_DATABASE: demo_db
       MYSQL_USER: demo_user
-      MYSQL_PASSWORD: ${DEMODB_DEMOUSER_PASSWORD}
+      MYSQL_PASSWORD_FILE: /run/secrets/demodb_demouser_password
+    secrets:
+      - mysql_root_password
+      - demodb_demouser_password
     healthcheck:
-      test: mysqladmin ping -udemo_user -p${DEMODB_DEMOUSER_PASSWORD}
+      test: ["CMD-SHELL", "mysqladmin ping -udemo_user -p$$(cat /run/secrets/demodb_demouser_password)"]
       timeout: 20s
       interval: 4s
       retries: 3
+
+secrets:
+  mysql_root_password:
+    file: /tmp/ymkz/demo-monorepo/configtree/MYSQL_ROOT_PASSWORD
+  demodb_demouser_password:
+    file: /tmp/ymkz/demo-monorepo/configtree/DEMODB_DEMOUSER_PASSWORD

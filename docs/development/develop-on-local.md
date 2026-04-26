@@ -19,5 +19,5 @@ docker compose down
 ### MySQL コンテナへ接続する
 
 ```sh { name=exec-mysql }
-docker compose exec demo-monorepo-db mysql demo_db -udemo_user -p${DEMODB_DEMOUSER_PASSWORD}
+docker compose exec demo-monorepo-db sh -c 'mysql demo_db -udemo_user -p$(cat /run/secrets/demodb_demouser_password)'
 ```
