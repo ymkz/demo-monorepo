@@ -117,6 +117,40 @@ public class SearchBooksIntTest {
     }
 
     @Test
+    void 存在しない著者IDで書籍を作成すると400を返すこと() {
+        given().contentType(ContentType.JSON)
+                .body("""
+                        {
+                          "isbn": "9784873115658",
+                          "title": "リーダブルコード",
+                          "price": 2640,
+                          "status": "PUBLISHED",
+                          "publishedAt": "2012-06-23T00:00:00",
+                          "authorId": 99999,
+                          "publisherId": 1
+                        }
+                        """)
+                .when()
+                .post("/books")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void 存在しない出版社IDで書籍を更新すると400を返すこと() {
+        given().contentType(ContentType.JSON)
+                .body("""
+                        {
+                          "publisherId": 99999
+                        }
+                        """)
+                .when()
+                .patch("/books/{id}", 1)
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
     void バリデーションエラー時に400を返す() {
         // limit=101は@Max(100)違反
         given().contentType(ContentType.JSON)

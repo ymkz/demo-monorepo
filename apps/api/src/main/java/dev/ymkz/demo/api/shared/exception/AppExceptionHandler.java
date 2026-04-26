@@ -4,6 +4,7 @@ import dev.ymkz.demo.api.shared.logging.EventsCollector;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,6 +32,14 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("Database exception occurred", ex);
         EventsCollector.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(
+            DataIntegrityViolationException ex, WebRequest request) {
+        log.warn("Data integrity violation occurred", ex);
+        EventsCollector.setError(ex, null);
+        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
