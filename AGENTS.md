@@ -41,6 +41,62 @@ pnpm build            # フロントエンドビルド
 pnpm check            # lint + typecheck + build
 ```
 
+## INSPECTION PROTOCOL
+
+**検証がパスするまでは作業は完了していない。**
+
+- コード変更後、完了報告やPR作成の前に必ず検証コマンドを実行する
+- 「ビルドは通ると思います」のような未検証の完了宣言は禁止
+- 検証に失敗した場合は原因を修正し、同じ検証を再実行してパスを確認する
+- どの検証を実行すべきか迷う場合は、対象範囲で実行可能な最も包括的なチェックを選ぶ
+- 検証できない事情がある場合は、実行できなかったコマンドと理由を明示する
+
+### Gradle Backend Verification
+
+```bash
+./gradlew :apps:<name>:spotlessCheck  # フォーマットチェック
+./gradlew :apps:<name>:test           # 単体テスト
+./gradlew :apps:<name>:intTest        # 統合テスト（存在する場合）
+./gradlew :apps:<name>:build          # ビルド
+./gradlew :apps:<name>:check          # 推奨: 包括チェック
+```
+
+自動修正が必要な場合:
+
+```bash
+./gradlew :apps:<name>:spotlessApply
+./gradlew :apps:<name>:spotlessCheck
+```
+
+### pnpm Frontend Verification
+
+```bash
+pnpm lint       # リントチェック
+pnpm typecheck  # 型チェック
+pnpm build      # ビルド
+pnpm test       # テスト
+pnpm check      # 推奨: 包括チェック
+```
+
+自動修正が必要な場合:
+
+```bash
+pnpm format
+pnpm lint --write
+```
+
+### Project-Specific Verification
+
+```bash
+./gradlew :apps:api:spotlessCheck
+./gradlew :apps:api:test
+./gradlew :apps:api:intTest
+./gradlew :apps:api:build
+./gradlew :apps:core:check
+pnpm --filter web-form check
+pnpm --filter web-tool check
+```
+
 ## GOTCHAS
 
 - Wireit使用: 個別コマンドではなく`pnpm dev`を使用
