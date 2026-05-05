@@ -12,6 +12,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
+  notFoundComponent: NotFoundPage,
 });
 
 function RootComponent() {
@@ -33,5 +34,22 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <main className="flex min-h-screen items-center justify-center p-6">
+      <div className="rounded-lg bg-white p-6 text-center shadow">
+        <h1 className="text-xl font-semibold text-gray-900">ページが見つかりません</h1>
+        <p className="mt-2 text-sm text-gray-600">書籍検索画面はトップページから利用できます。</p>
+        <a
+          className="mt-4 inline-flex h-10 items-center rounded-md bg-gray-900 px-4 text-sm font-medium text-white hover:bg-gray-700"
+          href="/"
+        >
+          書籍検索へ戻る
+        </a>
+      </div>
+    </main>
   );
 }
