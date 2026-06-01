@@ -10,7 +10,7 @@ micrometer = "1.16.5" # https://mvnrepository.com/artifact/io.micrometer/microme
 springdoc-webmvc = "3.0.3" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api
 mockito = "5.23.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
 rest-assured = "6.0.0" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
-spotless = "8.5.1" # https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
+spotless = "8.6.0" # https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-plugin-gradle
 springdoc-openapi = "1.9.0" # https://mvnrepository.com/artifact/org.springdoc.openapi-gradle-plugin/org.springdoc.openapi-gradle-plugin.gradle.plugin
 logstash-logback-encoder = "9.0" # https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
 
