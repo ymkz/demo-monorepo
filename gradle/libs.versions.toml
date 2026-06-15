@@ -1,12 +1,12 @@
 [versions]
-spring-boot = "4.0.6" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
-jackson = "3.1.4" # https://mvnrepository.com/artifact/tools.jackson/jackson-bom
+spring-boot = "4.1.0" # https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+jackson = "3.2.0" # https://mvnrepository.com/artifact/tools.jackson/jackson-bom
 junit = "6.1.0" # https://mvnrepository.com/artifact/org.junit/junit-bom
 testcontainers = "2.0.3" # https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
 lombok = "1.18.46" # https://mvnrepository.com/artifact/org.projectlombok/lombok
 mybatis = "4.0.1" # https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
 mysql = "9.7.0" # https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-micrometer = "1.16.5" # https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+micrometer = "1.17.0" # https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
 springdoc-webmvc = "3.0.3" # https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api
 mockito = "5.23.0" # https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
 rest-assured = "6.0.0" # https://mvnrepository.com/artifact/io.rest-assured/rest-assured
