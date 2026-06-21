@@ -3,25 +3,25 @@ packages:
   - apps/web-tool
 
 catalog:
-  "@biomejs/biome": 2.4.16
+  "@biomejs/biome": 2.5.0
   "@hey-api/openapi-ts": 0.98.2
-  "@tanstack/react-router": 1.170.15
-  "@tanstack/react-start": 1.168.25
-  "@tailwindcss/vite": 4.3.0
+  "@tanstack/react-router": 1.170.16
+  "@tanstack/react-start": 1.168.26
+  "@tailwindcss/vite": 4.3.1
   "@types/node": 24.13.2
   "@types/react": 19.2.17
   "@types/react-dom": 19.2.3
   "@vitejs/plugin-react": 6.0.2
-  "@vitest/coverage-v8": 4.1.8
-  knip: 6.16.1
+  "@vitest/coverage-v8": 4.1.9
+  knip: 6.17.1
   pino: 10.3.1
   react: 19.2.7
   react-dom: 19.2.7
-  tailwindcss: 4.3.0
+  tailwindcss: 4.3.1
   temporal-polyfill-lite: 0.4.0
   typescript: 6.0.3
   vite: 8.0.16
-  vitest: 4.1.8
+  vitest: 4.1.9
   wireit: 0.14.12
   zod: 4.4.3
 
