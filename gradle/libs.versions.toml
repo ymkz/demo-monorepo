@@ -50,7 +50,7 @@ unit-test = [
   "spring-boot-starter-webmvc-test",
   "spring-boot-starter-restclient-test",
   "spring-boot-starter-validation-test",
-  "mockito-junit-jupiter"
+  "mockito-junit-jupiter",
 ]
 integration-test = [
   "spring-boot-starter-webmvc-test",
@@ -59,7 +59,7 @@ integration-test = [
   "spring-boot-testcontainers",
   "testcontainers-junit-jupiter",
   "testcontainers-mysql",
-  "rest-assured"
+  "rest-assured",
 ]
 api = [
   "spring-boot-starter-validation",

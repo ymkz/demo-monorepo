@@ -10,7 +10,6 @@ allowBuilds:
 syncInjectedDepsAfterScripts:
   - build
 catalog:
-  "@biomejs/biome": 2.5.0
   "@hey-api/openapi-ts": 0.98.2
   "@tanstack/react-router": 1.170.16
   "@tanstack/react-start": 1.168.26
@@ -21,6 +20,8 @@ catalog:
   "@vitejs/plugin-react": 6.0.2
   "@vitest/coverage-v8": 4.1.9
   knip: 6.17.1
+  oxfmt: 0.53.0
+  oxlint: 1.68.0
   pino: 10.3.1
   react: 19.2.7
   react-dom: 19.2.7

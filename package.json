@@ -14,12 +14,14 @@
   "scripts": {
     "dev": "wireit",
     "build": "wireit",
-    "typecheck": "wireit",
     "test": "wireit",
     "coverage": "wireit",
+    "typecheck": "wireit",
+    "fmt": "wireit",
+    "fmt:fix": "wireit",
+    "lint": "wireit",
+    "lint:fix": "wireit",
     "check": "wireit",
-    "lint": "biome check",
-    "format": "biome check --write",
     "generate": "pnpm --recursive run /^generate:.*/",
     "analyze": "knip",
     "update": "pnpm update --latest --interactive --recursive"
@@ -37,12 +39,6 @@
         "./apps/web-tool:build"
       ]
     },
-    "typecheck": {
-      "dependencies": [
-        "./apps/web-form:typecheck",
-        "./apps/web-tool:typecheck"
-      ]
-    },
     "test": {
       "dependencies": [
         "./apps/web-form:test",
@@ -55,8 +51,27 @@
         "./apps/web-tool:coverage"
       ]
     },
+    "typecheck": {
+      "dependencies": [
+        "./apps/web-form:typecheck",
+        "./apps/web-tool:typecheck"
+      ]
+    },
+    "fmt": {
+      "command": "oxfmt --check ."
+    },
+    "fmt:fix": {
+      "command": "oxfmt --write ."
+    },
+    "lint": {
+      "command": "oxlint ."
+    },
+    "lint:fix": {
+      "command": "oxlint --fix ."
+    },
     "check": {
       "dependencies": [
+        "fmt",
         "lint",
         "typecheck",
         "build"
@@ -64,9 +79,10 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
     "@types/node": "catalog:",
     "knip": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
     "typescript": "catalog:",
     "wireit": "catalog:"
   }

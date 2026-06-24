@@ -66,7 +66,7 @@ pnpm dev
 pnpm check
 ```
 
-`pnpm check` は Biome、型チェック、ビルドを実行する。
+`pnpm check` は oxfmt、oxlint、型チェック、ビルドを実行する。
 
 ### バックエンド
 

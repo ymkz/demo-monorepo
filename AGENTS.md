@@ -3,9 +3,11 @@
 **Commit:** ced8292 | **Branch:** main
 
 ## OVERVIEW
+
 Hybrid monorepo: Spring Boot (Kotlin) backend + TypeScript frontends. OpenAPI-first, MySQL persistence.
 
 ## STRUCTURE
+
 ```
 apps/
 ├── api/         # Spring Boot REST (MyBatis + MySQL)
@@ -16,18 +18,18 @@ apps/
 
 ## ANTI-PATTERNS (禁止事項)
 
-| 禁止パターン | 理由 |
-|-------------|------|
-| ハードコードされた秘密情報 | `apps/web-tool/src/pages/api/books/download.ts`で発見 |
-| コミット内のTODOコメント | Issueを作成すること |
-| フロントエンドでSpiceflowを再導入 | TanStack Startへ移行済み |
-| `src`内のビルド出力 | ただし`apps/api/src/main/resources/static/openapi/`はドキュメント公開用の例外 |
+| 禁止パターン                      | 理由                                                                          |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| ハードコードされた秘密情報        | `apps/web-tool/src/pages/api/books/download.ts`で発見                         |
+| コミット内のTODOコメント          | Issueを作成すること                                                           |
+| フロントエンドでSpiceflowを再導入 | TanStack Startへ移行済み                                                      |
+| `src`内のビルド出力               | ただし`apps/api/src/main/resources/static/openapi/`はドキュメント公開用の例外 |
 
 ## UNIQUE STYLES
 
 - **日本語必須**: すべてのドキュメントと応答は日本語
 - **テスト名**: 日本語使用（例: `enumValues_期待される全ての値が存在すること`）
-- **Biome**使用: ESLint/Prettier禁止
+- **oxc**使用: oxlint / oxfmt を使用。ESLint/Prettier禁止
 - **TanStack Start** + **React 19.2.5**
 
 ## COMMANDS

@@ -13,9 +13,7 @@
   "paths": {
     "/books": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "description": "書籍情報を検索して取得する",
         "operationId": "searchBooks",
         "parameters": [
@@ -69,11 +67,7 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "UNPUBLISHED",
-                  "PUBLISHED",
-                  "OUT_OF_PRINT"
-                ]
+                "enum": ["UNPUBLISHED", "PUBLISHED", "OUT_OF_PRINT"]
               }
             }
           },
@@ -107,12 +101,7 @@
             "schema": {
               "type": "string",
               "default": "-published_at",
-              "enum": [
-                "+price",
-                "-price",
-                "+published_at",
-                "-published_at"
-              ]
+              "enum": ["+price", "-price", "+published_at", "-published_at"]
             }
           },
           {
@@ -175,9 +164,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "description": "新しい書籍情報を作成する",
         "operationId": "createBook",
         "requestBody": {
@@ -219,9 +206,7 @@
     },
     "/books/{id}": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "description": "指定したIDの書籍情報を取得する",
         "operationId": "findBookById",
         "parameters": [
@@ -279,9 +264,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "description": "指定したIDの書籍情報を削除する",
         "operationId": "deleteBook",
         "parameters": [
@@ -332,9 +315,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "description": "指定したIDの書籍情報を更新する",
         "operationId": "updateBook",
         "parameters": [
@@ -397,9 +378,7 @@
     },
     "/books/download": {
       "get": {
-        "tags": [
-          "Book"
-        ],
+        "tags": ["Book"],
         "description": "[Internal Use Only]書籍情報をCSV形式でダウンロードする",
         "operationId": "downloadBooks",
         "parameters": [
@@ -453,11 +432,7 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "UNPUBLISHED",
-                  "PUBLISHED",
-                  "OUT_OF_PRINT"
-                ]
+                "enum": ["UNPUBLISHED", "PUBLISHED", "OUT_OF_PRINT"]
               }
             }
           },
@@ -491,12 +466,7 @@
             "schema": {
               "type": "string",
               "default": "-published_at",
-              "enum": [
-                "+price",
-                "-price",
-                "+published_at",
-                "-published_at"
-              ]
+              "enum": ["+price", "-price", "+published_at", "-published_at"]
             }
           }
         ],
@@ -563,11 +533,7 @@
           "status": {
             "type": "string",
             "description": "ステータス",
-            "enum": [
-              "UNPUBLISHED",
-              "PUBLISHED",
-              "OUT_OF_PRINT"
-            ],
+            "enum": ["UNPUBLISHED", "PUBLISHED", "OUT_OF_PRINT"],
             "example": "PUBLISHED"
           },
           "publishedAt": {
@@ -577,11 +543,7 @@
             "example": "2025-01-23T01:23:45.000Z"
           }
         },
-        "required": [
-          "isbn",
-          "status",
-          "title"
-        ]
+        "required": ["isbn", "status", "title"]
       },
       "ErrorResponse": {
         "type": "object",
@@ -617,11 +579,7 @@
           "status": {
             "type": "string",
             "description": "ステータス",
-            "enum": [
-              "UNPUBLISHED",
-              "PUBLISHED",
-              "OUT_OF_PRINT"
-            ],
+            "enum": ["UNPUBLISHED", "PUBLISHED", "OUT_OF_PRINT"],
             "example": "PUBLISHED"
           },
           "publishedAt": {
@@ -660,12 +618,7 @@
             "example": 1
           }
         },
-        "required": [
-          "currentPage",
-          "returnedCount",
-          "totalCount",
-          "totalPages"
-        ]
+        "required": ["currentPage", "returnedCount", "totalCount", "totalPages"]
       },
       "SearchBooksResponse": {
         "type": "object",
@@ -709,11 +662,7 @@
           "status": {
             "type": "string",
             "description": "ステータス",
-            "enum": [
-              "UNPUBLISHED",
-              "PUBLISHED",
-              "OUT_OF_PRINT"
-            ],
+            "enum": ["UNPUBLISHED", "PUBLISHED", "OUT_OF_PRINT"],
             "example": "PUBLISHED"
           },
           "publishedAt": {
@@ -745,12 +694,7 @@
             "example": "O\u0027Reilly"
           }
         },
-        "required": [
-          "id",
-          "isbn",
-          "status",
-          "title"
-        ]
+        "required": ["id", "isbn", "status", "title"]
       },
       "FindBookByIdResponse": {
         "type": "object",
@@ -780,11 +724,7 @@
           "status": {
             "type": "string",
             "description": "ステータス",
-            "enum": [
-              "UNPUBLISHED",
-              "PUBLISHED",
-              "OUT_OF_PRINT"
-            ],
+            "enum": ["UNPUBLISHED", "PUBLISHED", "OUT_OF_PRINT"],
             "example": "PUBLISHED"
           },
           "publishedAt": {
@@ -816,12 +756,7 @@
             "example": "O\u0027Reilly"
           }
         },
-        "required": [
-          "id",
-          "isbn",
-          "status",
-          "title"
-        ]
+        "required": ["id", "isbn", "status", "title"]
       }
     },
     "securitySchemes": {

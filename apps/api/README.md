@@ -24,9 +24,11 @@ src/main/java/dev/ymkz/demo/api
 ## 配置ルール
 
 ### features
+
 機能ごとのコードをまとめる。
 
 例:
+
 - `features/books/application`
 - `features/books/domain`
 - `features/books/infrastructure`
@@ -35,23 +37,29 @@ src/main/java/dev/ymkz/demo/api
 新しいAPI機能を追加する場合は、まず `features/<feature>` を作成し、その配下に責務別パッケージを置く。
 
 ### shared
+
 複数featureで共有するアプリケーション共通部を置く。
 
 例:
+
 - 例外ハンドラ
 - リクエスト横断のロギング
 
 ### config
+
 フレームワークやミドルウェアの設定を置く。
 
 例:
+
 - MyBatis設定
 - メトリクスInterceptor
 
 ### external
+
 外部サービス連携を置く。
 
 例:
+
 - JSONPlaceholderクライアント
 
 ## テスト構成
