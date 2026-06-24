@@ -1,6 +1,6 @@
 package dev.ymkz.demo.api.shared.exception;
 
-import dev.ymkz.demo.api.shared.logging.EventsCollector;
+import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
@@ -19,6 +19,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private final EventLogContext eventLog;
+
+    public AppExceptionHandler(EventLogContext eventLog) {
+        this.eventLog = eventLog;
+    }
+
     /**
      * コントローラーのハンドラーメソッドに対するバリデーションで発生する例外を処理する。
      *
@@ -29,7 +35,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHandlerMethodValidationException(
             HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         log.warn("Validation exception occurred", ex);
-        EventsCollector.setError(ex, null);
+        eventLog.setError(ex, null);
         return super.handleHandlerMethodValidationException(ex, headers, status, request);
     }
 
@@ -42,7 +48,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MyBatisSystemException.class)
     public ResponseEntity<Object> handleMyBatisException(MyBatisSystemException ex, WebRequest request) {
         log.error("Database exception occurred", ex);
-        EventsCollector.setError(ex, null);
+        eventLog.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
@@ -56,7 +62,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleDataIntegrityViolationException(
             DataIntegrityViolationException ex, WebRequest request) {
         log.warn("Data integrity violation occurred", ex);
-        EventsCollector.setError(ex, null);
+        eventLog.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
@@ -69,7 +75,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex, WebRequest request) {
         log.warn("Resource not found", ex);
-        EventsCollector.setError(ex, null);
+        eventLog.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
@@ -82,7 +88,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleOtherException(Exception ex, WebRequest request) {
         log.error("Unexpected exception occurred", ex);
-        EventsCollector.setError(ex, null);
+        eventLog.setError(ex, null);
         return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

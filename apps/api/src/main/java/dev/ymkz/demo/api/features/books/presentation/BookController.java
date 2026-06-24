@@ -15,7 +15,7 @@ import dev.ymkz.demo.api.features.books.presentation.dto.SearchBooksQueryParam;
 import dev.ymkz.demo.api.features.books.presentation.dto.SearchBooksResponse;
 import dev.ymkz.demo.api.features.books.presentation.dto.UpdateBookBody;
 import dev.ymkz.demo.api.shared.exception.ErrorResponse;
-import dev.ymkz.demo.api.shared.logging.EventsCollector;
+import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,6 +55,7 @@ public class BookController {
     private final BookCreateUsecase bookCreateUsecase;
     private final BookUpdateUsecase bookUpdateUsecase;
     private final BookDeleteUsecase bookDeleteUsecase;
+    private final EventLogContext eventLog;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @Operation(operationId = "searchBooks", description = "書籍情報を検索して取得する")
@@ -76,7 +77,8 @@ public class BookController {
             @Parameter(description = "取得数") @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer limit) {
         var data = bookSearchUsecase.execute(queryParam.toBookSearchQuery(offset, limit));
 
-        EventsCollector.addEvent(
+        eventLog.set("book.search.total_results", data.totalCount());
+        eventLog.addEvent(
                 "book_search_executed",
                 new SearchMetadata(queryParam.isbn(), queryParam.title(), offset, limit, data.totalCount()));
 

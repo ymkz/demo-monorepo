@@ -3,7 +3,7 @@ package dev.ymkz.demo.api.features.books.application;
 import dev.ymkz.demo.api.features.books.domain.BookRepository;
 import dev.ymkz.demo.api.features.books.domain.BookSearchQuery;
 import dev.ymkz.demo.api.features.books.presentation.dto.DownloadBooksResponse;
-import dev.ymkz.demo.api.shared.logging.EventsCollector;
+import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +23,12 @@ public class BookDownloadUsecase {
             CsvMapper.builder().enable(CsvWriteFeature.ALWAYS_QUOTE_STRINGS).build();
 
     private final BookRepository repository;
+    private final EventLogContext eventLog;
 
     public byte[] execute(BookSearchQuery query) {
         var books = repository.download(query);
-        EventsCollector.addEvent("book_download_executed", new DbMetadata(books.size()));
+        eventLog.set("book.download.row_count", books.size());
+        eventLog.addEvent("book_download_executed", new DbMetadata(books.size()));
 
         return mapBooksToCsvText(books.stream().map(DownloadBooksResponse::from).toList())
                 .getBytes(StandardCharsets.UTF_8);
@@ -40,13 +42,13 @@ public class BookDownloadUsecase {
             var text = mapper.writer(schema).writeValueAsString(data);
             var textWithBom = new String(UTF8_BOM) + text;
 
-            EventsCollector.addEvent("csv_generation_executed", new CsvMetadata(data.size()));
+            eventLog.set("csv.generation.row_count", data.size());
+            eventLog.addEvent("csv_generation_executed", new CsvMetadata(data.size()));
 
             return textWithBom;
         } catch (JacksonException ex) {
-            String requestId = EventsCollector.getRequestId();
-            log.error("Failed to convert to CSV requestId={}", requestId, ex);
-            EventsCollector.setError(ex, new CsvMetadata(data.size()));
+            log.error("Failed to convert to CSV", ex);
+            eventLog.setError(ex, new CsvMetadata(data.size()));
             throw new RuntimeException("Failed to convert to CSV", ex);
         }
     }

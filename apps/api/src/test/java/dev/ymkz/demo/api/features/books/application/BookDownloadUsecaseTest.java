@@ -8,6 +8,7 @@ import dev.ymkz.demo.api.features.books.domain.Book;
 import dev.ymkz.demo.api.features.books.domain.BookRepository;
 import dev.ymkz.demo.api.features.books.domain.BookSearchQuery;
 import dev.ymkz.demo.api.features.books.domain.BookStatus;
+import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import dev.ymkz.demo.core.domain.valueobject.Isbn;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,6 +25,9 @@ class BookDownloadUsecaseTest {
 
     @Mock
     private BookRepository repository;
+
+    @Spy
+    private EventLogContext eventLog = new EventLogContext();
 
     @InjectMocks
     private BookDownloadUsecase bookDownloadUsecase;
