@@ -1,7 +1,14 @@
+managePackageManagerVersions: true
+injectWorkspacePackages: true
+catalogMode: strict
 packages:
   - apps/web-form
   - apps/web-tool
-
+allowBuilds:
+  core-js: true
+  esbuild: true
+syncInjectedDepsAfterScripts:
+  - build
 catalog:
   "@biomejs/biome": 2.5.0
   "@hey-api/openapi-ts": 0.98.2
@@ -24,14 +31,3 @@ catalog:
   vitest: 4.1.9
   wireit: 0.14.12
   zod: 4.4.3
-
-catalogMode: strict
-
-injectWorkspacePackages: true
-
-managePackageManagerVersions: true
-
-syncInjectedDepsAfterScripts:
-  - build
-
-useNodeVersion: 25.9.0

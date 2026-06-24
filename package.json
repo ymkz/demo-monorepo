@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.34.3",
+  "packageManager": "pnpm@11.8.0",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.3.1",
+      "onFail": "download"
+    }
+  },
   "scripts": {
     "dev": "wireit",
     "build": "wireit",
