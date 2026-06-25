@@ -2,6 +2,7 @@ package dev.ymkz.demo.api.shared.exception;
 
 import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import java.util.NoSuchElementException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,13 +18,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final EventLogContext eventLog;
-
-    public AppExceptionHandler(EventLogContext eventLog) {
-        this.eventLog = eventLog;
-    }
 
     /**
      * コントローラーのハンドラーメソッドに対するバリデーションで発生する例外を処理する。

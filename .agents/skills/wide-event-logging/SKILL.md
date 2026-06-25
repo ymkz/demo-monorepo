@@ -1,6 +1,6 @@
 ---
 name: wide-event-logging
-description: このプロジェクトでは1リクエストあたりの文脈情報とイベントを1つのJSONログに集約する「ワイドイベントロギング」を採用している。request scopeのEventLogContextとMDCを組み合わせ、リクエスト処理のトレーサビリティ向上とパフォーマンス分析を実現する。
+description: このプロジェクトでは1リクエストあたりの文脈情報とイベントを1つのJSONログに集約する「ワイドイベントロギング」を採用している。request scopeのEventLogContextを使い、リクエスト処理のトレーサビリティ向上とパフォーマンス分析を実現する。
 license: Proprietary
 compatibility: Spring Boot 4.x, Java 21+, logstash-logback-encoder
 metadata:
@@ -28,7 +28,7 @@ metadata:
 HTTP Request
   ↓
 WideEventLoggingFilter
-  - requestIdを生成してMDCの`http.request.id`へ設定
+  - requestIdを生成する
   ↓
 Controller / UseCase / ExceptionHandler
   - EventLogContext#set(...) でwide fieldを追加
@@ -38,7 +38,7 @@ Controller / UseCase / ExceptionHandler
 WideEventLoggingFilter finally
   - EventLogContext#snapshot()を取得
   - 1件のJSON structured logとして出力
-  - MDCをクリア
+  - ThreadLocal/MDCには依存しない
 ```
 
 ## 実装方針
@@ -215,11 +215,10 @@ request scopeは別スレッドへ自動伝播する前提にしない。
 
 必須で確認すること。
 
-1. 正常終了時にMDCの`http.request.id`がクリアされること
-2. 例外発生時にもMDCの`http.request.id`がクリアされること
-3. 未捕捉例外がwide eventの`error`に記録されること
-4. `snapshot()` が内部Map/Listを直接公開しないこと
-5. UseCase等で `set(...)` / `addEvent(...)` が呼べること
+1. 正常終了時に`EventLogContext`の内容がwide eventへ利用されること
+2. 未捕捉例外がwide eventの`error`に記録されること
+3. `snapshot()` が内部Map/Listを直接公開しないこと
+4. UseCase等で `set(...)` / `addEvent(...)` が呼べること
 
 ## ログ基盤連携例
 

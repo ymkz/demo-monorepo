@@ -26,7 +26,7 @@ Wide Event Loggingのコンテキスト管理を、ThreadLocalベースの`Event
 - `EventLogContext#addEvent(msg, key, value, ...)` で従来の時系列イベントも保持する
 - `EventLogContext#setError(Throwable, metadata)` で例外情報を保持する
 - `WideEventLoggingFilter` は `ObjectProvider<EventLogContext>` 経由で現在リクエストのコンテキストを取得する
-- `requestId` のMDC設定は継続する
+- `http.request.id` はMDCではなくwide eventの構造化フィールドとして明示出力する
 - `EventsCollector` は削除する
 
 ### データフロー
@@ -35,7 +35,7 @@ Wide Event Loggingのコンテキスト管理を、ThreadLocalベースの`Event
 HTTP Request
   ↓
 WideEventLoggingFilter
-  - requestIdを生成してMDCの`http.request.id`へ設定
+  - requestIdを生成する
   ↓
 Controller / UseCase / ExceptionHandler
   - EventLogContext#set(...) で検索しやすいwide fieldを追加
@@ -45,7 +45,7 @@ Controller / UseCase / ExceptionHandler
 WideEventLoggingFilter finally
   - EventLogContext#snapshot() を取得
   - `http.request.method` / `url.path` / `http.response.status_code` / `duration_ms` / fields / events / error を1件のJSON structured logとして出力
-  - MDCをクリア
+  - ThreadLocal/MDCには依存しない
 ```
 
 ## ログ構造

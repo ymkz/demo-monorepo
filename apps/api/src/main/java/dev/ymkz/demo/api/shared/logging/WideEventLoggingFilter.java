@@ -12,7 +12,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.argument.StructuredArguments;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,6 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String requestId = UUID.randomUUID().toString();
-        MDC.put("http.request.id", requestId);
         Throwable error = null;
 
         try {
@@ -40,43 +38,40 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
             error = ex;
             throw ex;
         } finally {
-            try {
-                EventLogContext eventLog = eventLogProvider.getIfAvailable();
-                if (eventLog != null && error != null) {
-                    eventLog.setError(error, null);
-                }
+            EventLogContext eventLog = eventLogProvider.getIfAvailable();
+            if (eventLog != null && error != null) {
+                eventLog.setError(error, null);
+            }
 
-                WideEventLog dto = toWideEventLog(requestId, request, response, eventLog);
-                try {
-                    var args = new Object[] {
-                        StructuredArguments.value("http.request.method", dto.method()),
-                        StructuredArguments.value("url.path", dto.path()),
-                        StructuredArguments.value("request.start", dto.requestedAt()),
-                        StructuredArguments.value("request.end", dto.respondedAt()),
-                        StructuredArguments.value("duration_ms", dto.durationMs()),
-                        StructuredArguments.value("http.response.status_code", dto.statusCode()),
-                        StructuredArguments.value("events", dto.events()),
-                        StructuredArguments.value("error", dto.error()),
-                        StructuredArguments.entries(
-                                eventLog != null ? eventLog.snapshot().fields() : Map.of())
-                    };
-                    if (dto.error() != null) {
-                        log.error("response_error", args);
-                    } else {
-                        log.info("response_success", args);
-                    }
-                } catch (Exception ex) {
-                    log.error(
-                            "Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
-                            dto.requestId(),
-                            dto.path(),
-                            dto.statusCode(),
-                            dto.events().size(),
-                            dto.error() != null ? dto.error().exception() : "none",
-                            ex);
+            WideEventLog dto = toWideEventLog(requestId, request, response, eventLog);
+            try {
+                var args = new Object[] {
+                    StructuredArguments.value("http.request.id", dto.requestId()),
+                    StructuredArguments.value("http.request.method", dto.method()),
+                    StructuredArguments.value("url.path", dto.path()),
+                    StructuredArguments.value("request.start", dto.requestedAt()),
+                    StructuredArguments.value("request.end", dto.respondedAt()),
+                    StructuredArguments.value("duration_ms", dto.durationMs()),
+                    StructuredArguments.value("http.response.status_code", dto.statusCode()),
+                    StructuredArguments.value("events", dto.events()),
+                    StructuredArguments.value("error", dto.error()),
+                    StructuredArguments.entries(
+                            eventLog != null ? eventLog.snapshot().fields() : Map.of())
+                };
+                if (dto.error() != null) {
+                    log.error("response_error", args);
+                } else {
+                    log.info("response_success", args);
                 }
-            } finally {
-                MDC.remove("http.request.id");
+            } catch (Exception ex) {
+                log.error(
+                        "Failed to serialize WideEventLog. requestId={} path={} status={} events={} error={}",
+                        dto.requestId(),
+                        dto.path(),
+                        dto.statusCode(),
+                        dto.events().size(),
+                        dto.error() != null ? dto.error().exception() : "none",
+                        ex);
             }
         }
     }

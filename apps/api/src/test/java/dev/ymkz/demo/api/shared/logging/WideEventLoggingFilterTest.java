@@ -12,10 +12,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.ObjectProvider;
 
 class WideEventLoggingFilterTest {
@@ -42,16 +40,10 @@ class WideEventLoggingFilterTest {
         when(response.getStatus()).thenReturn(200);
     }
 
-    @AfterEach
-    void tearDown() {
-        MDC.clear();
-    }
-
     @Test
-    void doFilterInternal_正常終了時にMDCのhttp_request_idがクリアされること() throws Exception {
+    void doFilterInternal_正常終了時にEventLogContextの内容がwideEventへ利用されること() throws Exception {
         // given
         doAnswer(invocation -> {
-                    assertThat(MDC.get("http.request.id")).isNotEmpty();
                     eventLog.set("book.search.total_results", 1);
                     eventLog.addEvent("book_search_executed");
                     return null;
@@ -63,13 +55,12 @@ class WideEventLoggingFilterTest {
         filter.doFilterInternal(request, response, chain);
 
         // then
-        assertThat(MDC.get("http.request.id")).isNull();
         assertThat(eventLog.snapshot().fields()).containsEntry("book.search.total_results", 1);
         assertThat(eventLog.snapshot().events()).hasSize(1);
     }
 
     @Test
-    void doFilterInternal_チェーン内で例外が発生してもMDCのhttp_request_idがクリアされること() throws Exception {
+    void doFilterInternal_チェーン内で例外が発生した場合はerrorを記録すること() throws Exception {
         // given
         doThrow(new RuntimeException("Test exception"))
                 .when(chain)
@@ -80,12 +71,11 @@ class WideEventLoggingFilterTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Test exception");
 
-        assertThat(MDC.get("http.request.id")).isNull();
         assertThat(eventLog.snapshot().error()).isNotNull();
     }
 
     @Test
-    void doFilterInternal_ログ出力準備中に例外が発生してもMDCのhttp_request_idがクリアされること() throws Exception {
+    void doFilterInternal_ログ出力準備中に例外が発生した場合はその例外を伝播すること() throws Exception {
         // given
         when(response.getStatus()).thenThrow(new RuntimeException("Serialization error"));
 
@@ -97,8 +87,6 @@ class WideEventLoggingFilterTest {
         assertThatThrownBy(() -> filter.doFilterInternal(request, response, chain))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Serialization error");
-
-        assertThat(MDC.get("http.request.id")).isNull();
     }
 
     @Test
