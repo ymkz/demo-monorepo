@@ -24,7 +24,7 @@ dependencies {
 }
 
 openApi {
-    apiDocsUrl.set("http://localhost:8080/openapi/openapi.json")
+    apiDocsUrl.set("http://localhost:8080/v3/api-docs")
     outputDir.set(rootProject.file("apps/api/src/main/resources/static/openapi"))
     outputFileName.set("openapi.json")
 }

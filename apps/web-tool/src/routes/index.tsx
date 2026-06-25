@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import { createClient } from "../generated/client";
 import { searchBooks } from "../generated/sdk.gen";
-import type { ErrorResponse, SearchBooksData, SearchBooksResponse } from "../generated/types.gen";
+import type { ProblemDetailResponse, SearchBooksData, SearchBooksResponse } from "../generated/types.gen";
 
 const TARGET_ENDPOINT = import.meta.env.VITE_WEB_TOOL_API_BASE_URL ?? "http://localhost:8080";
 
@@ -559,14 +559,14 @@ function formatDateTime(value: string | undefined) {
   }).format(date);
 }
 
-function formatError(error: ErrorResponse | unknown) {
-  if (isErrorResponse(error)) {
-    return error.message ?? error.code ?? "書籍検索に失敗しました。";
+function formatError(error: ProblemDetailResponse | unknown) {
+  if (isProblemDetailResponse(error)) {
+    return error.detail ?? error.title ?? error.errorCode ?? "書籍検索に失敗しました。";
   }
 
   return "書籍検索に失敗しました。";
 }
 
-function isErrorResponse(error: unknown): error is ErrorResponse {
-  return typeof error === "object" && error !== null && ("message" in error || "code" in error);
+function isProblemDetailResponse(error: unknown): error is ProblemDetailResponse {
+  return typeof error === "object" && error !== null && ("detail" in error || "title" in error || "errorCode" in error);
 }

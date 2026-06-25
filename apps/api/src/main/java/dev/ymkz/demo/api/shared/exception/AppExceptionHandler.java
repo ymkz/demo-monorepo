@@ -1,6 +1,8 @@
 package dev.ymkz.demo.api.shared.exception;
 
 import dev.ymkz.demo.api.shared.logging.EventLogContext;
+import dev.ymkz.demo.core.domain.event.AppEvent;
+import java.net.URI;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +11,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -34,7 +41,30 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
             HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         log.warn("Validation exception occurred", ex);
         eventLog.setError(ex, null);
-        return super.handleHandlerMethodValidationException(ex, headers, status, request);
+        var problemDetail = createProblemDetail(
+                HttpStatus.BAD_REQUEST, AppEvent.VALIDATION_FAILED, request, "リクエストパラメータの検証に失敗しました");
+        var errors = ex.getParameterValidationResults().stream()
+                .flatMap(result -> result.getResolvableErrors().stream()
+                        .map(error -> new ValidationError(
+                                result.getMethodParameter().getParameterName(), error.getDefaultMessage())))
+                .toList();
+        problemDetail.setProperty("errors", errors);
+        return handleExceptionInternal(ex, problemDetail, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        log.warn("Validation exception occurred", ex);
+        eventLog.setError(ex, null);
+        var problemDetail =
+                createProblemDetail(HttpStatus.BAD_REQUEST, AppEvent.VALIDATION_FAILED, request, "リクエストボディの検証に失敗しました");
+        problemDetail.setProperty(
+                "errors",
+                ex.getBindingResult().getFieldErrors().stream()
+                        .map(ValidationError::of)
+                        .toList());
+        return handleExceptionInternal(ex, problemDetail, headers, status, request);
     }
 
     /**
@@ -47,7 +77,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleMyBatisException(MyBatisSystemException ex, WebRequest request) {
         log.error("Database exception occurred", ex);
         eventLog.setError(ex, null);
-        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        var status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return handleExceptionInternal(
+                ex,
+                createProblemDetail(status, AppEvent.DATABASE_MYBATIS_ERROR, request),
+                new HttpHeaders(),
+                status,
+                request);
     }
 
     /**
@@ -61,7 +97,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
             DataIntegrityViolationException ex, WebRequest request) {
         log.warn("Data integrity violation occurred", ex);
         eventLog.setError(ex, null);
-        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        var status = HttpStatus.BAD_REQUEST;
+        return handleExceptionInternal(
+                ex,
+                createProblemDetail(status, AppEvent.DATABASE_ACCESS_FAILED, request),
+                new HttpHeaders(),
+                status,
+                request);
     }
 
     /**
@@ -74,7 +116,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex, WebRequest request) {
         log.warn("Resource not found", ex);
         eventLog.setError(ex, null);
-        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        var status = HttpStatus.NOT_FOUND;
+        return handleExceptionInternal(
+                ex,
+                createProblemDetail(status, "リソースが見つかりません", "要求されたリソースは存在しません", request),
+                new HttpHeaders(),
+                status,
+                request);
     }
 
     /**
@@ -87,6 +135,49 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleOtherException(Exception ex, WebRequest request) {
         log.error("Unexpected exception occurred", ex);
         eventLog.setError(ex, null);
-        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        var status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return handleExceptionInternal(
+                ex,
+                createProblemDetail(status, AppEvent.UNEXPECTED_ERROR, request),
+                new HttpHeaders(),
+                status,
+                request);
+    }
+
+    private ProblemDetail createProblemDetail(HttpStatus status, AppEvent event, WebRequest request) {
+        var problemDetail = createProblemDetail(status, status.getReasonPhrase(), event.message(), request);
+        problemDetail.setProperty("errorCode", event.code());
+        return problemDetail;
+    }
+
+    private ProblemDetail createProblemDetail(HttpStatus status, AppEvent event, WebRequest request, String detail) {
+        var problemDetail = createProblemDetail(status, status.getReasonPhrase(), detail, request);
+        problemDetail.setProperty("errorCode", event.code());
+        return problemDetail;
+    }
+
+    private ProblemDetail createProblemDetail(HttpStatus status, String title, String detail, WebRequest request) {
+        var problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
+        problemDetail.setType(URI.create("about:blank"));
+        problemDetail.setTitle(title);
+        if (request instanceof ServletWebRequest servletWebRequest) {
+            problemDetail.setInstance(URI.create(servletWebRequest.getRequest().getRequestURI()));
+        }
+        return problemDetail;
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+            Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        var responseHeaders = new HttpHeaders();
+        responseHeaders.putAll(headers);
+        responseHeaders.setContentType(MediaType.APPLICATION_PROBLEM_JSON);
+        return super.handleExceptionInternal(ex, body, responseHeaders, statusCode, request);
+    }
+
+    public record ValidationError(String field, String message) {
+        private static ValidationError of(FieldError fieldError) {
+            return new ValidationError(fieldError.getField(), fieldError.getDefaultMessage());
+        }
     }
 }

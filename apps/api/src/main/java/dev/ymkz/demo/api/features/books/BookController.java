@@ -2,13 +2,14 @@ package dev.ymkz.demo.api.features.books;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
 
 import dev.ymkz.demo.api.features.books.dto.CreateBookBody;
 import dev.ymkz.demo.api.features.books.dto.FindBookByIdResponse;
 import dev.ymkz.demo.api.features.books.dto.SearchBooksQueryParam;
 import dev.ymkz.demo.api.features.books.dto.SearchBooksResponse;
 import dev.ymkz.demo.api.features.books.dto.UpdateBookBody;
-import dev.ymkz.demo.api.shared.exception.ErrorResponse;
+import dev.ymkz.demo.api.shared.exception.ProblemDetailResponse;
 import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,11 +60,17 @@ public class BookController {
                 @ApiResponse(
                         responseCode = "400",
                         description = "不正なリクエスト",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "500",
                         description = "アプリケーションエラー",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
             })
     public SearchBooksResponse searchBooks(
             @Valid @ParameterObject SearchBooksQueryParam queryParam,
@@ -98,15 +105,15 @@ public class BookController {
                         description = "不正なリクエスト",
                         content =
                                 @Content(
-                                        schema = @Schema(implementation = ErrorResponse.class),
-                                        mediaType = APPLICATION_JSON_VALUE)),
+                                        schema = @Schema(implementation = ProblemDetailResponse.class),
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE)),
                 @ApiResponse(
                         responseCode = "500",
                         description = "アプリケーションエラー",
                         content =
                                 @Content(
-                                        schema = @Schema(implementation = ErrorResponse.class),
-                                        mediaType = APPLICATION_JSON_VALUE)),
+                                        schema = @Schema(implementation = ProblemDetailResponse.class),
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE)),
             })
     public ResponseEntity<byte[]> downloadBooks(@ParameterObject SearchBooksQueryParam queryParam) {
         var data = bookDownloadUsecase.execute(queryParam.toBookSearchQuery(null, null));
@@ -125,15 +132,24 @@ public class BookController {
                 @ApiResponse(
                         responseCode = "400",
                         description = "不正なリクエスト",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "404",
                         description = "存在しないリソース",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "500",
                         description = "アプリケーションエラー",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
             })
     public FindBookByIdResponse findBookById(@PathVariable long id) {
         return FindBookByIdResponse.of(bookFindUsecase.execute(id));
@@ -148,11 +164,17 @@ public class BookController {
                 @ApiResponse(
                         responseCode = "400",
                         description = "不正なリクエスト",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "500",
                         description = "アプリケーションエラー",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
             })
     public void createBook(@Validated @RequestBody CreateBookBody body) {
         bookCreateUsecase.execute(body.toCommand());
@@ -166,15 +188,24 @@ public class BookController {
                 @ApiResponse(
                         responseCode = "400",
                         description = "不正なリクエスト",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "404",
                         description = "存在しないリソース",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "500",
                         description = "アプリケーションエラー",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
             })
     public void updateBook(@PathVariable long id, @Validated @RequestBody UpdateBookBody body) {
         bookUpdateUsecase.execute(body.toCommand(id));
@@ -189,15 +220,24 @@ public class BookController {
                 @ApiResponse(
                         responseCode = "400",
                         description = "不正なリクエスト",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "404",
                         description = "存在しないリソース",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
                 @ApiResponse(
                         responseCode = "500",
                         description = "アプリケーションエラー",
-                        content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                        content =
+                                @Content(
+                                        mediaType = APPLICATION_PROBLEM_JSON_VALUE,
+                                        schema = @Schema(implementation = ProblemDetailResponse.class))),
             })
     public void deleteBook(@PathVariable long id) {
         bookDeleteUsecase.execute(id);

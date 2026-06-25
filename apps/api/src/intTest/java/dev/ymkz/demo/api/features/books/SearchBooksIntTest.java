@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 
 import dev.ymkz.demo.api.support.testing.TestContainersConfig;
@@ -148,7 +149,11 @@ public class SearchBooksIntTest {
                 .statusCode(400)
                 .header("Content-Type", containsString("application/problem+json"))
                 .body("status", equalTo(400))
-                .body("title", equalTo("Bad Request"));
+                .body("title", equalTo("Bad Request"))
+                .body("detail", equalTo("リクエストボディの検証に失敗しました"))
+                .body("instance", equalTo("/books"))
+                .body("errorCode", equalTo("dw1001"))
+                .body("errors.field", hasItems("isbn", "title", "status", "authorId", "publisherId", "price"));
     }
 
     @Test
@@ -192,7 +197,12 @@ public class SearchBooksIntTest {
                 .when()
                 .get("/books?limit=101")
                 .then()
-                .statusCode(400);
+                .statusCode(400)
+                .header("Content-Type", containsString("application/problem+json"))
+                .body("status", equalTo(400))
+                .body("detail", equalTo("リクエストパラメータの検証に失敗しました"))
+                .body("errorCode", equalTo("dw1001"))
+                .body("errors.field", contains("limit"));
     }
 
     @Test
@@ -201,6 +211,9 @@ public class SearchBooksIntTest {
                 .when()
                 .get("/nonexistent-path")
                 .then()
-                .statusCode(404);
+                .statusCode(404)
+                .header("Content-Type", containsString("application/problem+json"))
+                .body("status", equalTo(404))
+                .body("instance", equalTo("/nonexistent-path"));
     }
 }

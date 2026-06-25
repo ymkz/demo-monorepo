@@ -118,7 +118,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "取得置",
+            "description": "取得位置",
             "required": false,
             "schema": {
               "type": "integer",
@@ -155,9 +155,9 @@
           "400": {
             "description": "不正なリクエスト",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -165,9 +165,9 @@
           "500": {
             "description": "アプリケーションエラー",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -197,9 +197,9 @@
           "400": {
             "description": "不正なリクエスト",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -207,9 +207,9 @@
           "500": {
             "description": "アプリケーションエラー",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -249,9 +249,9 @@
           "400": {
             "description": "不正なリクエスト",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -259,9 +259,9 @@
           "404": {
             "description": "存在しないリソース",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -269,9 +269,9 @@
           "500": {
             "description": "アプリケーションエラー",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -302,9 +302,9 @@
           "400": {
             "description": "不正なリクエスト",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -312,9 +312,9 @@
           "404": {
             "description": "存在しないリソース",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -322,9 +322,9 @@
           "500": {
             "description": "アプリケーションエラー",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -365,9 +365,9 @@
           "400": {
             "description": "不正なリクエスト",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -375,9 +375,9 @@
           "404": {
             "description": "存在しないリソース",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -385,9 +385,9 @@
           "500": {
             "description": "アプリケーションエラー",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -515,9 +515,9 @@
           "400": {
             "description": "不正なリクエスト",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -525,9 +525,9 @@
           "500": {
             "description": "アプリケーションエラー",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetailResponse"
                 }
               }
             }
@@ -544,7 +544,7 @@
           "isbn": {
             "type": "string",
             "description": "ISBN-13",
-            "example": 9784873115658,
+            "example": "9784873115658",
             "minLength": 1
           },
           "title": {
@@ -575,22 +575,86 @@
             "format": "date-time",
             "description": "出版日時:ISO8601",
             "example": "2025-01-23T01:23:45.000Z"
+          },
+          "authorId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "著者ID",
+            "example": 1
+          },
+          "publisherId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "出版社ID",
+            "example": 1
           }
         },
         "required": [
+          "authorId",
           "isbn",
+          "publisherId",
           "status",
           "title"
         ]
       },
-      "ErrorResponse": {
+      "ValidationErrorResponse": {
         "type": "object",
+        "description": "バリデーションエラーの詳細",
         "properties": {
-          "code": {
-            "type": "string"
+          "field": {
+            "type": "string",
+            "description": "エラーが発生したフィールド",
+            "example": "isbn"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "エラーメッセージ",
+            "example": "空白は許可されていません"
+          }
+        }
+      },
+      "ProblemDetailResponse": {
+        "type": "object",
+        "description": "Problem Details for HTTP APIs",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri",
+            "description": "問題種別を識別するURI",
+            "example": "about:blank"
+          },
+          "title": {
+            "type": "string",
+            "description": "問題の短い説明",
+            "example": "Bad Request"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTPステータスコード",
+            "example": 400
+          },
+          "detail": {
+            "type": "string",
+            "description": "問題の詳細説明",
+            "example": "リクエストボディの検証に失敗しました"
+          },
+          "instance": {
+            "type": "string",
+            "format": "uri",
+            "description": "問題が発生したリソースのURI",
+            "example": "/books"
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "アプリケーション固有のエラーコード",
+            "example": "dw1001"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationErrorResponse"
+            }
           }
         }
       },
@@ -600,7 +664,7 @@
           "isbn": {
             "type": "string",
             "description": "ISBN-13",
-            "example": 9784873115658
+            "example": "9784873115658"
           },
           "title": {
             "type": "string",
@@ -629,6 +693,18 @@
             "format": "date-time",
             "description": "出版日時:ISO8601",
             "example": "2025-01-23T01:23:45.000Z"
+          },
+          "authorId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "著者ID",
+            "example": 1
+          },
+          "publisherId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "出版社ID",
+            "example": 1
           }
         }
       },
@@ -693,7 +769,7 @@
           "isbn": {
             "type": "string",
             "description": "ISBN-13",
-            "example": 9784873115658
+            "example": "9784873115658"
           },
           "title": {
             "type": "string",
@@ -764,7 +840,7 @@
           "isbn": {
             "type": "string",
             "description": "ISBN-13",
-            "example": 9784873115658
+            "example": "9784873115658"
           },
           "title": {
             "type": "string",
