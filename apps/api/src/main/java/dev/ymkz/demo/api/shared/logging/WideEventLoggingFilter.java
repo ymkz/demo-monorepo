@@ -51,9 +51,9 @@ public class WideEventLoggingFilter extends OncePerRequestFilter {
                     var args = new Object[] {
                         StructuredArguments.value("http.request.method", dto.method()),
                         StructuredArguments.value("url.path", dto.path()),
-                        StructuredArguments.value("event.start", dto.requestedAt()),
-                        StructuredArguments.value("event.end", dto.respondedAt()),
-                        StructuredArguments.value("event.duration", dto.durationMs() * 1_000_000),
+                        StructuredArguments.value("request.start", dto.requestedAt()),
+                        StructuredArguments.value("request.end", dto.respondedAt()),
+                        StructuredArguments.value("duration_ms", dto.durationMs()),
                         StructuredArguments.value("http.response.status_code", dto.statusCode()),
                         StructuredArguments.value("events", dto.events()),
                         StructuredArguments.value("error", dto.error()),

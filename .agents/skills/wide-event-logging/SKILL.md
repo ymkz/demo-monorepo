@@ -32,7 +32,7 @@ WideEventLoggingFilter
   ↓
 Controller / UseCase / ExceptionHandler
   - EventLogContext#set(...) でwide fieldを追加
-  - EventLogContext#addEvent(...) で時系列イベントを追加
+  - EventLogContext#addEvent(msg, key, value, ...) で時系列イベントを追加
   - EventLogContext#setError(...) で例外情報を追加
   ↓
 WideEventLoggingFilter finally
@@ -79,11 +79,21 @@ eventLog.set("book.download.row_count", books.size());
 #### 2. 時系列イベント
 
 処理の順序やイベント発生を残したい場合は `addEvent(...)` を使う。
+metadataはkey-valueの可変長引数で渡す。
 
 ```java
 eventLog.addEvent(
         "book_search_executed",
-        new SearchMetadata(queryParam.isbn(), queryParam.title(), offset, limit, data.totalCount()));
+        "isbn",
+        queryParam.isbn(),
+        "title",
+        queryParam.title(),
+        "offset",
+        offset,
+        "limit",
+        limit,
+        "total_results",
+        data.totalCount());
 ```
 
 ## 使ってよい場所
@@ -149,13 +159,13 @@ book_search
 必要最小限の値だけを渡す。
 
 ```java
-eventLog.addEvent("book_search_executed", new SearchMetadata(isbn, title, offset, limit, totalResults));
+eventLog.addEvent("book_search_executed", "isbn", isbn, "title", title, "total_results", totalResults);
 ```
 
 ### 避ける例
 
 ```java
-eventLog.addEvent("book_search_executed", bookEntity); // NG
+eventLog.addEvent("book_search_executed", "book", bookEntity); // NG: 大きなオブジェクトをmetadataへ入れない
 ```
 
 避ける理由:
@@ -178,7 +188,7 @@ eventLog.setError(ex, null);
 try {
     process();
 } catch (CsvException ex) {
-    eventLog.setError(ex, new CsvMetadata(rowCount));
+    eventLog.setError(ex, Map.of("row_count", rowCount));
     throw ex;
 }
 ```
@@ -222,8 +232,8 @@ request scopeは別スレッドへ自動伝播する前提にしない。
 # 特定イベントを含むリクエスト
 {app="demo-api"} | json | line_format "{{.events}}" |~ "book_search_executed"
 
-# 処理時間が閾値を超えたリクエスト（event.durationはナノ秒）
-{app="demo-api"} | json | event_duration > 1000000000
+# 処理時間が閾値を超えたリクエスト（duration_msはミリ秒）
+{app="demo-api"} | json | duration_ms > 1000
 ```
 
 ## 参考資料

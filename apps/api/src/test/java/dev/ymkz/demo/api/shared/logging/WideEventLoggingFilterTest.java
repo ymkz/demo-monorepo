@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class WideEventLoggingFilterTest {
         doAnswer(invocation -> {
                     assertThat(MDC.get("http.request.id")).isNotEmpty();
                     eventLog.set("book.search.total_results", 1);
-                    eventLog.addEvent("book_search_executed", null);
+                    eventLog.addEvent("book_search_executed");
                     return null;
                 })
                 .when(chain)
@@ -104,7 +105,7 @@ class WideEventLoggingFilterTest {
     void snapshot_内部のMapとListを直接公開しないこと() {
         // given
         eventLog.set("book.search.total_results", 1);
-        eventLog.addEvent("book_search_executed", null);
+        eventLog.addEvent("book_search_executed");
 
         // when
         var snapshot = eventLog.snapshot();
@@ -113,5 +114,28 @@ class WideEventLoggingFilterTest {
         assertThatThrownBy(() -> snapshot.fields().put("another", 2)).isInstanceOf(UnsupportedOperationException.class);
         assertThatThrownBy(() -> snapshot.events().add(new WideEventLog.Event("now", "another", null)))
                 .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void addEvent_keyValue形式のmetadataをMapとして記録すること() {
+        // when
+        eventLog.addEvent("book_search_executed", "offset", 0, "limit", 20);
+
+        // then
+        assertThat(eventLog.snapshot().events().getFirst().metadata()).isEqualTo(Map.of("offset", 0, "limit", 20));
+    }
+
+    @Test
+    void addEvent_metadataの数が奇数の場合は例外を投げること() {
+        assertThatThrownBy(() -> eventLog.addEvent("book_search_executed", "offset"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("metadata must be key-value pairs");
+    }
+
+    @Test
+    void addEvent_metadataのkeyがString以外の場合は例外を投げること() {
+        assertThatThrownBy(() -> eventLog.addEvent("book_search_executed", 1, "value"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("metadata key must be String");
     }
 }

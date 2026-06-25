@@ -6,6 +6,7 @@ import dev.ymkz.demo.api.features.books.presentation.dto.DownloadBooksResponse;
 import dev.ymkz.demo.api.shared.logging.EventLogContext;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,13 +29,11 @@ public class BookDownloadUsecase {
     public byte[] execute(BookSearchQuery query) {
         var books = repository.download(query);
         eventLog.set("book.download.row_count", books.size());
-        eventLog.addEvent("book_download_executed", new DbMetadata(books.size()));
+        eventLog.addEvent("book_download_executed", "row_count", books.size());
 
         return mapBooksToCsvText(books.stream().map(DownloadBooksResponse::from).toList())
                 .getBytes(StandardCharsets.UTF_8);
     }
-
-    private record DbMetadata(int rowCount) {}
 
     private String mapBooksToCsvText(List<DownloadBooksResponse> data) {
         try {
@@ -43,15 +42,13 @@ public class BookDownloadUsecase {
             var textWithBom = new String(UTF8_BOM) + text;
 
             eventLog.set("csv.generation.row_count", data.size());
-            eventLog.addEvent("csv_generation_executed", new CsvMetadata(data.size()));
+            eventLog.addEvent("csv_generation_executed", "row_count", data.size());
 
             return textWithBom;
         } catch (JacksonException ex) {
             log.error("Failed to convert to CSV", ex);
-            eventLog.setError(ex, new CsvMetadata(data.size()));
+            eventLog.setError(ex, Map.of("row_count", data.size()));
             throw new RuntimeException("Failed to convert to CSV", ex);
         }
     }
-
-    private record CsvMetadata(int rowCount) {}
 }

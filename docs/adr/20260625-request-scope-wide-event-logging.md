@@ -23,7 +23,7 @@ Wide Event Loggingのコンテキスト管理を、ThreadLocalベースの`Event
 - `EventLogContext` はrequest scopeにする
 - `proxyMode = ScopedProxyMode.TARGET_CLASS` を指定し、Controller / UseCase / ExceptionHandlerなどのsingleton beanへ通常のコンストラクタインジェクションで渡せるようにする
 - `EventLogContext#set(key, value)` でwide eventのトップレベルフィールドを追加する
-- `EventLogContext#addEvent(msg, metadata)` で従来の時系列イベントも保持する
+- `EventLogContext#addEvent(msg, key, value, ...)` で従来の時系列イベントも保持する
 - `EventLogContext#setError(Throwable, metadata)` で例外情報を保持する
 - `WideEventLoggingFilter` は `ObjectProvider<EventLogContext>` 経由で現在リクエストのコンテキストを取得する
 - `requestId` のMDC設定は継続する
@@ -39,12 +39,12 @@ WideEventLoggingFilter
   ↓
 Controller / UseCase / ExceptionHandler
   - EventLogContext#set(...) で検索しやすいwide fieldを追加
-  - EventLogContext#addEvent(...) で時系列イベントを追加
+  - EventLogContext#addEvent(msg, key, value, ...) で時系列イベントを追加
   - EventLogContext#setError(...) で例外情報を追加
   ↓
 WideEventLoggingFilter finally
   - EventLogContext#snapshot() を取得
-  - `http.request.method` / `url.path` / `http.response.status_code` / `event.duration` / fields / events / error を1件のJSON structured logとして出力
+  - `http.request.method` / `url.path` / `http.response.status_code` / `duration_ms` / fields / events / error を1件のJSON structured logとして出力
   - MDCをクリア
 ```
 
@@ -60,9 +60,9 @@ WideEventLoggingFilter finally
   "http.request.id": "550e8400-e29b-41d4-a716-446655440000",
   "http.request.method": "GET",
   "url.path": "/books",
-  "event.start": "2026-06-25T00:00:00.000+09:00",
-  "event.end": "2026-06-25T00:00:00.123+09:00",
-  "event.duration": 123000000,
+  "request.start": "2026-06-25T00:00:00.000+09:00",
+  "request.end": "2026-06-25T00:00:00.123+09:00",
+  "duration_ms": 123,
   "http.response.status_code": 200,
   "book.search.total_results": 42,
   "events": [
@@ -70,7 +70,7 @@ WideEventLoggingFilter finally
       "timestamp": "2026-06-25T00:00:00.100+09:00",
       "msg": "book_search_executed",
       "metadata": {
-        "totalResults": 42
+        "total_results": 42
       }
     }
   ],

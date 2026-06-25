@@ -34,8 +34,23 @@ public class EventLogContext {
         fields.putIfAbsent(key, value);
     }
 
-    public void addEvent(String msg, Object metadata) {
-        events.add(new WideEventLog.Event(WideEventLog.format(nowJst()), msg, metadata));
+    public void addEvent(String msg, Object... metadata) {
+        events.add(new WideEventLog.Event(WideEventLog.format(nowJst()), msg, toMetadataMap(metadata)));
+    }
+
+    private Map<String, Object> toMetadataMap(Object... metadata) {
+        if (metadata.length % 2 != 0) {
+            throw new IllegalArgumentException("metadata must be key-value pairs");
+        }
+
+        Map<String, Object> metadataMap = new LinkedHashMap<>();
+        for (int i = 0; i < metadata.length; i += 2) {
+            if (!(metadata[i] instanceof String key)) {
+                throw new IllegalArgumentException("metadata key must be String");
+            }
+            metadataMap.put(key, metadata[i + 1]);
+        }
+        return metadataMap;
     }
 
     public void setError(Throwable ex, Object metadata) {

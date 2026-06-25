@@ -80,12 +80,19 @@ public class BookController {
         eventLog.set("book.search.total_results", data.totalCount());
         eventLog.addEvent(
                 "book_search_executed",
-                new SearchMetadata(queryParam.isbn(), queryParam.title(), offset, limit, data.totalCount()));
+                "isbn",
+                queryParam.isbn(),
+                "title",
+                queryParam.title(),
+                "offset",
+                offset,
+                "limit",
+                limit,
+                "total_results",
+                data.totalCount());
 
         return SearchBooksResponse.of(data);
     }
-
-    private record SearchMetadata(String isbn, String title, Integer offset, Integer limit, long totalResults) {}
 
     @GetMapping(path = "download", produces = "text/csv")
     @Operation(operationId = "downloadBooks", description = "[Internal Use Only]書籍情報をCSV形式でダウンロードする")
