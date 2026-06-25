@@ -2,6 +2,7 @@ package dev.ymkz.demo.api.features.books;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -41,6 +42,20 @@ public class SearchBooksIntTest {
                 .then()
                 .statusCode(200)
                 .body("items.price", contains(12000, 5500, 1000, 780));
+    }
+
+    @Test
+    void downloadBooksがCSVを返すこと() {
+        given().contentType(ContentType.JSON)
+                .when()
+                .get("/books/download")
+                .then()
+                .statusCode(200)
+                .header("Content-Type", containsString("text/csv"))
+                .header("Content-Disposition", containsString("attachment; filename=download.csv"))
+                .body(containsString("isbn"))
+                .body(containsString("9783832185923"))
+                .body(containsString("ノルウェイの森"));
     }
 
     @Test
@@ -114,6 +129,26 @@ public class SearchBooksIntTest {
                 .get("/books/{id}", id)
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    void 必須項目なしで書籍を作成すると400とエラーレスポンスを返すこと() {
+        given().contentType(ContentType.JSON)
+                .body("""
+                        {
+                          "isbn": "",
+                          "price": -1,
+                          "status": null,
+                          "publisherId": null
+                        }
+                        """)
+                .when()
+                .post("/books")
+                .then()
+                .statusCode(400)
+                .header("Content-Type", containsString("application/problem+json"))
+                .body("status", equalTo(400))
+                .body("title", equalTo("Bad Request"));
     }
 
     @Test
