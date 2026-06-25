@@ -46,6 +46,6 @@ mybatis:
 app:
   externalapi:
     jsonplaceholder:
-      base-url: https://jsonplaceholder.typicode.com
+      url: https://jsonplaceholder.typicode.com/users
       connect-timeout: 500ms
       read-timeout: 3000ms

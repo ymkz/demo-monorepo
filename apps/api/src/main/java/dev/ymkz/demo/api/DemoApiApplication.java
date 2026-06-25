@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 @SecurityScheme(name = "ApiKeyAuth", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 @OpenAPIDefinition(
         info = @Info(title = "API仕様書", version = "1.0.0"),
