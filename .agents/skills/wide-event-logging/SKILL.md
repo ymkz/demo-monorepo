@@ -30,7 +30,7 @@ HTTP Request
 WideEventLoggingFilter
   - requestIdを生成する
   ↓
-Controller / UseCase / ExceptionHandler
+Controller / Usecase / ExceptionHandler
   - EventLogContext#set(...) でwide fieldを追加
   - EventLogContext#addEvent(msg, key, value, ...) で時系列イベントを追加
   - EventLogContext#setError(...) で例外情報を追加
@@ -48,7 +48,7 @@ WideEventLoggingFilter finally
 `EventLogContext` はrequest scopeにする。
 
 - `@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)` を使う
-- Controller / UseCase / ExceptionHandlerには通常のコンストラクタインジェクションで渡す
+- Controller / Usecase / ExceptionHandlerには通常のコンストラクタインジェクションで渡す
 - Filterでは `ObjectProvider<EventLogContext>` 経由で取得する
 - `snapshot()` は内部の `Map` / `List` を直接返さず、コピーした変更不可コレクションを返す
 
@@ -100,7 +100,7 @@ eventLog.addEvent(
 
 ```text
 Controller
-Application Service / UseCase
+Application Service / Usecase
 Infrastructure Adapter
 ExceptionHandler
 ```
@@ -218,7 +218,7 @@ request scopeは別スレッドへ自動伝播する前提にしない。
 1. 正常終了時に`EventLogContext`の内容がwide eventへ利用されること
 2. 未捕捉例外がwide eventの`error`に記録されること
 3. `snapshot()` が内部Map/Listを直接公開しないこと
-4. UseCase等で `set(...)` / `addEvent(...)` が呼べること
+4. Usecase等で `set(...)` / `addEvent(...)` が呼べること
 
 ## ログ基盤連携例
 

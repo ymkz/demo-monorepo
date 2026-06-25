@@ -21,7 +21,7 @@ Wide Event Loggingのコンテキスト管理を、ThreadLocalベースの`Event
 ### 採用する設計
 
 - `EventLogContext` はrequest scopeにする
-- `proxyMode = ScopedProxyMode.TARGET_CLASS` を指定し、Controller / UseCase / ExceptionHandlerなどのsingleton beanへ通常のコンストラクタインジェクションで渡せるようにする
+- `proxyMode = ScopedProxyMode.TARGET_CLASS` を指定し、Controller / Usecase / ExceptionHandlerなどのsingleton beanへ通常のコンストラクタインジェクションで渡せるようにする
 - `EventLogContext#set(key, value)` でwide eventのトップレベルフィールドを追加する
 - `EventLogContext#addEvent(msg, key, value, ...)` で従来の時系列イベントも保持する
 - `EventLogContext#setError(Throwable, metadata)` で例外情報を保持する
@@ -37,7 +37,7 @@ HTTP Request
 WideEventLoggingFilter
   - requestIdを生成する
   ↓
-Controller / UseCase / ExceptionHandler
+Controller / Usecase / ExceptionHandler
   - EventLogContext#set(...) で検索しやすいwide fieldを追加
   - EventLogContext#addEvent(msg, key, value, ...) で時系列イベントを追加
   - EventLogContext#setError(...) で例外情報を追加
@@ -83,7 +83,7 @@ WideEventLoggingFilter finally
 `EventLogContext` を使ってよい場所は以下とする。
 
 - Controller
-- Application Service / UseCase
+- Application Service / Usecase
 - Infrastructure Adapter
 - ExceptionHandler
 

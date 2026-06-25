@@ -2,45 +2,53 @@
 
 ## OVERVIEW
 
-Spring Boot REST API with MyBatis persistence and OpenAPI-first design
+Spring Boot REST API with MyBatis persistence and OpenAPI-first design.
 
 ## STRUCTURE
 
-```
+```text
 src/main/java/dev/ymkz/demo/api/
-├── presentation/      # Controllers and DTOs
-│   ├── controller/
-│   └── dto/
-├── application/       # Use cases
-│   └── usecase/
-├── domain/            # Domain models and repositories
-│   ├── model/
-│   └── repository/
-└── infrastructure/    # MyBatis mappers and external APIs
-    ├── datasource/
-    └── externalapi/
+├── config/             # Spring/MyBatis configuration
+│   └── mybatis/
+├── external/           # External API clients
+│   └── jsonplaceholder/
+├── features/           # Feature-first packages
+│   └── books/          # Book feature classes are mostly flat
+│       └── dto/        # Request/response/query DTOs
+└── shared/             # Cross-cutting concerns
+    ├── exception/
+    └── logging/
 ```
+
+`features/books` は、Controller / Usecase / domain model / repository interface / datasource / mapper を直下に置く。
+DTOのみ数が増えやすいため `features/books/dto` に分ける。
 
 ## WHERE TO LOOK
 
-| Task                 | Location                      | Notes                       |
-| -------------------- | ----------------------------- | --------------------------- |
-| Controllers          | `presentation/controller/`    | Spring MVC annotated        |
-| DTOs                 | `presentation/dto/`           | Request/response objects    |
-| Use Cases            | `application/usecase/`        | Business logic layer        |
-| Domain Models        | `domain/model/`               | Entities                    |
-| Domain Repositories  | `domain/repository/`          | Repository interfaces       |
-| MyBatis Mappers      | `infrastructure/datasource/`  | SQL mapping files           |
-| External API Clients | `infrastructure/externalapi/` | JSONPlaceholder integration |
-| Integration Tests    | `src/intTest/`                | TestContainers + MySQL      |
-| OpenAPI Config       | `build.gradle.kts`            | `springdoc-openapi` plugin  |
+| Task                 | Location                    | Notes                                   |
+| -------------------- | --------------------------- | --------------------------------------- |
+| Book feature         | `features/books/`           | Main classes are flat under the feature |
+| Book DTOs            | `features/books/dto/`       | Request/response/query objects          |
+| Shared exceptions    | `shared/exception/`         | Global exception handling               |
+| Wide event logging   | `shared/logging/`           | Request-scoped wide event logging       |
+| MyBatis config       | `config/mybatis/`           | MyBatis configuration and interceptors  |
+| External API clients | `external/jsonplaceholder/` | JSONPlaceholder integration             |
+| Unit tests           | `src/test/`                 | Mirrors feature package where practical |
+| Integration tests    | `src/intTest/`              | TestContainers + MySQL                  |
+| OpenAPI Config       | `build.gradle.kts`          | `springdoc-openapi` plugin              |
 
 ## CONVENTIONS
+
+### Naming
+
+- Use `Usecase`, not `UseCase`.
+- Keep feature classes under `features/<feature>/` unless the feature grows enough to justify subpackages.
+- Keep DTOs under `features/<feature>/dto/`.
 
 ### Build & Testing
 
 - **Springdoc OpenAPI plugin**: Generates `openapi.json` at build time
-- **MyBatis mappers**: XML files in `infrastructure/datasource/mapper`
+- **MyBatis mappers**: Mapper interfaces live with the feature package
 - **Custom source set**: `src/intTest` for integration tests
 - **TestContainers**: MySQL container spun up for integration tests
 
@@ -48,7 +56,7 @@ src/main/java/dev/ymkz/demo/api/
 
 - **Spotless**: Palantir Java Format
 - **Lombok**: Annotation processor for boilerplate reduction
-- **Kotlin**: Full Kotlin implementation
+- **Java**: Main implementation language for the API app
 - **Japanese test names**: Use Japanese for test cases
 
 ### Dependency Strategy
