@@ -11,24 +11,24 @@ syncInjectedDepsAfterScripts:
   - build
 catalog:
   "@hey-api/openapi-ts": 0.99.0
-  "@tanstack/react-router": 1.170.17
-  "@tanstack/react-start": 1.168.27
-  "@tailwindcss/vite": 4.3.2
+  "@tanstack/react-router": 1.170.18
+  "@tanstack/react-start": 1.168.28
+  "@tailwindcss/vite": 4.3.3
   "@types/node": 24.13.3
   "@types/react": 19.2.17
   "@types/react-dom": 19.2.3
   "@vitejs/plugin-react": 6.0.3
   "@vitest/coverage-v8": 4.1.10
-  knip: 6.25.0
-  oxfmt: 0.58.0
-  oxlint: 1.73.0
+  knip: 6.27.0
+  oxfmt: 0.59.0
+  oxlint: 1.74.0
   pino: 10.3.1
   react: 19.2.7
   react-dom: 19.2.7
-  tailwindcss: 4.3.2
+  tailwindcss: 4.3.3
   temporal-polyfill-lite: 0.4.2
   typescript: 6.0.3
-  vite: 8.1.4
+  vite: 8.1.5
   vitest: 4.1.10
   wireit: 0.14.13
   zod: 4.4.3
