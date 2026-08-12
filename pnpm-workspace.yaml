@@ -27,7 +27,7 @@ catalog:
   react-dom: 19.2.8
   tailwindcss: 4.3.3
   temporal-polyfill-lite: 0.4.2
-  typescript: 6.0.3
+  typescript: 7.0.2
   vite: 8.2.1
   vitest: 4.1.10
   wireit: 0.14.13
