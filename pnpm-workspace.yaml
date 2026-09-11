@@ -18,7 +18,7 @@ catalog:
   "@types/react": 19.2.18
   "@types/react-dom": 19.2.7
   "@vitejs/plugin-react": 6.1.1
-  "@vitest/coverage-v8": 4.1.11
+  "@vitest/coverage-v8": 5.0.0
   knip: 6.34.0
   oxfmt: 0.66.0
   oxlint: 1.81.0
@@ -27,8 +27,8 @@ catalog:
   react-dom: 19.2.8
   tailwindcss: 4.3.3
   temporal-polyfill-lite: 0.4.3
-  typescript: 6.0.3
+  typescript: 7.0.2
   vite: 8.2.2
-  vitest: 4.1.11
+  vitest: 5.0.0
   wireit: 0.14.13
   zod: 4.5.4
